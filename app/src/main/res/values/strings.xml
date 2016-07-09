@@ -3,8 +3,16 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="button_send">LOGIN</string>
     <string name="title_activity_landing">LandingActivity</string>
-    <string name="generate_workout">Go</string>
     <string name="title_activity_activity_workout">ActivityWorkout</string>
+    <string name="button_send">LOGIN</string>
+
+    <string name="button_neck">Neck</string>
+    <string name="button_shoulders">Shoulders</string>
+    <string name="button_traps">Traps</string>
+    <string name="button_chest">Chest</string>
+    <string name="button_generate_workout">Generate</string>
+    <string name="list_muscle_group"></string>
+
+    <string name="list_exercises"></string>
 </resources>

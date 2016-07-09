@@ -23,7 +23,7 @@ public class MainActivity extends ActionBarActivity {
                 navigate_to_landing(view);
             }
         });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     @Override

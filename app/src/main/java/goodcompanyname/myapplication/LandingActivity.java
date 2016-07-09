@@ -1,17 +1,45 @@
 package goodcompanyname.myapplication;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import java.util.ArrayList;
+
 
 
 public class LandingActivity extends ActionBarActivity {
+
+    // A list to display picked items
+    private ArrayList<String> muscleGroups = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
+
+        Button button_neck = (Button) findViewById(R.id.button_neck);
+        Button button_traps = (Button) findViewById(R.id.button_traps);
+        Button button_shoulders = (Button) findViewById(R.id.button_shoulders);
+        Button button_chest = (Button) findViewById(R.id.button_chest);
+
+        setButtonListener(button_neck, "Neck");
+        setButtonListener(button_traps, "Traps");
+        setButtonListener(button_shoulders, "Shoulers");
+        setButtonListener(button_chest, "Chest");
+
+        Button button_login = (Button) findViewById(R.id.button_generate_workout);
+        button_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigateToWorkout();
+            }
+        });
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     @Override
@@ -34,5 +62,38 @@ public class LandingActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /** Called when the user clicks the Send button */
+    public void setButtonListener(Button button, final String bodyPart) {
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addMuscleGroup(bodyPart);
+            }
+        });
+    }
+
+    /** Called when the user clicks the Send button */
+    public void addMuscleGroup(String muscleGroup) {
+        // Add the muscle group to the muscleGroups array
+        if (!muscleGroups.contains(muscleGroup)) {
+            muscleGroups.add(muscleGroup);
+        }
+
+        updateTextView();
+    }
+
+    public void updateTextView() {
+        TextView muscleGroupList = (TextView) findViewById(R.id.list_muscle_group);
+        muscleGroupList.setText(muscleGroups.toString());
+    }
+
+    /** Called when the user clicks the Send button */
+    public void navigateToWorkout() {
+        // Do something in response to button
+        Intent intent = new Intent(this, ActivityWorkout.class);
+        intent.putExtra("EXTRA_MUSCLE_GROUPS", muscleGroups);
+        startActivity(intent);
     }
 }
