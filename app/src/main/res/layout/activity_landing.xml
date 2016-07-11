@@ -32,10 +32,23 @@
         android:text="@string/button_chest" />
 
     <Button
+        android:id="@+id/button_biceps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_biceps" />
+
+    <Button
+        android:id="@+id/button_forearm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_forearm" />
+
+    <Button
         android:id="@+id/button_generate_workout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/button_generate_workout" />
+
 
     <TextView
         android:id="@+id/list_muscle_group"

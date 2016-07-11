@@ -5,13 +5,28 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+
 
 public class ActivityWorkout extends ActionBarActivity {
+
+    private ArrayList<String> al;
+    private ArrayAdapter<String> arrayAdapter;
+    private int i;
+
+
 
     // A list to display picked items
     private ArrayList<String> muscleGroups = new ArrayList<String>();
@@ -21,6 +36,59 @@ public class ActivityWorkout extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
+
+
+
+
+        //add the view via xml or programmatically
+        SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
+        al = new ArrayList<String>();
+        al.add("php");
+        al.add("c");
+        al.add("python");
+        al.add("java");
+        //choose your favorite adapter
+        arrayAdapter = new ArrayAdapter<String>(this, R.layout.item, R.id.helloText, al );
+        //set the listener and the adapter
+        flingContainer.setAdapter(arrayAdapter);
+        flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+
+            @Override
+            public void onScroll(float randomNumber) {
+                //this is what runs when you click the button
+            }
+
+            @Override
+            public void removeFirstObjectInAdapter() {
+                // this is the simplest way to delete an object from the Adapter (/AdapterView)
+                al.remove(0);
+                arrayAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onLeftCardExit(Object dataObject) {
+                //Do something on the left!
+                //You also have access to the original object.
+                //If you want to use it just cast it (String) dataObject
+                Toast.makeText(ActivityWorkout.this, "Left!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onRightCardExit(Object dataObject) {
+                Toast.makeText(ActivityWorkout.this, "Right!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdapterAboutToEmpty(int itemsInAdapter) {
+                // Ask for more data here
+                al.add("XML ".concat(String.valueOf(i)));
+                arrayAdapter.notifyDataSetChanged();
+                i++;
+            }
+        });
+
+
+
 
         Intent intent = getIntent();
         muscleGroups = intent.getStringArrayListExtra("EXTRA_MUSCLE_GROUPS");
@@ -41,10 +109,20 @@ public class ActivityWorkout extends ActionBarActivity {
         chestExercises.add("PUSHUPS");
         chestExercises.add("CHEST B");
 
+        ArrayList<String> bicepsExercises = new ArrayList<String>();
+        bicepsExercises.add("bicep curl 1");
+        bicepsExercises.add("bicep curl 2");
+
+        ArrayList<String> forearmExercises = new ArrayList<String>();
+        forearmExercises.add("climb stuff 1");
+        forearmExercises.add("climb moar stuff");
+
         exercises.put("Neck", neckExercises);
         exercises.put("Traps", trapsExercises);
         exercises.put("Shoulders", shoulderExercises);
         exercises.put("Chest", chestExercises);
+        exercises.put("Biceps", bicepsExercises);
+        exercises.put("Forearm", forearmExercises);
 
         TextView exercisesList = (TextView) findViewById(R.id.list_exercises);
 
@@ -85,3 +163,6 @@ public class ActivityWorkout extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
+
+

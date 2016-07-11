@@ -11,6 +11,8 @@
     <string name="button_shoulders">Shoulders</string>
     <string name="button_traps">Traps</string>
     <string name="button_chest">Chest</string>
+    <string name="button_biceps">Biceps</string>
+    <string name="button_forearm">Forearm</string>
     <string name="button_generate_workout">Generate</string>
     <string name="list_muscle_group"></string>
 
