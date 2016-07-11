@@ -50,7 +50,10 @@ public class ActivityWorkout extends ActionBarActivity {
 
         // Add exercises to the list of exercises TextView
         for (String muscleGroup : muscleGroups) {
-            exercisesList.append(exercises.get(muscleGroup).toString());
+            ArrayList<String> exerciseGroup = exercises.get(muscleGroup);
+            if (exerciseGroup != null){
+                exercisesList.append(exercises.get(muscleGroup).toString());
+            }
         }
 
         // DEBUG

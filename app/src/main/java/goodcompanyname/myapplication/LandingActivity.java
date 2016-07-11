@@ -29,7 +29,7 @@ public class LandingActivity extends ActionBarActivity {
 
         setButtonListener(button_neck, "Neck");
         setButtonListener(button_traps, "Traps");
-        setButtonListener(button_shoulders, "Shoulers");
+        setButtonListener(button_shoulders, "Shoulders");
         setButtonListener(button_chest, "Chest");
 
         Button button_login = (Button) findViewById(R.id.button_generate_workout);
@@ -77,7 +77,7 @@ public class LandingActivity extends ActionBarActivity {
     /** Called when the user clicks the Send button */
     public void addMuscleGroup(String muscleGroup) {
         // Add the muscle group to the muscleGroups array
-        if (!muscleGroups.contains(muscleGroup)) {
+        if (muscleGroups != null && !muscleGroups.contains(muscleGroup)) {
             muscleGroups.add(muscleGroup);
         }
 
