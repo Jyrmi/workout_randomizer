@@ -8,11 +8,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.Response;
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+
+
 import java.util.ArrayList;
 
-
-
 public class LandingActivity extends ActionBarActivity {
+
+    RequestQueue queue;
+    String url;
 
     // A list to display picked items
     private ArrayList<String> muscleGroups = new ArrayList<String>();
@@ -21,6 +31,25 @@ public class LandingActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
+
+        queue = Volley.newRequestQueue(this);
+        url ="http://www.google.com";
+        final TextView mTextView = (TextView) findViewById(R.id.volley_request);
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        mTextView.setText("Response is: "+ response.substring(0,500));
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mTextView.setText("That didn't work!");
+            }
+        });
+        queue.add(stringRequest);
 
         Button button_neck = (Button) findViewById(R.id.button_neck);
         Button button_traps = (Button) findViewById(R.id.button_traps);

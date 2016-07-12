@@ -7,6 +7,13 @@
     android:orientation="vertical"
     tools:context="goodcompanyname.myapplication.LandingActivity">
 
+
+    <TextView
+        android:id="@+id/volley_request"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/volley_string" />
+
     <Button
         android:id="@+id/button_neck"
         android:layout_width="wrap_content"
