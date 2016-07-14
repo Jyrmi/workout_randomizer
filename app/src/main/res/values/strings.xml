@@ -13,6 +13,8 @@
     <string name="button_chest">Chest</string>
     <string name="button_biceps">Biceps</string>
     <string name="button_forearm">Forearm</string>
+    <string name="button_lats">Lats</string>
+    <string name="button_triceps">Triceps</string>
     <string name="button_generate_workout">Generate</string>
     <string name="list_muscle_group"></string>
 

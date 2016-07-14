@@ -34,22 +34,21 @@ public class LandingActivity extends ActionBarActivity {
 
         queue = Volley.newRequestQueue(this);
         url ="http://www.google.com";
-        final TextView mTextView = (TextView) findViewById(R.id.volley_request);
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        mTextView.setText("Response is: "+ response.substring(0,500));
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                mTextView.setText("That didn't work!");
-            }
-        });
-        queue.add(stringRequest);
+//        final TextView mTextView = (TextView) findViewById(R.id.volley_request);
+//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        // Display the first 500 characters of the response string.
+//                        mTextView.setText("Response is: "+ response.substring(0,500));
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                mTextView.setText("That didn't work!");
+//            }
+//        });
+//        queue.add(stringRequest);
 
         Button button_neck = (Button) findViewById(R.id.button_neck);
         Button button_traps = (Button) findViewById(R.id.button_traps);
@@ -57,6 +56,8 @@ public class LandingActivity extends ActionBarActivity {
         Button button_chest = (Button) findViewById(R.id.button_chest);
         Button button_biceps = (Button) findViewById(R.id.button_biceps);
         Button button_forearm = (Button) findViewById(R.id.button_forearm);
+        Button button_lats = (Button) findViewById(R.id.button_lats);
+        Button button_triceps = (Button) findViewById(R.id.button_triceps);
 
         setButtonListener(button_neck, "Neck");
         setButtonListener(button_traps, "Traps");
@@ -64,6 +65,8 @@ public class LandingActivity extends ActionBarActivity {
         setButtonListener(button_chest, "Chest");
         setButtonListener(button_biceps, "Biceps");
         setButtonListener(button_forearm, "Forearm");
+        setButtonListener(button_lats, "Lats");
+        setButtonListener(button_triceps, "Triceps");
 
         Button button_login = (Button) findViewById(R.id.button_generate_workout);
         button_login.setOnClickListener(new View.OnClickListener() {

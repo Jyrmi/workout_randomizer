@@ -64,12 +64,22 @@ public class ActivityWorkout extends ActionBarActivity {
         forearmExercises.add("climb stuff 1");
         forearmExercises.add("climb moar stuff");
 
+        ArrayList<String> latsExercises = new ArrayList<String>();
+        latsExercises.add("lat ex 1");
+        latsExercises.add("lat ex 2");
+
+        ArrayList<String> tricepsExercises = new ArrayList<String>();
+        tricepsExercises.add("tri ex 1");
+        tricepsExercises.add("tri ex 2");
+
         exercises.put("Neck", neckExercises);
         exercises.put("Traps", trapsExercises);
         exercises.put("Shoulders", shoulderExercises);
         exercises.put("Chest", chestExercises);
         exercises.put("Biceps", bicepsExercises);
         exercises.put("Forearm", forearmExercises);
+        exercises.put("Lats", latsExercises);
+        exercises.put("Triceps", tricepsExercises);
 
         // Add exercises to the list of exercises TextView
         for (String muscleGroup : muscleGroups) {

@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -8,59 +8,79 @@
     tools:context="goodcompanyname.myapplication.LandingActivity">
 
 
-    <TextView
-        android:id="@+id/volley_request"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/volley_string" />
+        android:orientation="vertical"
+        android:paddingTop="20dip">
 
-    <Button
-        android:id="@+id/button_neck"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_neck" />
+        <!--<TextView-->
+            <!--android:id="@+id/volley_request"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/volley_string" />-->
 
-    <Button
-        android:id="@+id/button_traps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_traps" />
+        <Button
+            android:id="@+id/button_neck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_neck" />
 
-    <Button
-        android:id="@+id/button_shoulders"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_shoulders" />
+        <Button
+            android:id="@+id/button_traps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_traps" />
 
-    <Button
-        android:id="@+id/button_chest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_chest" />
+        <Button
+            android:id="@+id/button_shoulders"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_shoulders" />
 
-    <Button
-        android:id="@+id/button_biceps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_biceps" />
+        <Button
+            android:id="@+id/button_chest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_chest" />
 
-    <Button
-        android:id="@+id/button_forearm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_forearm" />
+        <Button
+            android:id="@+id/button_biceps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_biceps" />
 
-    <Button
-        android:id="@+id/button_generate_workout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_generate_workout" />
+        <Button
+            android:id="@+id/button_forearm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_forearm" />
+
+        <Button
+            android:id="@+id/button_lats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_lats" />
+
+        <Button
+            android:id="@+id/button_triceps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_triceps" />
+
+        <Button
+            android:id="@+id/button_generate_workout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_generate_workout" />
 
 
-    <TextView
-        android:id="@+id/list_muscle_group"
-        android:text="@string/list_muscle_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/list_muscle_group"
+            android:text="@string/list_muscle_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-</LinearLayout>
+    </LinearLayout>
+
+</ScrollView>
