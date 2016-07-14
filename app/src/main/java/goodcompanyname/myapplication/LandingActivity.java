@@ -58,6 +58,7 @@ public class LandingActivity extends ActionBarActivity {
         Button button_forearm = (Button) findViewById(R.id.button_forearm);
         Button button_lats = (Button) findViewById(R.id.button_lats);
         Button button_triceps = (Button) findViewById(R.id.button_triceps);
+        Button button_middleback = (Button) findViewById(R.id.button_middleback);
 
         setButtonListener(button_neck, "Neck");
         setButtonListener(button_traps, "Traps");
@@ -67,6 +68,7 @@ public class LandingActivity extends ActionBarActivity {
         setButtonListener(button_forearm, "Forearm");
         setButtonListener(button_lats, "Lats");
         setButtonListener(button_triceps, "Triceps");
+        setButtonListener(button_middleback, "Middle Back");
 
         Button button_login = (Button) findViewById(R.id.button_generate_workout);
         button_login.setOnClickListener(new View.OnClickListener() {
