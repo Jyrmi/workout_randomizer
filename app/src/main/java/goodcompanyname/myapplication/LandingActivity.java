@@ -60,6 +60,7 @@ public class LandingActivity extends ActionBarActivity {
         Button button_triceps = (Button) findViewById(R.id.button_triceps);
         Button button_middleback = (Button) findViewById(R.id.button_middleback);
         Button button_lowerback = (Button) findViewById(R.id.button_lowerback);
+        Button button_glutes = (Button) findViewById(R.id.button_glutes);
 
         setButtonListener(button_neck, "Neck");
         setButtonListener(button_traps, "Traps");
@@ -71,6 +72,7 @@ public class LandingActivity extends ActionBarActivity {
         setButtonListener(button_triceps, "Triceps");
         setButtonListener(button_middleback, "Middle Back");
         setButtonListener(button_lowerback, "Lower Back");
+        setButtonListener(button_glutes, "Glutes");
 
 
         Button button_login = (Button) findViewById(R.id.button_generate_workout);

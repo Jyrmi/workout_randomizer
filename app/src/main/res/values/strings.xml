@@ -17,6 +17,7 @@
     <string name="button_triceps">Triceps</string>
     <string name="button_middleback">Middle Back</string>
     <string name="button_lowerback">Lower Back</string>
+    <string name="button_glutes">Glutes</string>
 
     <string name="button_generate_workout">Generate</string>
     <string name="list_muscle_group"></string>

@@ -81,6 +81,12 @@
             android:text="@string/button_lowerback" />
 
         <Button
+            android:id="@+id/button_glutes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_glutes" />
+
+        <Button
             android:id="@+id/button_generate_workout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
