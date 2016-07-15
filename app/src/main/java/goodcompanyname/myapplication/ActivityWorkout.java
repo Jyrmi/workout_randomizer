@@ -76,6 +76,10 @@ public class ActivityWorkout extends ActionBarActivity {
         middlebackExercises.add("mid back 1");
         middlebackExercises.add("mid back 2");
 
+        ArrayList<String> lowerbackExercises = new ArrayList<String>();
+        lowerbackExercises.add("low back 1");
+        lowerbackExercises.add("low back 2");
+
         exercises.put("Neck", neckExercises);
         exercises.put("Traps", trapsExercises);
         exercises.put("Shoulders", shoulderExercises);
@@ -85,6 +89,7 @@ public class ActivityWorkout extends ActionBarActivity {
         exercises.put("Lats", latsExercises);
         exercises.put("Triceps", tricepsExercises);
         exercises.put("Middle Back", middlebackExercises);
+        exercises.put("Lower Back", lowerbackExercises);
 
         // Add exercises to the list of exercises TextView
         for (String muscleGroup : muscleGroups) {
