@@ -1,73 +1,57 @@
 package goodcompanyname.myapplication;
 
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Point;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
-
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.Response;
-import com.android.volley.Request;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class LandingActivity extends AppCompatActivity {
 
     ImageView imageAbs;
+    ImageView imageBase;
     ImageView imageBiceps;
     ImageView imageChest;
     ImageView imageForearms;
     ImageView imageFrontCalves;
-    ImageView imageFrontFeet;
     ImageView imageFrontHamstrings;
-    ImageView imageFrontHands;
-    ImageView imageFrontHead;
-    ImageView imageFrontKnees;
     ImageView imageFrontShoulders;
     ImageView imageFrontTraps;
     ImageView imageNeck;
     ImageView imageQuads;
 
-    Button buttonAbs;
-//    Button buttonNeck;
-    Button buttonFrontHamstrings;
-//    Button buttonTraps;
-//    Button buttonShoulders;
+    Button buttonAbsLower;
+    Button buttonAbsUpper;
+    Button buttonBicepsLeft;
+    Button buttonBicepsRight;
     Button buttonChest;
-//    Button buttonBiceps;
-//    Button buttonForearms;
-//    Button buttonLats;
-//    Button buttonTriceps;
-//    Button buttonMiddleBack;
-//    Button buttonLowerBack;
-//    Button buttonGlutes;
+    Button buttonForearmsLeft;
+    Button buttonForearmsRight;
+    Button buttonFrontCalves;
+    Button buttonFrontHamstrings;
+    Button buttonFrontShouldersLeft;
+    Button buttonFrontShouldersRight;
+    Button buttonFrontTrapsLeft;
+    Button buttonFrontTrapsRight;
+    Button buttonNeck;
+    Button buttonQuadsLeft;
+    Button buttonQuadsMiddle;
+    Button buttonQuadsRight;
 
+    ArrayList<MuscleGroup> selectedMuscleGroups;
     RequestQueue queue;
     String url;
-    int height;
-    int inSampleSize;
-    double resizeCoefficient;
-    int[] coordinates;
 
     // A list to display picked items
-    private ArrayList<String> muscleGroups = new ArrayList<String>();
+    private HashSet<MuscleGroup> muscleGroups;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,121 +59,70 @@ public class LandingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_landing);
 
         imageAbs = (ImageView) findViewById(R.id.image_abs);
-        imageFrontHamstrings = (ImageView) findViewById(R.id.image_front_hamstrings);
+        imageBase = (ImageView) findViewById(R.id.image_base);
+        imageBiceps = (ImageView) findViewById(R.id.image_biceps);
         imageChest = (ImageView) findViewById(R.id.image_chest);
+        imageForearms = (ImageView) findViewById(R.id.image_forearms);
+        imageFrontCalves = (ImageView) findViewById(R.id.image_front_calves);
+        imageFrontHamstrings = (ImageView) findViewById(R.id.image_front_hamstrings);
+        imageFrontShoulders = (ImageView) findViewById(R.id.image_front_shoulders);
+        imageFrontTraps = (ImageView) findViewById(R.id.image_front_traps);
+        imageNeck = (ImageView) findViewById(R.id.image_neck);
+        imageQuads = (ImageView) findViewById(R.id.image_quads);
 
-        buttonAbs = (Button) findViewById(R.id.button_abs);
-        buttonFrontHamstrings = (Button) findViewById(R.id.button_front_hamstrings);
+        buttonAbsLower = (Button) findViewById(R.id.button_abs_lower);
+        buttonAbsUpper = (Button) findViewById(R.id.button_abs_upper);
+        buttonBicepsLeft = (Button) findViewById(R.id.button_biceps_left);
+        buttonBicepsRight = (Button) findViewById(R.id.button_biceps_right);
         buttonChest = (Button) findViewById(R.id.button_chest);
+        buttonForearmsLeft = (Button) findViewById(R.id.button_forearms_left);
+        buttonForearmsRight = (Button) findViewById(R.id.button_forearms_right);
+        buttonFrontCalves = (Button) findViewById(R.id.button_front_calves);
+        buttonFrontHamstrings = (Button) findViewById(R.id.button_front_hamstrings);
+        buttonFrontShouldersLeft = (Button) findViewById(R.id.button_front_shoulders_left);
+        buttonFrontShouldersRight = (Button) findViewById(R.id.button_front_shoulders_right);
+        buttonFrontTrapsLeft = (Button) findViewById(R.id.button_front_traps_left);
+        buttonFrontTrapsRight = (Button) findViewById(R.id.button_front_traps_right);
+        buttonNeck = (Button) findViewById(R.id.button_neck);
+        buttonQuadsLeft = (Button) findViewById(R.id.button_quads_left);
+        buttonQuadsMiddle = (Button) findViewById(R.id.button_quads_middle);
+        buttonQuadsRight = (Button) findViewById(R.id.button_quads_right);
 
-        buttonAbs.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (imageAbs.getVisibility() == View.INVISIBLE) {
-                    imageAbs.setVisibility(View.VISIBLE);
-                } else {
-                    imageAbs.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
-
-        buttonFrontHamstrings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (imageFrontHamstrings.getVisibility() == View.INVISIBLE) {
-                    imageFrontHamstrings.setVisibility(View.VISIBLE);
-                } else {
-                    imageFrontHamstrings.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
-
-        buttonChest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (imageChest.getVisibility() == View.INVISIBLE) {
-                    imageChest.setVisibility(View.VISIBLE);
-                } else {
-                    imageChest.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
-
-        // Getting height of the display
-//        Display display = getWindowManager().getDefaultDisplay();
-//        Point size = new Point();
-//        display.getSize(size);
-//        height = size.y;
-//        resizeCoefficient = 1024/height;
-//        inSampleSize = (int) Math.ceil(resizeCoefficient);
-
-//        imageAbs = (ImageView) findViewById(R.id.image_abs);
-//        imageBiceps = (ImageView) findViewById(R.id.image_biceps);
-//        imageChest = (ImageView) findViewById(R.id.image_chest);
-//        imageForearms = (ImageView) findViewById(R.id.image_forearms);
-//        imageFrontCalves = (ImageView) findViewById(R.id.image_front_calves);
-//        imageFrontFeet = (ImageView) findViewById(R.id.image_front_feet);
-//        imageFrontHamstrings = (ImageView) findViewById(R.id.image_front_hamstrings);
-//        imageFrontHands = (ImageView) findViewById(R.id.image_front_hands);
-//        imageFrontHead = (ImageView) findViewById(R.id.image_front_head);
-//        imageFrontKnees = (ImageView) findViewById(R.id.image_front_knees);
-//        imageFrontShoulders = (ImageView) findViewById(R.id.image_front_shoulders);
-//        imageFrontTraps = (ImageView) findViewById(R.id.image_front_traps);
-//        imageNeck = (ImageView) findViewById(R.id.image_neck);
-//        imageQuads = (ImageView) findViewById(R.id.image_quads);
-
-//        imageAbs.setImageBitmap(
-//                decodeSampledBitmapFromResource(getResources(), R.id.image_abs));
-//        imageBiceps.setImageBitmap(
-//                decodeSampledBitmapFromResource(getResources(), R.id.image_biceps));
-//        imageChest.setImageBitmap(
-//                decodeSampledBitmapFromResource(getResources(), R.id.image_chest));
-//        imageForearms.setImageBitmap(
-//                decodeSampledBitmapFromResource(getResources(), R.id.image_forearms));
-//        imageFrontCalves.setImageBitmap(
-//                decodeSampledBitmapFromResource(getResources(), R.id.image_front_calves));
-//        imageFrontFeet.setImageBitmap(
-//                decodeSampledBitmapFromResource(getResources(), R.id.image_front_feet));
-//        imageFrontHamstrings.setImageBitmap(
-//                decodeSampledBitmapFromResource(getResources(), R.id.image_front_hamstrings));
-//        imageFrontHands.setImageBitmap(
-//                decodeSampledBitmapFromResource(getResources(), R.id.image_front_hands));
-//        imageFrontHead.setImageBitmap(
-//                decodeSampledBitmapFromResource(getResources(), R.id.image_front_head));
-//        imageFrontKnees.setImageBitmap(
-//                decodeSampledBitmapFromResource(getResources(), R.id.image_front_knees));
-//        imageFrontShoulders.setImageBitmap(
-//                decodeSampledBitmapFromResource(getResources(), R.id.image_front_shoulders));
-//        imageFrontTraps.setImageBitmap(
-//                decodeSampledBitmapFromResource(getResources(), R.id.image_front_traps));
-//        imageNeck.setImageBitmap(
-//                decodeSampledBitmapFromResource(getResources(), R.id.image_neck));
-//        imageQuads.setImageBitmap(
-//                decodeSampledBitmapFromResource(getResources(), R.id.image_quads));
-
-//        buttonNeck = (Button) findViewById(R.id.button_neck);
-//        buttonTraps = (Button) findViewById(R.id.button_traps);
-//        buttonShoulders = (Button) findViewById(R.id.button_shoulders);
-//        buttonChest = (Button) findViewById(R.id.button_chest);
-//        buttonBiceps = (Button) findViewById(R.id.button_biceps);
-//        buttonForearms = (Button) findViewById(R.id.button_forearm);
-//        buttonLats = (Button) findViewById(R.id.button_lats);
-//        buttonTriceps = (Button) findViewById(R.id.button_triceps);
-//        buttonMiddleBack = (Button) findViewById(R.id.button_middleback);
-//        buttonLowerBack = (Button) findViewById(R.id.button_lowerback);
-//        buttonGlutes = (Button) findViewById(R.id.button_glutes);
-//
-//        setButtonListener(buttonNeck, "Neck");
-//        setButtonListener(buttonTraps, "Traps");
-//        setButtonListener(buttonShoulders, "Shoulders");
-//        setButtonListener(buttonChest, "Chest");
-//        setButtonListener(buttonBiceps, "Biceps");
-//        setButtonListener(buttonForearms, "Forearm");
-//        setButtonListener(buttonTriceps, "Lats");
-//        setButtonListener(buttonTriceps, "Triceps");
-//        setButtonListener(buttonMiddleBack, "Middle Back");
-//        setButtonListener(buttonLowerBack, "Lower Back");
-//        setButtonListener(buttonGlutes, "Glutes");
+        selectedMuscleGroups = new ArrayList<MuscleGroup>();
+        setButtonListener(buttonAbsLower, MuscleGroup.ABS, imageAbs,
+                R.drawable.abs, R.drawable.abs_colorized);
+        setButtonListener(buttonAbsUpper, MuscleGroup.ABS, imageAbs,
+                R.drawable.abs, R.drawable.abs_colorized);
+        setButtonListener(buttonBicepsLeft, MuscleGroup.BICEPS, imageBiceps,
+                R.drawable.biceps, R.drawable.biceps_colorized);
+        setButtonListener(buttonBicepsRight, MuscleGroup.BICEPS, imageBiceps,
+                R.drawable.biceps, R.drawable.biceps_colorized);
+        setButtonListener(buttonChest, MuscleGroup.CHEST, imageChest,
+                R.drawable.chest, R.drawable.chest_colorized);
+        setButtonListener(buttonForearmsLeft, MuscleGroup.FOREARMS, imageForearms,
+                R.drawable.forearms, R.drawable.forearms_colorized);
+        setButtonListener(buttonForearmsRight, MuscleGroup.FOREARMS, imageForearms,
+                R.drawable.forearms, R.drawable.forearms_colorized);
+        setButtonListener(buttonFrontCalves, MuscleGroup.CALVES, imageFrontCalves,
+                R.drawable.front_calves, R.drawable.front_calves_colorized);
+        setButtonListener(buttonFrontHamstrings, MuscleGroup.HAMSTRINGS, imageFrontHamstrings,
+                R.drawable.front_hamstrings, R.drawable.front_hamstrings_colorized);
+        setButtonListener(buttonFrontShouldersLeft, MuscleGroup.SHOULDERS, imageFrontShoulders,
+                R.drawable.front_shoulders, R.drawable.front_shoulders_colorized);
+        setButtonListener(buttonFrontShouldersRight, MuscleGroup.SHOULDERS, imageFrontShoulders,
+                R.drawable.front_shoulders, R.drawable.front_shoulders_colorized);
+        setButtonListener(buttonFrontTrapsLeft, MuscleGroup.TRAPS, imageFrontTraps,
+                R.drawable.front_traps, R.drawable.front_traps_colorized);
+        setButtonListener(buttonFrontTrapsRight, MuscleGroup.TRAPS, imageFrontTraps,
+                R.drawable.front_traps, R.drawable.front_traps_colorized);
+        setButtonListener(buttonNeck, MuscleGroup.NECK, imageNeck,
+                R.drawable.neck, R.drawable.neck_colorized);
+        setButtonListener(buttonQuadsLeft, MuscleGroup.QUADS, imageQuads,
+                R.drawable.quads, R.drawable.quads_colorized);
+        setButtonListener(buttonQuadsMiddle, MuscleGroup.QUADS, imageQuads,
+                R.drawable.quads, R.drawable.quads_colorized);
+        setButtonListener(buttonQuadsRight, MuscleGroup.QUADS, imageQuads,
+                R.drawable.quads, R.drawable.quads_colorized);
 
 //        Button buttonGenerate = (Button) findViewById(R.id.button_generate_workout);
 //        buttonGenerate.setOnClickListener(new View.OnClickListener() {
@@ -219,6 +152,31 @@ public class LandingActivity extends AppCompatActivity {
 //        queue.add(stringRequest);
     }
 
+    /**
+     * Sets listeners for this activity's buttons.
+     * @param button the button.
+     * @param imageView the ImageView associated with the button.
+     * @param imageViewAssetoffResId the resource id (ex. R.drawable.abs resolves to an int) of the
+     *                               image resource in it's 'off' state.
+     * @param imageViewAssetOnResId opposite of above.
+     */
+    private void setButtonListener(Button button, final MuscleGroup muscleGroup,
+                                   final ImageView imageView, final int imageViewAssetoffResId,
+                                   final int imageViewAssetOnResId) {
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedMuscleGroups.contains(muscleGroup)) {
+                    selectedMuscleGroups.remove(muscleGroup);
+                    imageView.setImageResource(imageViewAssetoffResId);
+                } else {
+                    selectedMuscleGroups.add(muscleGroup);
+                    imageView.setImageResource(imageViewAssetOnResId);
+                }
+            }
+        });
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -240,17 +198,7 @@ public class LandingActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-//
-//    /** Called when the user clicks the Send button */
-//    public void setButtonListener(Button button, final String bodyPart) {
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                addMuscleGroup(bodyPart);
-//            }
-//        });
-//    }
-//
+
 //    /** Called when the user clicks the Send button */
 //    public void addMuscleGroup(String muscleGroup) {
 //        // Add the muscle group to the muscleGroups array
@@ -273,59 +221,4 @@ public class LandingActivity extends AppCompatActivity {
         intent.putExtra("EXTRA_MUSCLE_GROUPS", muscleGroups);
         startActivity(intent);
     }
-
-    public static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= reqHeight
-                    && (halfWidth / inSampleSize) >= reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
-//    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
-//                                                         int reqWidth, int reqHeight) {
-//
-//        // First decode with inJustDecodeBounds=true to check dimensions
-//        final BitmapFactory.Options options = new BitmapFactory.Options();
-//        options.inJustDecodeBounds = true;
-//        BitmapFactory.decodeResource(res, resId, options);
-//
-//        // Calculate inSampleSize
-//        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-//
-//        // Decode bitmap with inSampleSize set
-//        options.inJustDecodeBounds = false;
-//        return BitmapFactory.decodeResource(res, resId, options);
-//    }
-
-    public Bitmap decodeSampledBitmapFromResource(Resources res, int resId) {
-
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(res, resId, options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = inSampleSize;
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeResource(res, resId, options);
-    }
-
 }

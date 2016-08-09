@@ -10,7 +10,12 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">#00FFFFFF</item>
         <item name="android:gravity">center</item>
-        <item name="android:visibility">invisible</item>
+    </style>
+
+    <style name="MuscleGroupsCheckBox">
+        <!--<item name="android:button">@android:color/transparent</item>-->
+        <!--<item name="android:visibility">invisible</item>-->
+        <item name="android:background">#00FFFFFF</item>
     </style>
 
 </resources>
