@@ -21,7 +21,7 @@
 
     <string name="button_generate_workout">Generate</string>
     <string name="list_muscle_group"></string>
-
-    <string name="list_exercises"></string>
     <string name="volley_string"></string>
+
+    <string name="button_done">I\'m done</string>
 </resources>

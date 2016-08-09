@@ -1,4 +1,4 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -7,98 +7,215 @@
     android:orientation="vertical"
     tools:context="goodcompanyname.myapplication.LandingActivity">
 
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="vertical" >-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="20dip">
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/activity_vertical_margin">-->
 
-        <!--<TextView-->
-            <!--android:id="@+id/volley_request"-->
-            <!--android:layout_width="wrap_content"-->
+    <!--<ImageView-->
+        <!--android:id="@+id/image_muscle_groups_grayscale"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:src="@drawable/muscle_groups_grayscale"-->
+        <!--android:background="#00FFFFFF" />-->
+
+    <ImageView android:id="@+id/image_base"
+        style="@style/MuscleGroupsImage"
+        android:src="@drawable/front_full"
+        android:visibility="visible">
+    </ImageView>
+    <ImageView android:id="@+id/image_abs"
+        style="@style/MuscleGroupsImage"
+        android:src="@drawable/front_abs">
+    </ImageView>
+    <ImageView android:id="@+id/image_front_hamstrings"
+        style="@style/MuscleGroupsImage"
+        android:src="@drawable/front_hamstrings">
+    </ImageView>
+    <ImageView android:id="@+id/image_chest"
+        style="@style/MuscleGroupsImage"
+        android:src="@drawable/front_chest">
+    </ImageView>
+
+    <!--<ImageView android:id="@+id/image_abs"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/abs" />-->
+    <!--<ImageView android:id="@+id/image_biceps"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/biceps" />-->
+    <!--<ImageView android:id="@+id/image_chest"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/chest" />-->
+    <!--<ImageView android:id="@+id/image_forearms"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/forearms" />-->
+    <!--<ImageView android:id="@+id/image_front_calves"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/front_calves" />-->
+    <!--<ImageView android:id="@+id/image_front_feet"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/front_feet" />-->
+    <!--<ImageView android:id="@+id/image_front_hamstrings"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/front_hamstrings" />-->
+    <!--<ImageView android:id="@+id/image_front_hands"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/front_hands" />-->
+    <!--<ImageView android:id="@+id/image_front_head"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/front_head" />-->
+    <!--<ImageView android:id="@+id/image_front_knees"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/front_knees" />-->
+    <!--<ImageView android:id="@+id/image_front_shoulders"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/front_shoulders" />-->
+    <!--<ImageView android:id="@+id/image_front_traps"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/front_traps" />-->
+    <!--<ImageView android:id="@+id/image_neck"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/neck" />-->
+    <!--<ImageView android:id="@+id/image_quads"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/quads" />-->
+
+    <Button android:id="@+id/button_abs"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:gravity="center"
+        android:layout_marginTop="140dp"
+        android:background="#00FFFFFF"
+        android:layout_alignTop="@+id/image_base"
+        android:layout_centerHorizontal="true">
+    </Button>
+
+    <Button android:id="@+id/button_front_hamstrings"
+        android:layout_width="30dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:background="#00FFFFFF"
+        android:layout_below="@+id/button_abs"
+        android:layout_centerHorizontal="true">
+    </Button>
+
+    <Button android:id="@+id/button_chest"
+        android:layout_width="65dp"
+        android:layout_height="35dp"
+        android:gravity="center"
+        android:background="#00FFFFFF"
+        android:layout_marginBottom="81dp"
+        android:layout_above="@+id/button_front_hamstrings"
+        android:layout_centerHorizontal="true">
+    </Button>
+
+    <!--<ImageView-->
+        <!--android:id="@+id/image_calves_selected"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:src="@drawable/front_calves_selected"-->
+        <!--android:background="#00FFFFFF" />-->
+
+        <!--</RelativeLayout>-->
+
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/volley_string" />-->
+            <!--android:orientation="vertical"-->
+            <!--android:paddingTop="20dip">-->
 
-        <Button
-            android:id="@+id/button_neck"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_neck" />
+            <!--<Button-->
+                <!--android:id="@+id/button_neck"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/button_neck" />-->
 
-        <Button
-            android:id="@+id/button_traps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_traps" />
+            <!--<Button-->
+                <!--android:id="@+id/button_traps"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/button_traps" />-->
 
-        <Button
-            android:id="@+id/button_shoulders"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_shoulders" />
+            <!--<Button-->
+                <!--android:id="@+id/button_shoulders"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/button_shoulders" />-->
 
-        <Button
-            android:id="@+id/button_chest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_chest" />
+            <!--<Button-->
+                <!--android:id="@+id/button_chest"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/button_chest" />-->
 
-        <Button
-            android:id="@+id/button_biceps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_biceps" />
+            <!--<Button-->
+                <!--android:id="@+id/button_biceps"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/button_biceps" />-->
 
-        <Button
-            android:id="@+id/button_forearm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_forearm" />
+            <!--<Button-->
+                <!--android:id="@+id/button_forearm"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/button_forearm" />-->
 
-        <Button
-            android:id="@+id/button_lats"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_lats" />
+            <!--<Button-->
+                <!--android:id="@+id/button_lats"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/button_lats" />-->
 
-        <Button
-            android:id="@+id/button_triceps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_triceps" />
+            <!--<Button-->
+                <!--android:id="@+id/button_triceps"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/button_triceps" />-->
 
-        <Button
-            android:id="@+id/button_middleback"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_middleback" />
+            <!--<Button-->
+                <!--android:id="@+id/button_middleback"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/button_middleback" />-->
 
-        <Button
-            android:id="@+id/button_lowerback"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_lowerback" />
+            <!--<Button-->
+                <!--android:id="@+id/button_lowerback"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/button_lowerback" />-->
 
-        <Button
-            android:id="@+id/button_glutes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_glutes" />
+            <!--<Button-->
+                <!--android:id="@+id/button_glutes"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/button_glutes" />-->
 
-        <Button
-            android:id="@+id/button_generate_workout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_generate_workout" />
+            <!--<Button-->
+                <!--android:id="@+id/button_generate_workout"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/button_generate_workout" />-->
 
 
-        <TextView
-            android:id="@+id/list_muscle_group"
-            android:text="@string/list_muscle_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <!--<TextView-->
+                <!--android:id="@+id/list_muscle_group"-->
+                <!--android:text="@string/list_muscle_group"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content" />-->
 
-    </LinearLayout>
+            <!--<TextView-->
+                <!--android:id="@+id/volley_request"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/volley_string" />-->
 
-</ScrollView>
+        <!--</LinearLayout>-->
+
+    <!--</LinearLayout>-->
+
+</RelativeLayout>
