@@ -10,11 +10,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import com.android.volley.RequestQueue;
 
-
 import java.util.ArrayList;
-import java.util.HashSet;
 
-public class LandingActivity extends AppCompatActivity {
+public class SelectionActivity extends AppCompatActivity {
 
     ImageView imageAbs;
     ImageView imageBase;
@@ -47,16 +45,19 @@ public class LandingActivity extends AppCompatActivity {
     Button buttonQuadsRight;
 
     ArrayList<MuscleGroup> selectedMuscleGroups;
-    RequestQueue queue;
-    String url;
-
-    // A list to display picked items
-    private HashSet<MuscleGroup> muscleGroups;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_landing);
+        setContentView(R.layout.activity_selection);
+
+        Button buttonGenerate = (Button) findViewById(R.id.button_generate_workout);
+        buttonGenerate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigateToWorkout();
+            }
+        });
 
         imageAbs = (ImageView) findViewById(R.id.image_abs);
         imageBase = (ImageView) findViewById(R.id.image_base);
@@ -123,33 +124,6 @@ public class LandingActivity extends AppCompatActivity {
                 R.drawable.quads, R.drawable.quads_colorized);
         setButtonListener(buttonQuadsRight, MuscleGroup.QUADS, imageQuads,
                 R.drawable.quads, R.drawable.quads_colorized);
-
-//        Button buttonGenerate = (Button) findViewById(R.id.button_generate_workout);
-//        buttonGenerate.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                navigateToWorkout();
-//            }
-//        });
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-//        queue = Volley.newRequestQueue(this);
-//        url ="http://www.google.com";
-//        final TextView mTextView = (TextView) findViewById(R.id.volley_request);
-//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        // Display the first 500 characters of the response string.
-//                        mTextView.setText("Response is: "+ response.substring(0,500));
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                mTextView.setText("That didn't work!");
-//            }
-//        });
-//        queue.add(stringRequest);
     }
 
     /**
@@ -199,26 +173,12 @@ public class LandingActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    /** Called when the user clicks the Send button */
-//    public void addMuscleGroup(String muscleGroup) {
-//        // Add the muscle group to the muscleGroups array
-//        if (muscleGroups != null && !muscleGroups.contains(muscleGroup)) {
-//            muscleGroups.add(muscleGroup);
-//        }
-//
-//        updateTextView();
-//    }
-//
-//    public void updateTextView() {
-//        TextView muscleGroupList = (TextView) findViewById(R.id.list_muscle_group);
-//        muscleGroupList.setText(muscleGroups.toString());
-//    }
-
     /** Called when the user clicks the Send button */
     public void navigateToWorkout() {
         // Do something in response to button
         Intent intent = new Intent(this, WorkoutActivity.class);
-        intent.putExtra("EXTRA_MUSCLE_GROUPS", muscleGroups);
+        intent.putExtra("EXTRA_MUSCLE_GROUPS", selectedMuscleGroups);
         startActivity(intent);
+        finish();
     }
 }

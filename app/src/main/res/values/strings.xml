@@ -3,8 +3,9 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_landing">LandingActivity</string>
-    <string name="title_activity_activity_workout">ActivityWorkout</string>
+    <string name="title_activity_landing">Landing Activity</string>
+    <string name="title_activity_activity_workout">Workout Activity</string>
+    <string name="title_activity_activity_results">Results Activity</string>
     <string name="button_send">LOGIN</string>
 
     <string name="button_neck">Neck</string>

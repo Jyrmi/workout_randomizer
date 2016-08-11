@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LandingActivity"
+            android:name=".SelectionActivity"
             android:label="@string/title_activity_landing" >
         </activity>
         <activity
@@ -27,6 +27,10 @@
             android:label="@string/title_activity_activity_workout" >
         </activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <activity
+            android:name=".ResultsActivity"
+            android:label="@string/title_activity_activity_results" >
+        </activity>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

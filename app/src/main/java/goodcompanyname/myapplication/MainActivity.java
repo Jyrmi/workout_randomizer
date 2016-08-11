@@ -23,7 +23,7 @@ public class MainActivity extends ActionBarActivity {
                 navigate_to_landing(view);
             }
         });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     @Override
@@ -51,7 +51,8 @@ public class MainActivity extends ActionBarActivity {
     /** Called when the user clicks the Send button */
     public void navigate_to_landing(View view) {
         // Do something in response to button
-        Intent intent = new Intent(this, LandingActivity.class);
+        Intent intent = new Intent(this, SelectionActivity.class);
         startActivity(intent);
+        finish();
     }
 }

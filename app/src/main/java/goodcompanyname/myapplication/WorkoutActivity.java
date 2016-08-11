@@ -13,29 +13,18 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-
 
 public class WorkoutActivity extends AppCompatActivity {
 
     private static final String TAG = "WorkoutActivity";
 
     private Button buttonDone;
-
     private ArrayList<String> exercisesList;
     private ArrayAdapter<String> exercisesAdapter;
-
-    // A list to display picked items
-    private ArrayList<String> muscleGroups = new ArrayList<String>();
-    private HashMap<String, ArrayList<String>> exercises = new HashMap<String, ArrayList<String>>();
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+    private ArrayList<MuscleGroup> muscleGroups;
+    private HashMap<MuscleGroup, ArrayList<String>> exercises;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,83 +34,110 @@ public class WorkoutActivity extends AppCompatActivity {
         exercisesList = new ArrayList<String>();
 
         Intent intent = getIntent();
-        muscleGroups = intent.getStringArrayListExtra("EXTRA_MUSCLE_GROUPS");
+        Bundle bundle = intent.getExtras();
+        muscleGroups = (ArrayList<MuscleGroup>) bundle.get("EXTRA_MUSCLE_GROUPS");
 
-//        ArrayList<String> neckExercises = new ArrayList<String>();
-//        neckExercises.add("NECK A");
-//        neckExercises.add("NECK B");
-//
-//        ArrayList<String> trapsExercises = new ArrayList<String>();
-//        trapsExercises.add("TRAPS A");
-//        trapsExercises.add("LEVERAGE SHRUG");
-//
-//        ArrayList<String> shoulderExercises = new ArrayList<String>();
-//        shoulderExercises.add("CLEAN AND PRESS");
-//        shoulderExercises.add("SHOULDERS B");
-//
-//        ArrayList<String> chestExercises = new ArrayList<String>();
-//        chestExercises.add("PUSHUPS");
-//        chestExercises.add("CHEST B");
-//
-//        ArrayList<String> bicepsExercises = new ArrayList<String>();
-//        bicepsExercises.add("bicep curl 1");
-//        bicepsExercises.add("bicep curl 2");
-//
-//        ArrayList<String> forearmExercises = new ArrayList<String>();
-//        forearmExercises.add("climb stuff 1");
-//        forearmExercises.add("climb moar stuff");
-//
-//        ArrayList<String> latsExercises = new ArrayList<String>();
-//        latsExercises.add("lat ex 1");
-//        latsExercises.add("lat ex 2");
-//
-//        ArrayList<String> tricepsExercises = new ArrayList<String>();
-//        tricepsExercises.add("tri ex 1");
-//        tricepsExercises.add("tri ex 2");
-//
-//        ArrayList<String> middlebackExercises = new ArrayList<String>();
-//        middlebackExercises.add("mid back 1");
-//        middlebackExercises.add("mid back 2");
-//
-//        ArrayList<String> lowerbackExercises = new ArrayList<String>();
-//        lowerbackExercises.add("low back 1");
-//        lowerbackExercises.add("low back 2");
-//
-//        ArrayList<String> glutesExercises = new ArrayList<String>();
-//        glutesExercises.add("glutes 1");
-//        glutesExercises.add("glutes 2");
-//
-//        exercises.put("Neck", neckExercises);
-//        exercises.put("Traps", trapsExercises);
-//        exercises.put("Shoulders", shoulderExercises);
-//        exercises.put("Chest", chestExercises);
-//        exercises.put("Biceps", bicepsExercises);
-//        exercises.put("Forearm", forearmExercises);
-//        exercises.put("Lats", latsExercises);
-//        exercises.put("Triceps", tricepsExercises);
-//        exercises.put("Middle Back", middlebackExercises);
-//        exercises.put("Lower Back", lowerbackExercises);
-//        exercises.put("Glutes", glutesExercises);
-//
-//        // Add exercises to the list of exercises TextView
-//        for (String muscleGroup : muscleGroups) {
-//            ArrayList<String> exerciseGroup = exercises.get(muscleGroup);
-//            if (exerciseGroup != null) {
-//                for (String exercise : exerciseGroup) {
-//                    exercisesList.add(exercise);
-//                }
-//            }
-//        }
+        // DEBUG
+        Log.d(TAG, muscleGroups.toString());
 
-        exercisesAdapter = new ArrayAdapter<String>(this, R.layout.card_layout,
+        ArrayList<String> neckExercises = new ArrayList<>();
+        neckExercises.add("LYING FACE DOWN PLATE NECK RESISTANCE");
+        neckExercises.add("LYING FACE UP PLATE NECK RESISTANCE");
+
+        ArrayList<String> trapsExercises = new ArrayList<>();
+        trapsExercises.add("SMITH MACHINE SHRUG");
+        trapsExercises.add("LEVERAGE SHRUG");
+
+        ArrayList<String> shoulderExercises = new ArrayList<>();
+        shoulderExercises.add("CLEAN AND PRESS");
+        shoulderExercises.add("DUMBBELL REAR DELT ROW");
+
+        ArrayList<String> chestExercises = new ArrayList<>();
+        chestExercises.add("PUSHUPS");
+        chestExercises.add("BARBELL BENCH PRESS - MEDIUM GRIP");
+
+        ArrayList<String> bicepsExercises = new ArrayList<>();
+        bicepsExercises.add("BICEPS CURL TO SHOULDER PRESS");
+        bicepsExercises.add("INCLINE HAMMER CURLS");
+
+        ArrayList<String> forearmExercises = new ArrayList<>();
+        forearmExercises.add("RICKSHAW CARRY");
+        forearmExercises.add("FARMER\'S WALK");
+
+        ArrayList<String> absExercises = new ArrayList<>();
+        forearmExercises.add("LANDMINE 180\'S");
+        forearmExercises.add("ONE-ARM MEDICINE BALL SLAM");
+
+        ArrayList<String> quadsExercises = new ArrayList<>();
+        forearmExercises.add("CLEAN FROM BLOCKS");
+        forearmExercises.add("SINGLE-LEG PRESS");
+
+        ArrayList<String> calvesExercises = new ArrayList<>();
+        forearmExercises.add("SMITH MACHINE CALF RAISE");
+        forearmExercises.add("STANDING CALF RAISES");
+
+        ArrayList<String> tricepsExercises = new ArrayList<>();
+        tricepsExercises.add("DECLINE EZ BAR TRICEPS EXTENSION");
+        tricepsExercises.add("PARALLEL BAR DIP");
+
+        ArrayList<String> latsExercises = new ArrayList<>();
+        latsExercises.add("WIDE-GRIP PULL-UP");
+        latsExercises.add("WEIGHTED PULL UPS");
+
+        ArrayList<String> middlebackExercises = new ArrayList<>();
+        middlebackExercises.add("T-BAR ROW WITH HANDLE");
+        middlebackExercises.add("PENDLAY ROWN");
+
+        ArrayList<String> lowerbackExercises = new ArrayList<>();
+        lowerbackExercises.add("ATLAS STONES");
+        lowerbackExercises.add("DEFICIT DEADLIFT");
+
+        ArrayList<String> glutesExercises = new ArrayList<>();
+        glutesExercises.add("BARBELL GLUTE BRIDGE");
+        glutesExercises.add("BARBELL HIP THRUST");
+
+        ArrayList<String> hamstringsExercises = new ArrayList<>();
+        glutesExercises.add("CLEAN DEADLIFT");
+        glutesExercises.add("HANG SNATCH");
+
+        exercises = new HashMap<>();
+        exercises.put(MuscleGroup.NECK, neckExercises);
+        exercises.put(MuscleGroup.TRAPS, trapsExercises);
+        exercises.put(MuscleGroup.SHOULDERS, shoulderExercises);
+        exercises.put(MuscleGroup.CHEST, chestExercises);
+        exercises.put(MuscleGroup.BICEPS, bicepsExercises);
+        exercises.put(MuscleGroup.FOREARMS, forearmExercises);
+        exercises.put(MuscleGroup.ABS, absExercises);
+        exercises.put(MuscleGroup.QUADS, quadsExercises);
+        exercises.put(MuscleGroup.CALVES, calvesExercises);
+        exercises.put(MuscleGroup.LATS, latsExercises);
+        exercises.put(MuscleGroup.TRICEPS, tricepsExercises);
+        exercises.put(MuscleGroup.MIDDLE_BACK, middlebackExercises);
+        exercises.put(MuscleGroup.LOWER_BACK, lowerbackExercises);
+        exercises.put(MuscleGroup.GLUTES, glutesExercises);
+        exercises.put(MuscleGroup.HAMSTRINGS, hamstringsExercises);
+
+        for (MuscleGroup muscleGroup : muscleGroups) {
+            ArrayList<String> exerciseGroup = exercises.get(muscleGroup);
+            if (exerciseGroup != null) {
+                for (String exercise : exerciseGroup) {
+                    exercisesList.add(exercise);
+                }
+            }
+        }
+
+        exercisesAdapter = new ArrayAdapter<String>(this, R.layout.card_view,
                 R.id.list_exercises_item, exercisesList);
         final ListView listViewExercises = (ListView) findViewById(R.id.exercises_list_view);
         listViewExercises.setAdapter(exercisesAdapter);
 
         buttonDone = (Button) findViewById(R.id.button_done);
         buttonDone.setOnClickListener(new View.OnClickListener() {
+            ArrayList<String> checkedExercises = new ArrayList<String>();
+
             @Override
             public void onClick(View view) {
+                // DEBUG
                 int i = 0;
                 for (i = 0; i < listViewExercises.getChildCount(); i++) {
                     View cardView = listViewExercises.getChildAt(i);
@@ -131,9 +147,16 @@ public class WorkoutActivity extends AppCompatActivity {
                     if (checkBox.isChecked()) {
                         TextView textViewExercise =
                                 (TextView) cardView.findViewById(R.id.list_exercises_item);
+                        checkedExercises.add(textViewExercise.getText().toString());
                         Log.d(TAG, textViewExercise.getText().toString());
                     }
                 }
+
+                // Start the Results activity
+                Intent intent = new Intent(view.getContext(), ResultsActivity.class);
+                intent.putExtra("COMPLETED_EXERCISES", checkedExercises);
+                startActivity(intent);
+                finish();
             }
         });
     }
