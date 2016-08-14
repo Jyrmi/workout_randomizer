@@ -21,6 +21,7 @@ public class SelectionActivity extends AppCompatActivity {
     ImageView imageForearms;
     ImageView imageFrontCalves;
     ImageView imageFrontHamstrings;
+    ImageView imageFrontLats;
     ImageView imageFrontShoulders;
     ImageView imageFrontTraps;
     ImageView imageNeck;
@@ -28,21 +29,17 @@ public class SelectionActivity extends AppCompatActivity {
 
     Button buttonAbsLower;
     Button buttonAbsUpper;
-    Button buttonBicepsLeft;
-    Button buttonBicepsRight;
+    Button buttonBiceps;
     Button buttonChest;
-    Button buttonForearmsLeft;
-    Button buttonForearmsRight;
+    Button buttonForearms;
     Button buttonFrontCalves;
     Button buttonFrontHamstrings;
-    Button buttonFrontShouldersLeft;
-    Button buttonFrontShouldersRight;
-    Button buttonFrontTrapsLeft;
-    Button buttonFrontTrapsRight;
+    Button buttonFrontLatsLeft;
+    Button buttonFrontLatsRight;
+    Button buttonFrontShoulders;
+    Button buttonFrontTraps;
     Button buttonNeck;
-    Button buttonQuadsLeft;
-    Button buttonQuadsMiddle;
-    Button buttonQuadsRight;
+    Button buttonQuads;
 
     ArrayList<MuscleGroup> selectedMuscleGroups;
 
@@ -66,6 +63,7 @@ public class SelectionActivity extends AppCompatActivity {
         imageForearms = (ImageView) findViewById(R.id.image_forearms);
         imageFrontCalves = (ImageView) findViewById(R.id.image_front_calves);
         imageFrontHamstrings = (ImageView) findViewById(R.id.image_front_hamstrings);
+        imageFrontLats = (ImageView) findViewById(R.id.image_front_lats);
         imageFrontShoulders = (ImageView) findViewById(R.id.image_front_shoulders);
         imageFrontTraps = (ImageView) findViewById(R.id.image_front_traps);
         imageNeck = (ImageView) findViewById(R.id.image_neck);
@@ -73,56 +71,44 @@ public class SelectionActivity extends AppCompatActivity {
 
         buttonAbsLower = (Button) findViewById(R.id.button_abs_lower);
         buttonAbsUpper = (Button) findViewById(R.id.button_abs_upper);
-        buttonBicepsLeft = (Button) findViewById(R.id.button_biceps_left);
-        buttonBicepsRight = (Button) findViewById(R.id.button_biceps_right);
+        buttonBiceps = (Button) findViewById(R.id.button_biceps);
         buttonChest = (Button) findViewById(R.id.button_chest);
-        buttonForearmsLeft = (Button) findViewById(R.id.button_forearms_left);
-        buttonForearmsRight = (Button) findViewById(R.id.button_forearms_right);
+        buttonForearms = (Button) findViewById(R.id.button_forearms);
         buttonFrontCalves = (Button) findViewById(R.id.button_front_calves);
         buttonFrontHamstrings = (Button) findViewById(R.id.button_front_hamstrings);
-        buttonFrontShouldersLeft = (Button) findViewById(R.id.button_front_shoulders_left);
-        buttonFrontShouldersRight = (Button) findViewById(R.id.button_front_shoulders_right);
-        buttonFrontTrapsLeft = (Button) findViewById(R.id.button_front_traps_left);
-        buttonFrontTrapsRight = (Button) findViewById(R.id.button_front_traps_right);
+        buttonFrontLatsLeft = (Button) findViewById(R.id.button_front_lats_left);
+        buttonFrontLatsRight = (Button) findViewById(R.id.button_front_lats_right);
+        buttonFrontShoulders = (Button) findViewById(R.id.button_front_shoulders);
+        buttonFrontTraps = (Button) findViewById(R.id.button_front_traps);
         buttonNeck = (Button) findViewById(R.id.button_neck);
-        buttonQuadsLeft = (Button) findViewById(R.id.button_quads_left);
-        buttonQuadsMiddle = (Button) findViewById(R.id.button_quads_middle);
-        buttonQuadsRight = (Button) findViewById(R.id.button_quads_right);
+        buttonQuads = (Button) findViewById(R.id.button_quads);
 
         selectedMuscleGroups = new ArrayList<MuscleGroup>();
         setButtonListener(buttonAbsLower, MuscleGroup.ABS, imageAbs,
                 R.drawable.abs, R.drawable.abs_colorized);
         setButtonListener(buttonAbsUpper, MuscleGroup.ABS, imageAbs,
                 R.drawable.abs, R.drawable.abs_colorized);
-        setButtonListener(buttonBicepsLeft, MuscleGroup.BICEPS, imageBiceps,
-                R.drawable.biceps, R.drawable.biceps_colorized);
-        setButtonListener(buttonBicepsRight, MuscleGroup.BICEPS, imageBiceps,
+        setButtonListener(buttonBiceps, MuscleGroup.BICEPS, imageBiceps,
                 R.drawable.biceps, R.drawable.biceps_colorized);
         setButtonListener(buttonChest, MuscleGroup.CHEST, imageChest,
                 R.drawable.chest, R.drawable.chest_colorized);
-        setButtonListener(buttonForearmsLeft, MuscleGroup.FOREARMS, imageForearms,
-                R.drawable.forearms, R.drawable.forearms_colorized);
-        setButtonListener(buttonForearmsRight, MuscleGroup.FOREARMS, imageForearms,
+        setButtonListener(buttonForearms, MuscleGroup.FOREARMS, imageForearms,
                 R.drawable.forearms, R.drawable.forearms_colorized);
         setButtonListener(buttonFrontCalves, MuscleGroup.CALVES, imageFrontCalves,
                 R.drawable.front_calves, R.drawable.front_calves_colorized);
         setButtonListener(buttonFrontHamstrings, MuscleGroup.HAMSTRINGS, imageFrontHamstrings,
                 R.drawable.front_hamstrings, R.drawable.front_hamstrings_colorized);
-        setButtonListener(buttonFrontShouldersLeft, MuscleGroup.SHOULDERS, imageFrontShoulders,
+        setButtonListener(buttonFrontLatsLeft, MuscleGroup.LATS, imageFrontLats,
+                R.drawable.front_lats, R.drawable.front_lats_colorized);
+        setButtonListener(buttonFrontLatsRight, MuscleGroup.LATS, imageFrontLats,
+                R.drawable.front_lats, R.drawable.front_lats_colorized);
+        setButtonListener(buttonFrontShoulders, MuscleGroup.SHOULDERS, imageFrontShoulders,
                 R.drawable.front_shoulders, R.drawable.front_shoulders_colorized);
-        setButtonListener(buttonFrontShouldersRight, MuscleGroup.SHOULDERS, imageFrontShoulders,
-                R.drawable.front_shoulders, R.drawable.front_shoulders_colorized);
-        setButtonListener(buttonFrontTrapsLeft, MuscleGroup.TRAPS, imageFrontTraps,
-                R.drawable.front_traps, R.drawable.front_traps_colorized);
-        setButtonListener(buttonFrontTrapsRight, MuscleGroup.TRAPS, imageFrontTraps,
+        setButtonListener(buttonFrontTraps, MuscleGroup.TRAPS, imageFrontTraps,
                 R.drawable.front_traps, R.drawable.front_traps_colorized);
         setButtonListener(buttonNeck, MuscleGroup.NECK, imageNeck,
                 R.drawable.neck, R.drawable.neck_colorized);
-        setButtonListener(buttonQuadsLeft, MuscleGroup.QUADS, imageQuads,
-                R.drawable.quads, R.drawable.quads_colorized);
-        setButtonListener(buttonQuadsMiddle, MuscleGroup.QUADS, imageQuads,
-                R.drawable.quads, R.drawable.quads_colorized);
-        setButtonListener(buttonQuadsRight, MuscleGroup.QUADS, imageQuads,
+        setButtonListener(buttonQuads, MuscleGroup.QUADS, imageQuads,
                 R.drawable.quads, R.drawable.quads_colorized);
     }
 

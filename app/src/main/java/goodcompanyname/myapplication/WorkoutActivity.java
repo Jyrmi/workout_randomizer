@@ -48,9 +48,9 @@ public class WorkoutActivity extends AppCompatActivity {
         trapsExercises.add("SMITH MACHINE SHRUG");
         trapsExercises.add("LEVERAGE SHRUG");
 
-        ArrayList<String> shoulderExercises = new ArrayList<>();
-        shoulderExercises.add("CLEAN AND PRESS");
-        shoulderExercises.add("DUMBBELL REAR DELT ROW");
+        ArrayList<String> shouldersExercises = new ArrayList<>();
+        shouldersExercises.add("CLEAN AND PRESS");
+        shouldersExercises.add("DUMBBELL REAR DELT ROW");
 
         ArrayList<String> chestExercises = new ArrayList<>();
         chestExercises.add("PUSHUPS");
@@ -60,21 +60,21 @@ public class WorkoutActivity extends AppCompatActivity {
         bicepsExercises.add("BICEPS CURL TO SHOULDER PRESS");
         bicepsExercises.add("INCLINE HAMMER CURLS");
 
-        ArrayList<String> forearmExercises = new ArrayList<>();
-        forearmExercises.add("RICKSHAW CARRY");
-        forearmExercises.add("FARMER\'S WALK");
+        ArrayList<String> forearmsExercises = new ArrayList<>();
+        forearmsExercises.add("RICKSHAW CARRY");
+        forearmsExercises.add("FARMER\'S WALK");
 
         ArrayList<String> absExercises = new ArrayList<>();
-        forearmExercises.add("LANDMINE 180\'S");
-        forearmExercises.add("ONE-ARM MEDICINE BALL SLAM");
+        absExercises.add("LANDMINE 180\'S");
+        absExercises.add("ONE-ARM MEDICINE BALL SLAM");
 
         ArrayList<String> quadsExercises = new ArrayList<>();
-        forearmExercises.add("CLEAN FROM BLOCKS");
-        forearmExercises.add("SINGLE-LEG PRESS");
+        quadsExercises.add("CLEAN FROM BLOCKS");
+        quadsExercises.add("SINGLE-LEG PRESS");
 
         ArrayList<String> calvesExercises = new ArrayList<>();
-        forearmExercises.add("SMITH MACHINE CALF RAISE");
-        forearmExercises.add("STANDING CALF RAISES");
+        calvesExercises.add("SMITH MACHINE CALF RAISE");
+        calvesExercises.add("STANDING CALF RAISES");
 
         ArrayList<String> tricepsExercises = new ArrayList<>();
         tricepsExercises.add("DECLINE EZ BAR TRICEPS EXTENSION");
@@ -97,16 +97,16 @@ public class WorkoutActivity extends AppCompatActivity {
         glutesExercises.add("BARBELL HIP THRUST");
 
         ArrayList<String> hamstringsExercises = new ArrayList<>();
-        glutesExercises.add("CLEAN DEADLIFT");
-        glutesExercises.add("HANG SNATCH");
+        hamstringsExercises.add("CLEAN DEADLIFT");
+        hamstringsExercises.add("HANG SNATCH");
 
         exercises = new HashMap<>();
         exercises.put(MuscleGroup.NECK, neckExercises);
         exercises.put(MuscleGroup.TRAPS, trapsExercises);
-        exercises.put(MuscleGroup.SHOULDERS, shoulderExercises);
+        exercises.put(MuscleGroup.SHOULDERS, shouldersExercises);
         exercises.put(MuscleGroup.CHEST, chestExercises);
         exercises.put(MuscleGroup.BICEPS, bicepsExercises);
-        exercises.put(MuscleGroup.FOREARMS, forearmExercises);
+        exercises.put(MuscleGroup.FOREARMS, forearmsExercises);
         exercises.put(MuscleGroup.ABS, absExercises);
         exercises.put(MuscleGroup.QUADS, quadsExercises);
         exercises.put(MuscleGroup.CALVES, calvesExercises);
