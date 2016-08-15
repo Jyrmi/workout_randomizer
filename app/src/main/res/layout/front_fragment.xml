@@ -24,55 +24,6 @@
         style="@style/MuscleGroupsImage"
         android:src="@drawable/d_none" />
 
-    <!--<ImageView-->
-    <!--android:id="@+id/image_abs"-->
-    <!--style="@style/MuscleGroupsImage"-->
-    <!--android:src="@drawable/abs" />-->
-    <!--<ImageView-->
-    <!--android:id="@+id/image_base"-->
-    <!--style="@style/MuscleGroupsImage"-->
-    <!--android:src="@drawable/base" />-->
-    <!--<ImageView-->
-    <!--android:id="@+id/image_biceps"-->
-    <!--style="@style/MuscleGroupsImage"-->
-    <!--android:src="@drawable/biceps" />-->
-    <!--<ImageView-->
-    <!--android:id="@+id/image_chest"-->
-    <!--style="@style/MuscleGroupsImage"-->
-    <!--android:src="@drawable/chest" />-->
-    <!--<ImageView-->
-    <!--android:id="@+id/image_forearms"-->
-    <!--style="@style/MuscleGroupsImage"-->
-    <!--android:src="@drawable/forearms" />-->
-    <!--<ImageView-->
-    <!--android:id="@+id/image_front_calves"-->
-    <!--style="@style/MuscleGroupsImage"-->
-    <!--android:src="@drawable/front_calves" />-->
-    <!--<ImageView-->
-    <!--android:id="@+id/image_front_hamstrings"-->
-    <!--style="@style/MuscleGroupsImage"-->
-    <!--android:src="@drawable/front_hamstrings" />-->
-    <!--<ImageView-->
-    <!--android:id="@+id/image_front_shoulders"-->
-    <!--style="@style/MuscleGroupsImage"-->
-    <!--android:src="@drawable/front_shoulders" />-->
-    <!--<ImageView-->
-    <!--android:id="@+id/image_front_traps"-->
-    <!--style="@style/MuscleGroupsImage"-->
-    <!--android:src="@drawable/front_traps" />-->
-    <!--<ImageView-->
-    <!--android:id="@+id/image_front_lats"-->
-    <!--style="@style/MuscleGroupsImage"-->
-    <!--android:src="@drawable/front_lats" />-->
-    <!--<ImageView-->
-    <!--android:id="@+id/image_neck"-->
-    <!--style="@style/MuscleGroupsImage"-->
-    <!--android:src="@drawable/neck" />-->
-    <!--<ImageView-->
-    <!--android:id="@+id/image_quads"-->
-    <!--style="@style/MuscleGroupsImage"-->
-    <!--android:src="@drawable/quads"-->
-    <!--android:layout_alignParentTop="true"/>-->
 
     <Button
         style="@style/MuscleGroupsButton"
