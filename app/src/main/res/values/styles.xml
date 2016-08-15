@@ -19,7 +19,14 @@
     </style>
 
     <style name="MuscleGroupsButton">
-        <item name="android:background">@color/transparent</item>
+        <item name="android:background">@color/green</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <!--<item name="android:layout_margin">0dp</item>-->
+    </style>
+
+    <style name="SeparateMuscleGroupsButton">
+        <item name="android:background">@color/green</item>
         <item name="android:minHeight">0dp</item>
         <item name="android:minWidth">0dp</item>
     </style>
