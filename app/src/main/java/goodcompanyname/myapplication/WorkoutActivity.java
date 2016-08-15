@@ -1,18 +1,23 @@
 package goodcompanyname.myapplication;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -21,24 +26,40 @@ public class WorkoutActivity extends AppCompatActivity {
     private static final String TAG = "WorkoutActivity";
 
     private Button buttonDone;
-    private ArrayList<String> exercisesList;
-    private ArrayAdapter<String> exercisesAdapter;
-    private ArrayList<MuscleGroup> muscleGroups;
     private HashMap<MuscleGroup, ArrayList<String>> exercises;
+    private ArrayList<MuscleGroup> selectedMuscleGroups;
+    private HashMap<MuscleGroup, String> muscleGroupNames;
+    private ListView listViewExercises;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
 
-        exercisesList = new ArrayList<String>();
-
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        muscleGroups = (ArrayList<MuscleGroup>) bundle.get("EXTRA_MUSCLE_GROUPS");
+        selectedMuscleGroups = (ArrayList<MuscleGroup>) bundle.get("EXTRA_MUSCLE_GROUPS");
 
         // DEBUG
-        Log.d(TAG, muscleGroups.toString());
+        Log.d(TAG, selectedMuscleGroups.toString());
+
+        muscleGroupNames = new HashMap<>();
+
+        muscleGroupNames.put(MuscleGroup.ABS, "Abs");
+        muscleGroupNames.put(MuscleGroup.BICEPS, "Biceps");
+        muscleGroupNames.put(MuscleGroup.CHEST, "Chest");
+        muscleGroupNames.put(MuscleGroup.FOREARMS, "Forearms");
+        muscleGroupNames.put(MuscleGroup.CALVES, "Calves");
+        muscleGroupNames.put(MuscleGroup.GLUTES, "Glutes");
+        muscleGroupNames.put(MuscleGroup.HAMSTRINGS, "Hamstrings");
+        muscleGroupNames.put(MuscleGroup.LATS, "Lats");
+        muscleGroupNames.put(MuscleGroup.LOWER_BACK, "Lower Back");
+        muscleGroupNames.put(MuscleGroup.MIDDLE_BACK, "Middle Back");
+        muscleGroupNames.put(MuscleGroup.SHOULDERS, "Shoulders");
+        muscleGroupNames.put(MuscleGroup.TRAPS, "Traps");
+        muscleGroupNames.put(MuscleGroup.TRICEPS, "Triceps");
+        muscleGroupNames.put(MuscleGroup.NECK, "Neck");
+        muscleGroupNames.put(MuscleGroup.QUADS, "Quads");
 
         ArrayList<String> neckExercises = new ArrayList<>();
         neckExercises.add("LYING FACE DOWN PLATE NECK RESISTANCE");
@@ -117,36 +138,40 @@ public class WorkoutActivity extends AppCompatActivity {
         exercises.put(MuscleGroup.GLUTES, glutesExercises);
         exercises.put(MuscleGroup.HAMSTRINGS, hamstringsExercises);
 
-        for (MuscleGroup muscleGroup : muscleGroups) {
+        ArrayList<HashMap<String, String>> groupExercisePairs = new ArrayList<>();
+
+        for (MuscleGroup muscleGroup : selectedMuscleGroups) {
             ArrayList<String> exerciseGroup = exercises.get(muscleGroup);
             if (exerciseGroup != null) {
                 for (String exercise : exerciseGroup) {
-                    exercisesList.add(exercise);
+                    HashMap<String, String> groupExercisePair = new HashMap<>();
+                    groupExercisePair.put("muscleGroup", muscleGroupNames.get(muscleGroup));
+                    groupExercisePair.put("exercise", exercise);
+                    groupExercisePairs.add(groupExercisePair);
                 }
             }
         }
 
-        exercisesAdapter = new ArrayAdapter<String>(this, R.layout.card_view,
-                R.id.list_exercises_item, exercisesList);
-        final ListView listViewExercises = (ListView) findViewById(R.id.exercises_list_view);
-        listViewExercises.setAdapter(exercisesAdapter);
+        ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this, groupExercisePairs);
+
+        listViewExercises = (ListView) findViewById(R.id.exercises_list_view);
+        listViewExercises.setAdapter(exerciseAdapter);
 
         buttonDone = (Button) findViewById(R.id.button_done);
         buttonDone.setOnClickListener(new View.OnClickListener() {
-            ArrayList<String> checkedExercises = new ArrayList<String>();
+            ArrayList<String> checkedExercises = new ArrayList<>();
 
             @Override
             public void onClick(View view) {
-                // DEBUG
-                int i = 0;
+                int i;
                 for (i = 0; i < listViewExercises.getChildCount(); i++) {
                     View cardView = listViewExercises.getChildAt(i);
                     CheckBox checkBox =
-                            (CheckBox) cardView.findViewById(R.id.list_exercises_item_checkbox);
+                            (CheckBox) cardView.findViewById(R.id.list_view_checkbox);
 
                     if (checkBox.isChecked()) {
                         TextView textViewExercise =
-                                (TextView) cardView.findViewById(R.id.list_exercises_item);
+                                (TextView) cardView.findViewById(R.id.list_view_exercise);
                         checkedExercises.add(textViewExercise.getText().toString());
                         Log.d(TAG, textViewExercise.getText().toString());
                     }
@@ -159,6 +184,56 @@ public class WorkoutActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private class ExerciseAdapter extends BaseAdapter {
+        private ArrayList<HashMap<String, String>> groupExercisePairs;
+        Activity activity;
+        TextView exercise;
+        TextView muscleGroup;
+
+        public ExerciseAdapter(Activity activity, ArrayList<HashMap<String, String>> list) {
+            super();
+            this.activity = activity;
+            this.groupExercisePairs = list;
+        }
+
+        @Override
+        public int getCount() {
+            // TODO Auto-generated method stub
+            return groupExercisePairs.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            // TODO Auto-generated method stub
+            return groupExercisePairs.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View cardView, ViewGroup parent) {
+            // TODO Auto-generated method stub
+            LayoutInflater inflater = activity.getLayoutInflater();
+
+            if (cardView == null) {
+                cardView = inflater.inflate(R.layout.card_view, null);
+
+                muscleGroup = (TextView) cardView.findViewById(R.id.list_view_muscle_group);
+                exercise = (TextView) cardView.findViewById(R.id.list_view_exercise);
+            }
+
+            HashMap<String, String> groupExercisePair = groupExercisePairs.get(position);
+            muscleGroup.setText(groupExercisePair.get("muscleGroup"));
+            exercise.setText(groupExercisePair.get("exercise"));
+
+            return cardView;
+        }
     }
 
     @Override
@@ -183,6 +258,3 @@ public class WorkoutActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
-
-
-

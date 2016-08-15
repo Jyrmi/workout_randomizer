@@ -6,25 +6,31 @@
     <android.support.v7.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
-        android:layout_gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        card_view:cardCornerRadius="4dp">
+        card_view:cardCornerRadius="4dp"
+        style="@style/CardView"
+        android:layout_margin="2dp">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <CheckBox android:id="@+id/list_exercises_item_checkbox"
+            <CheckBox android:id="@+id/list_view_checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <TextView android:id="@+id/list_exercises_item"
+            <TextView android:id="@+id/list_view_exercise"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
 
-        </LinearLayout>
+            <TextView android:id="@+id/list_view_muscle_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+
+        </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 

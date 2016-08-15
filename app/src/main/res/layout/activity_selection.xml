@@ -5,58 +5,74 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    android:background="@drawable/gray"
     tools:context=".SelectionActivity">
 
     <ImageView
-        android:id="@+id/image_abs"
+        android:id="@+id/image_group_a"
         style="@style/MuscleGroupsImage"
-        android:src="@drawable/abs" />
+        android:src="@drawable/a_none" />
     <ImageView
-        android:id="@+id/image_base"
+        android:id="@+id/image_group_b"
         style="@style/MuscleGroupsImage"
-        android:src="@drawable/base" />
+        android:src="@drawable/b_none" />
     <ImageView
-        android:id="@+id/image_biceps"
+        android:id="@+id/image_group_c"
         style="@style/MuscleGroupsImage"
-        android:src="@drawable/biceps" />
+        android:src="@drawable/c_none" />
     <ImageView
-        android:id="@+id/image_chest"
+        android:id="@+id/image_group_d"
         style="@style/MuscleGroupsImage"
-        android:src="@drawable/chest" />
-    <ImageView
-        android:id="@+id/image_forearms"
-        style="@style/MuscleGroupsImage"
-        android:src="@drawable/forearms" />
-    <ImageView
-        android:id="@+id/image_front_calves"
-        style="@style/MuscleGroupsImage"
-        android:src="@drawable/front_calves" />
-    <ImageView
-        android:id="@+id/image_front_hamstrings"
-        style="@style/MuscleGroupsImage"
-        android:src="@drawable/front_hamstrings" />
-    <ImageView
-        android:id="@+id/image_front_shoulders"
-        style="@style/MuscleGroupsImage"
-        android:src="@drawable/front_shoulders" />
-    <ImageView
-        android:id="@+id/image_front_traps"
-        style="@style/MuscleGroupsImage"
-        android:src="@drawable/front_traps" />
-    <ImageView
-        android:id="@+id/image_front_lats"
-        style="@style/MuscleGroupsImage"
-        android:src="@drawable/front_lats" />
-    <ImageView
-        android:id="@+id/image_neck"
-        style="@style/MuscleGroupsImage"
-        android:src="@drawable/neck" />
-    <ImageView
-        android:id="@+id/image_quads"
-        style="@style/MuscleGroupsImage"
-        android:src="@drawable/quads"
-        android:layout_alignParentTop="true"/>
+        android:src="@drawable/d_none" />
+
+    <!--<ImageView-->
+        <!--android:id="@+id/image_abs"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/abs" />-->
+    <!--<ImageView-->
+        <!--android:id="@+id/image_base"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/base" />-->
+    <!--<ImageView-->
+        <!--android:id="@+id/image_biceps"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/biceps" />-->
+    <!--<ImageView-->
+        <!--android:id="@+id/image_chest"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/chest" />-->
+    <!--<ImageView-->
+        <!--android:id="@+id/image_forearms"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/forearms" />-->
+    <!--<ImageView-->
+        <!--android:id="@+id/image_front_calves"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/front_calves" />-->
+    <!--<ImageView-->
+        <!--android:id="@+id/image_front_hamstrings"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/front_hamstrings" />-->
+    <!--<ImageView-->
+        <!--android:id="@+id/image_front_shoulders"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/front_shoulders" />-->
+    <!--<ImageView-->
+        <!--android:id="@+id/image_front_traps"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/front_traps" />-->
+    <!--<ImageView-->
+        <!--android:id="@+id/image_front_lats"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/front_lats" />-->
+    <!--<ImageView-->
+        <!--android:id="@+id/image_neck"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/neck" />-->
+    <!--<ImageView-->
+        <!--android:id="@+id/image_quads"-->
+        <!--style="@style/MuscleGroupsImage"-->
+        <!--android:src="@drawable/quads"-->
+        <!--android:layout_alignParentTop="true"/>-->
 
     <Button
         style="@style/MuscleGroupsButton"
@@ -90,10 +106,10 @@
         style="@style/MuscleGroupsButton"
         android:layout_width="90dp"
         android:layout_height="90dp"
-        android:gravity="center"
-        android:layout_marginTop="154dp"
+        android:gravity="center_vertical"
+        android:layout_marginTop="140dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignStart="@+id/button_chest" />
 
     <Button
         style="@style/MuscleGroupsButton"
@@ -182,11 +198,10 @@
     <Button
         android:id="@+id/button_generate_workout"
         style="@style/MuscleGroupsButton"
-        android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Generate"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+        android:text="@string/button_generate_workout"
+        android:layout_alignBottom="@+id/button_front_calves"
+        android:layout_toEndOf="@+id/button_front_calves" />
 
 </RelativeLayout>

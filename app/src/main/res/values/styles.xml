@@ -5,14 +5,20 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="LoginEditText">
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlActivated">@color/white</item>
+        <item name="colorControlHighlight">@color/white</item>
+    </style>
+
     <style name="MuscleGroupsImage">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@color/transparent</item>
         <item name="android:gravity">center</item>
-        <item name="android:layout_alignParentEnd">true</item>
-        <item name="android:layout_alignParentTop">true</item>
-        <item name="android:layout_alignParentBottom">true</item>
+        <!--<item name="android:layout_alignParentEnd">true</item>-->
+        <!--<item name="android:layout_alignParentTop">true</item>-->
+        <!--<item name="android:layout_alignParentBottom">true</item>-->
     </style>
 
     <style name="MuscleGroupsButton">
@@ -22,10 +28,10 @@
         <!--<item name="android:layout_margin">0dp</item>-->
     </style>
 
-    <style name="LoginEditText">
-        <item name="colorControlNormal">@color/white</item>
-        <item name="colorControlActivated">@color/white</item>
-        <item name="colorControlHighlight">@color/white</item>
+    <style name="CardView">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
 </resources>

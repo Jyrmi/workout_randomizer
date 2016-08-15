@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">WR</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -21,6 +21,7 @@
     <string name="button_glutes">Glutes</string>
 
     <string name="button_generate_workout">Generate</string>
+    <string name="invalid_selection">Select at least one.</string>
     <string name="list_muscle_group"></string>
     <string name="volley_string"></string>
 
