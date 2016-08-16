@@ -1,10 +1,10 @@
 package goodcompanyname.myapplication;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,24 +15,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class FrontFragment extends Fragment {
-
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        return inflater.inflate(R.layout.front_fragment, container, false);
-//    }
-
-    //    ImageView imageAbs;
-//    ImageView imageBase;
-//    ImageView imageBiceps;
-//    ImageView imageChest;
-//    ImageView imageForearms;
-//    ImageView imageFrontCalves;
-//    ImageView imageFrontHamstrings;
-//    ImageView imageFrontLats;
-//    ImageView imageFrontShoulders;
-//    ImageView imageFrontTraps;
-//    ImageView imageNeck;
-//    ImageView imageQuads;
 
     ImageView imageGroupA;
     ImageView imageGroupB;
@@ -55,23 +37,9 @@ public class FrontFragment extends Fragment {
 
     ArrayList<MuscleGroup> selectedMuscleGroups;
 
-    private View myFragmentView;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        myFragmentView = inflater.inflate(R.layout.front_fragment, container, false);
-
-        Button buttonGenerate = (Button) myFragmentView.findViewById(R.id.button_generate_workout);
-        buttonGenerate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (selectedMuscleGroups.isEmpty()) {
-                    toastInvalidSelection();
-                } else {
-                    navigateToWorkout();
-                }
-            }
-        });
+        View myFragmentView = inflater.inflate(R.layout.front_fragment, container, false);
 
         imageGroupA = (ImageView) myFragmentView.findViewById(R.id.image_group_a);
         imageGroupB = (ImageView) myFragmentView.findViewById(R.id.image_group_b);
@@ -79,7 +47,7 @@ public class FrontFragment extends Fragment {
         imageGroupD = (ImageView) myFragmentView.findViewById(R.id.image_group_d);
 
         buttonAbsLower = (Button) myFragmentView.findViewById(R.id.button_abs_lower);
-        buttonAbsUpper = (Button) myFragmentView.findViewById(R.id.button_abs_upper);
+        buttonAbsUpper = (Button) myFragmentView.findViewById(R.id.button_rear_traps);
         buttonBiceps = (Button) myFragmentView.findViewById(R.id.button_biceps);
         buttonChest = (Button) myFragmentView.findViewById(R.id.button_chest);
         buttonForearms = (Button) myFragmentView.findViewById(R.id.button_forearms);
@@ -92,7 +60,7 @@ public class FrontFragment extends Fragment {
         buttonNeck = (Button) myFragmentView.findViewById(R.id.button_neck);
         buttonQuads = (Button) myFragmentView.findViewById(R.id.button_quads);
 
-        selectedMuscleGroups = new ArrayList<MuscleGroup>();
+        selectedMuscleGroups = new ArrayList<>();
 
         setButtonListener(buttonAbsLower, MuscleGroup.ABS, imageGroupC);
         setButtonListener(buttonAbsUpper, MuscleGroup.ABS, imageGroupC);
@@ -195,6 +163,21 @@ public class FrontFragment extends Fragment {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * Sets listeners for this activity's buttons.
      * @param button the button.
@@ -215,32 +198,11 @@ public class FrontFragment extends Fragment {
         });
     }
 
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    /** Called when the user clicks the Send button */
-    public void toastInvalidSelection() {
-        Toast.makeText(getActivity(), R.string.invalid_selection, Toast.LENGTH_SHORT).show();
-    }
-
-    /** Called when the user clicks the Send button */
-    public void navigateToWorkout() {
-        // Do something in response to button
-        Intent intent = new Intent(getActivity(), WorkoutActivity.class);
-        intent.putExtra("EXTRA_MUSCLE_GROUPS", selectedMuscleGroups);
-        startActivity(intent);
+    /**
+     * Getter for the selected muscle groups.
+     * @return
+     */
+    public ArrayList<MuscleGroup> getSelectedMuscleGroups() {
+        return selectedMuscleGroups;
     }
 }

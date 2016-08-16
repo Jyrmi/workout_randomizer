@@ -31,19 +31,15 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_below="@id/tab_layout"
-        android:layout_above="@+id/new_generate_button" />
-
-
+        android:layout_above="@+id/button_generate" />
 
     <Button
-        android:id="@+id/new_generate_button"
+        android:id="@+id/button_generate"
         style="@style/SeparateMuscleGroupsButton"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="@string/button_generate_workout"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
-
-
 
 </RelativeLayout>
