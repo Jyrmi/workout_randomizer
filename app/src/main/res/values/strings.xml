@@ -6,19 +6,10 @@
     <string name="title_activity_landing">Selection Activity</string>
     <string name="title_activity_activity_workout">Workout Activity</string>
     <string name="title_activity_activity_results">Results Activity</string>
-    <string name="button_send">LOGIN</string>
 
-    <string name="button_neck">Neck</string>
-    <string name="button_shoulders">Shoulders</string>
-    <string name="button_traps">Traps</string>
-    <string name="button_chest">Chest</string>
-    <string name="button_biceps">Biceps</string>
-    <string name="button_forearm">Forearm</string>
-    <string name="button_lats">Lats</string>
-    <string name="button_triceps">Triceps</string>
-    <string name="button_middleback">Middle Back</string>
-    <string name="button_lowerback">Lower Back</string>
-    <string name="button_glutes">Glutes</string>
+    <string name="button_send">Login</string>
+
+    <string name="button_turn_body">Turn</string>
 
     <string name="button_generate_workout">Generate</string>
     <string name="invalid_selection">Select at least one.</string>
@@ -26,4 +17,5 @@
     <string name="volley_string"></string>
 
     <string name="button_done">I\'m done</string>
+    <string name="title_activity_splash">SplashActivity</string>
 </resources>

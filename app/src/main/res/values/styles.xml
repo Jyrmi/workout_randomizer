@@ -11,6 +11,12 @@
         <item name="colorControlHighlight">@color/white</item>
     </style>
 
+    <style name="AppButton">
+        <item name="android:background">@color/transparent</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+    </style>
+
     <style name="MuscleGroupsImage">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -22,7 +28,7 @@
         <item name="android:background">@color/transparent</item>
         <item name="android:minHeight">0dp</item>
         <item name="android:minWidth">0dp</item>
-        <!--<item name="android:layout_margin">0dp</item>-->
+        <item name="android:visibility">invisible</item>
     </style>
 
     <style name="SeparateMuscleGroupsButton">
@@ -36,5 +42,9 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>
