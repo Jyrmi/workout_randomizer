@@ -10,7 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="goodcompanyname.myapplication.SplashActivity"
-    tools:showIn="@layout/activity_splash"
     android:orientation="horizontal"
     android:background="@color/pantone_448c">
 
@@ -20,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_weight="1" />
+        android:layout_weight="29" />
 
     <ImageView
         android:id="@+id/image_splash_screen_r"
@@ -28,5 +27,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_weight="1" />
+        android:layout_weight="39" />
 </LinearLayout>

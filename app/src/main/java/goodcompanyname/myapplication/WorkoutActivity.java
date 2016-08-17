@@ -25,11 +25,10 @@ public class WorkoutActivity extends AppCompatActivity {
 
     private static final String TAG = "WorkoutActivity";
 
-    private Button buttonDone;
-    private HashMap<MuscleGroup, ArrayList<String>> exercises;
-    private ArrayList<MuscleGroup> selectedMuscleGroups;
-    private HashMap<MuscleGroup, String> muscleGroupNames;
     private ListView listViewExercises;
+    private Button buttonDone;
+
+    private ArrayList<MuscleGroup> selectedMuscleGroups;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,116 +42,16 @@ public class WorkoutActivity extends AppCompatActivity {
         // DEBUG
         Log.d(TAG, selectedMuscleGroups.toString());
 
-        muscleGroupNames = new HashMap<>();
-
-        muscleGroupNames.put(MuscleGroup.ABS, "Abs");
-        muscleGroupNames.put(MuscleGroup.BICEPS, "Biceps");
-        muscleGroupNames.put(MuscleGroup.CHEST, "Chest");
-        muscleGroupNames.put(MuscleGroup.FOREARMS, "Forearms");
-        muscleGroupNames.put(MuscleGroup.CALVES, "Calves");
-        muscleGroupNames.put(MuscleGroup.GLUTES, "Glutes");
-        muscleGroupNames.put(MuscleGroup.HAMSTRINGS, "Hamstrings");
-        muscleGroupNames.put(MuscleGroup.LATS, "Lats");
-        muscleGroupNames.put(MuscleGroup.LOWER_BACK, "Lower Back");
-        muscleGroupNames.put(MuscleGroup.MIDDLE_BACK, "Middle Back");
-        muscleGroupNames.put(MuscleGroup.SHOULDERS, "Shoulders");
-        muscleGroupNames.put(MuscleGroup.TRAPS, "Traps");
-        muscleGroupNames.put(MuscleGroup.TRICEPS, "Triceps");
-        muscleGroupNames.put(MuscleGroup.NECK, "Neck");
-        muscleGroupNames.put(MuscleGroup.QUADS, "Quads");
-
-        ArrayList<String> neckExercises = new ArrayList<>();
-        neckExercises.add("LYING FACE DOWN PLATE NECK RESISTANCE");
-        neckExercises.add("LYING FACE UP PLATE NECK RESISTANCE");
-
-        ArrayList<String> trapsExercises = new ArrayList<>();
-        trapsExercises.add("SMITH MACHINE SHRUG");
-        trapsExercises.add("LEVERAGE SHRUG");
-
-        ArrayList<String> shouldersExercises = new ArrayList<>();
-        shouldersExercises.add("CLEAN AND PRESS");
-        shouldersExercises.add("DUMBBELL REAR DELT ROW");
-
-        ArrayList<String> chestExercises = new ArrayList<>();
-        chestExercises.add("PUSHUPS");
-        chestExercises.add("BARBELL BENCH PRESS - MEDIUM GRIP");
-
-        ArrayList<String> bicepsExercises = new ArrayList<>();
-        bicepsExercises.add("BICEPS CURL TO SHOULDER PRESS");
-        bicepsExercises.add("INCLINE HAMMER CURLS");
-
-        ArrayList<String> forearmsExercises = new ArrayList<>();
-        forearmsExercises.add("RICKSHAW CARRY");
-        forearmsExercises.add("FARMER\'S WALK");
-
-        ArrayList<String> absExercises = new ArrayList<>();
-        absExercises.add("LANDMINE 180\'S");
-        absExercises.add("ONE-ARM MEDICINE BALL SLAM");
-
-        ArrayList<String> quadsExercises = new ArrayList<>();
-        quadsExercises.add("CLEAN FROM BLOCKS");
-        quadsExercises.add("SINGLE-LEG PRESS");
-
-        ArrayList<String> calvesExercises = new ArrayList<>();
-        calvesExercises.add("SMITH MACHINE CALF RAISE");
-        calvesExercises.add("STANDING CALF RAISES");
-
-        ArrayList<String> tricepsExercises = new ArrayList<>();
-        tricepsExercises.add("DECLINE EZ BAR TRICEPS EXTENSION");
-        tricepsExercises.add("PARALLEL BAR DIP");
-
-        ArrayList<String> latsExercises = new ArrayList<>();
-        latsExercises.add("WIDE-GRIP PULL-UP");
-        latsExercises.add("WEIGHTED PULL UPS");
-
-        ArrayList<String> middlebackExercises = new ArrayList<>();
-        middlebackExercises.add("T-BAR ROW WITH HANDLE");
-        middlebackExercises.add("PENDLAY ROWN");
-
-        ArrayList<String> lowerbackExercises = new ArrayList<>();
-        lowerbackExercises.add("ATLAS STONES");
-        lowerbackExercises.add("DEFICIT DEADLIFT");
-
-        ArrayList<String> glutesExercises = new ArrayList<>();
-        glutesExercises.add("BARBELL GLUTE BRIDGE");
-        glutesExercises.add("BARBELL HIP THRUST");
-
-        ArrayList<String> hamstringsExercises = new ArrayList<>();
-        hamstringsExercises.add("CLEAN DEADLIFT");
-        hamstringsExercises.add("HANG SNATCH");
-
-        exercises = new HashMap<>();
-        exercises.put(MuscleGroup.NECK, neckExercises);
-        exercises.put(MuscleGroup.TRAPS, trapsExercises);
-        exercises.put(MuscleGroup.SHOULDERS, shouldersExercises);
-        exercises.put(MuscleGroup.CHEST, chestExercises);
-        exercises.put(MuscleGroup.BICEPS, bicepsExercises);
-        exercises.put(MuscleGroup.FOREARMS, forearmsExercises);
-        exercises.put(MuscleGroup.ABS, absExercises);
-        exercises.put(MuscleGroup.QUADS, quadsExercises);
-        exercises.put(MuscleGroup.CALVES, calvesExercises);
-        exercises.put(MuscleGroup.LATS, latsExercises);
-        exercises.put(MuscleGroup.TRICEPS, tricepsExercises);
-        exercises.put(MuscleGroup.MIDDLE_BACK, middlebackExercises);
-        exercises.put(MuscleGroup.LOWER_BACK, lowerbackExercises);
-        exercises.put(MuscleGroup.GLUTES, glutesExercises);
-        exercises.put(MuscleGroup.HAMSTRINGS, hamstringsExercises);
-
-        ArrayList<HashMap<String, String>> groupExercisePairs = new ArrayList<>();
-
+        ArrayList<String> muscleGroupList = new ArrayList();
+        ArrayList<String> exerciseList = new ArrayList();
         for (MuscleGroup muscleGroup : selectedMuscleGroups) {
-            ArrayList<String> exerciseGroup = exercises.get(muscleGroup);
-            if (exerciseGroup != null) {
-                for (String exercise : exerciseGroup) {
-                    HashMap<String, String> groupExercisePair = new HashMap<>();
-                    groupExercisePair.put("muscleGroup", muscleGroupNames.get(muscleGroup));
-                    groupExercisePair.put("exercise", exercise);
-                    groupExercisePairs.add(groupExercisePair);
-                }
+            for (String exercise : muscleGroup.getExercises()) {
+                muscleGroupList.add(muscleGroup.toString());
+                exerciseList.add(exercise);
             }
         }
 
-        ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this, groupExercisePairs);
+        StringStringAdapter exerciseAdapter = new StringStringAdapter(this, muscleGroupList, exerciseList);
 
         listViewExercises = (ListView) findViewById(R.id.exercises_list_view);
         listViewExercises.setAdapter(exerciseAdapter);
@@ -179,35 +78,39 @@ public class WorkoutActivity extends AppCompatActivity {
 
                 // Start the Results activity
                 Intent intent = new Intent(view.getContext(), ResultsActivity.class);
-                intent.putExtra("COMPLETED_EXERCISES", checkedExercises);
+                intent.putExtra("EXTRA_COMPLETED_EXERCISES", checkedExercises);
+                intent.putExtra("EXTRA_MUSCLE_GROUPS", selectedMuscleGroups);
                 startActivity(intent);
                 finish();
             }
         });
     }
 
-    private class ExerciseAdapter extends BaseAdapter {
-        private ArrayList<HashMap<String, String>> groupExercisePairs;
+    private class StringStringAdapter extends BaseAdapter {
+        private ArrayList<String> muscleGroups;
+        private ArrayList<String> exercises;
         Activity activity;
-        TextView exercise;
-        TextView muscleGroup;
+        TextView textViewExercise;
+        TextView textViewMuscleGroup;
 
-        public ExerciseAdapter(Activity activity, ArrayList<HashMap<String, String>> list) {
+        public StringStringAdapter(Activity activity, ArrayList<String> muscleGroups,
+                               ArrayList<String> exercises) {
             super();
             this.activity = activity;
-            this.groupExercisePairs = list;
+            this.muscleGroups = muscleGroups;
+            this.exercises = exercises;
         }
 
         @Override
         public int getCount() {
             // TODO Auto-generated method stub
-            return groupExercisePairs.size();
+            return muscleGroups.size();
         }
 
         @Override
         public Object getItem(int position) {
             // TODO Auto-generated method stub
-            return groupExercisePairs.get(position);
+            return muscleGroups.get(position);
         }
 
         @Override
@@ -224,13 +127,12 @@ public class WorkoutActivity extends AppCompatActivity {
             if (cardView == null) {
                 cardView = inflater.inflate(R.layout.card_view, null);
 
-                muscleGroup = (TextView) cardView.findViewById(R.id.list_view_muscle_group);
-                exercise = (TextView) cardView.findViewById(R.id.list_view_exercise);
+                textViewExercise = (TextView) cardView.findViewById(R.id.list_view_exercise);
+                textViewMuscleGroup = (TextView) cardView.findViewById(R.id.list_view_muscle_group);
             }
 
-            HashMap<String, String> groupExercisePair = groupExercisePairs.get(position);
-            muscleGroup.setText(groupExercisePair.get("muscleGroup"));
-            exercise.setText(groupExercisePair.get("exercise"));
+            textViewExercise.setText(exercises.get(position));
+            textViewMuscleGroup.setText(muscleGroups.get(position));
 
             return cardView;
         }

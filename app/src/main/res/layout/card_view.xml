@@ -6,14 +6,13 @@
     <android.support.v7.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
-        card_view:cardCornerRadius="4dp"
         style="@style/CardView"
+        card_view:cardCornerRadius="4dp"
         android:layout_margin="2dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
             <CheckBox android:id="@+id/list_view_checkbox"
                 android:layout_width="wrap_content"

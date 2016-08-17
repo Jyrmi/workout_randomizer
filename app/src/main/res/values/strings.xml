@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">WR</string>
 
-    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_splash">SplashActivity</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_landing">Selection Activity</string>
     <string name="title_activity_activity_workout">Workout Activity</string>
@@ -11,11 +11,16 @@
 
     <string name="button_turn_body">Turn</string>
 
+    <!--Workout Activity-->
     <string name="button_generate_workout">Generate</string>
     <string name="invalid_selection">Select at least one.</string>
     <string name="list_muscle_group"></string>
     <string name="volley_string"></string>
-
     <string name="button_done">I\'m done</string>
-    <string name="title_activity_splash">SplashActivity</string>
+
+    <!--Results Activity-->
+    <string name="list_muscle_groups">Muscle Groups Selected</string>
+    <string name="list_exercises">Exercises Completed</string>
+    <string name="button_restart">Start Over</string>
+    <string name="button_clear_data">Clear All Data</string>
 </resources>

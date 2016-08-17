@@ -1,22 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView android:id="@+id/results_text_view"
-        android:layout_width="wrap_content"
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Congratulations."
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:textSize="20dp"
+        android:text="@string/list_muscle_groups" />
 
-    <Button
-        android:id="@+id/restart_button"
-        android:layout_width="wrap_content"
+    <ListView
+        android:id="@+id/list_view_muscle_group_stats"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Start Over"
-        android:background="@color/transparent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+        android:divider="#00000000" />
 
-</RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="@string/list_exercises" />
+
+    <ListView
+        android:id="@+id/list_view_exercise_stats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="#00000000" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/clear_data_button"
+            style="@style/AppButton"
+            android:padding="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_clear_data"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:id="@+id/restart_button"
+            style="@style/AppButton"
+            android:padding="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_restart"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+
+</LinearLayout>
