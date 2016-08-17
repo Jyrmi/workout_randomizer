@@ -1,7 +1,9 @@
 package goodcompanyname.myapplication;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -18,8 +20,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class WorkoutActivity extends AppCompatActivity {
 
@@ -29,18 +34,22 @@ public class WorkoutActivity extends AppCompatActivity {
     private Button buttonDone;
 
     private ArrayList<MuscleGroup> selectedMuscleGroups;
+    private DbHelper mHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
 
+        // DEBUG
+//        Log.d(TAG, Calendar.getInstance().getTime().toString());
+
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         selectedMuscleGroups = (ArrayList<MuscleGroup>) bundle.get("EXTRA_MUSCLE_GROUPS");
 
         // DEBUG
-        Log.d(TAG, selectedMuscleGroups.toString());
+//        Log.d(TAG, selectedMuscleGroups.toString());
 
         ArrayList<String> muscleGroupList = new ArrayList();
         ArrayList<String> exerciseList = new ArrayList();
@@ -72,9 +81,11 @@ public class WorkoutActivity extends AppCompatActivity {
                         TextView textViewExercise =
                                 (TextView) cardView.findViewById(R.id.list_view_exercise);
                         checkedExercises.add(textViewExercise.getText().toString());
-                        Log.d(TAG, textViewExercise.getText().toString());
+//                        Log.d(TAG, textViewExercise.getText().toString());
                     }
                 }
+
+                writeDbEntry(checkedExercises);
 
                 // Start the Results activity
                 Intent intent = new Intent(view.getContext(), ResultsActivity.class);
@@ -84,6 +95,19 @@ public class WorkoutActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void writeDbEntry(ArrayList<String> checkedExercises) {
+        mHelper = new DbHelper(this);
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(WorkoutContract.TaskEntry.COL_TIME, Calendar.getInstance().toString());
+        values.put(WorkoutContract.TaskEntry.COL_EXERCISES, checkedExercises.toString());
+        db.insertWithOnConflict(WorkoutContract.TaskEntry.TABLE,
+                null,
+                values,
+                SQLiteDatabase.CONFLICT_REPLACE);
+        db.close();
     }
 
     private class StringStringAdapter extends BaseAdapter {

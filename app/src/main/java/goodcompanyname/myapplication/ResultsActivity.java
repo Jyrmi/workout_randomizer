@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -40,6 +44,9 @@ public class ResultsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
+
+        Log.d(TAG, "ResultsActivity.onCreate() begin");
+        readDb();
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -122,6 +129,25 @@ public class ResultsActivity extends AppCompatActivity {
 
         ListView listViewStats = (ListView) findViewById(listViewResId);
         listViewStats.setAdapter(counterAdapter);
+    }
+
+    private void readDb() {
+        Log.d(TAG, "readDB() begin");
+
+        DbHelper mHelper = new DbHelper(this);
+        SQLiteDatabase db = mHelper.getReadableDatabase();
+        Cursor cursor = db.query(WorkoutContract.TaskEntry.TABLE,
+                new String[]{WorkoutContract.TaskEntry._ID, WorkoutContract.TaskEntry.COL_EXERCISES},
+                null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            int idx = cursor.getColumnIndex(WorkoutContract.TaskEntry.COL_EXERCISES);
+//            int idy = cursor.getColumnIndex(WorkoutContract.TaskEntry.COL_TIME);
+//            Log.d(TAG, cursor.getString(idx) + " " + cursor.getString(idy));
+            Log.d(TAG, cursor.getString(idx));
+        }
+
+        cursor.close();
+        db.close();
     }
 
     private class StringIntAdapter extends BaseAdapter {
