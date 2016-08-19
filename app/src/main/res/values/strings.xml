@@ -17,6 +17,7 @@
     <string name="list_muscle_group"></string>
     <string name="volley_string"></string>
     <string name="button_done">I\'m done</string>
+    <string name="card_view_child">Here\'s how you do it</string>
 
     <!--Results Activity-->
     <string name="list_muscle_groups">Muscle Groups Selected</string>

@@ -15,6 +15,7 @@
         <item name="android:background">@color/transparent</item>
         <item name="android:minHeight">0dp</item>
         <item name="android:minWidth">0dp</item>
+        <item name="android:padding">20dp</item>
     </style>
 
     <style name="MuscleGroupsImage">

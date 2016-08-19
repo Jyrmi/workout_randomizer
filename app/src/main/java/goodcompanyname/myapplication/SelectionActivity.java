@@ -1,11 +1,10 @@
 package goodcompanyname.myapplication;
 
 import android.content.Intent;
-import android.opengl.Visibility;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.ActionProvider;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +15,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import constant.MuscleGroup;
+
 public class SelectionActivity extends AppCompatActivity {
+    // todo: change "finish" button to circle with + symbol
 
     private static final String TAG = "SelectionActivity";
 
@@ -50,6 +52,7 @@ public class SelectionActivity extends AppCompatActivity {
     Button buttonRearCalves;
 
     ImageButton buttonTurn;
+    FloatingActionButton fab;
 
     Boolean forward;
     ArrayList<MuscleGroup> selectedMuscleGroups;
@@ -58,7 +61,6 @@ public class SelectionActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "begin onCreate()");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selection);
@@ -70,8 +72,6 @@ public class SelectionActivity extends AppCompatActivity {
         imageGroupB = (ImageView) findViewById(R.id.image_group_b);
         imageGroupC = (ImageView) findViewById(R.id.image_group_c);
         imageGroupD = (ImageView) findViewById(R.id.image_group_d);
-
-        Log.d(TAG, "all image groups found");
 
         buttonAbsLower = (Button) findViewById(R.id.button_abs_lower);
         buttonAbsUpper = (Button) findViewById(R.id.button_abs_upper);
@@ -87,8 +87,6 @@ public class SelectionActivity extends AppCompatActivity {
         buttonNeck = (Button) findViewById(R.id.button_neck);
         buttonQuads = (Button) findViewById(R.id.button_quads);
 
-        Log.d(TAG, "all front buttons found");
-
         buttonRearTraps = (Button) findViewById(R.id.button_rear_traps);
         buttonRearShoulders = (Button) findViewById(R.id.button_rear_shoulders);
         buttonTriceps = (Button) findViewById(R.id.button_triceps);
@@ -98,9 +96,6 @@ public class SelectionActivity extends AppCompatActivity {
         buttonGlutes = (Button) findViewById(R.id.button_glutes);
         buttonRearHamstrings = (Button) findViewById(R.id.button_rear_hamstrings);
         buttonRearCalves = (Button) findViewById(R.id.button_rear_calves);
-
-        Log.d(TAG, "all rear buttons found");
-
 
         selectedMuscleGroups = new ArrayList<>();
 
@@ -127,8 +122,6 @@ public class SelectionActivity extends AppCompatActivity {
         setButtonListenerRear(buttonGlutes, MuscleGroup.GLUTES, imageGroupD);
         setButtonListenerRear(buttonRearHamstrings, MuscleGroup.HAMSTRINGS, imageGroupD);
         setButtonListenerRear(buttonRearCalves, MuscleGroup.CALVES, imageGroupD);
-
-        Log.d(TAG, "all button listeners set");
 
         frontButtons = new ArrayList();
         rearButtons = new ArrayList();
@@ -167,12 +160,13 @@ public class SelectionActivity extends AppCompatActivity {
             }
         });
 
-        Button buttonGenerate = (Button) findViewById(R.id.button_generate);
-        buttonGenerate.setOnClickListener(new View.OnClickListener() {
+        fab = (FloatingActionButton) findViewById(R.id.fab_selection);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (selectedMuscleGroups.isEmpty()) {
-                    toastInvalidSelection();
+                    Snackbar.make(view, "Select at least one", Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
                 } else {
                     navigateToWorkout();
                 }

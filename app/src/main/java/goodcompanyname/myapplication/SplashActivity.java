@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 public class SplashActivity extends AppCompatActivity {
+    // todo: authentication and accompanying web server
 
     /** Duration of wait **/
     private final int SPLASH_DISPLAY_LENGTH = 1000;
