@@ -18,20 +18,18 @@ public class StringIntAdapter extends BaseAdapter {
     Activity activity;
     TextView textViewKey;
     TextView textViewCount;
-    ArrayList<String> keys;
-    ArrayList<Integer> counts;
+    ArrayList<TwoTuple<String, Integer>> histogram;
 
-    public StringIntAdapter(Activity activity, ArrayList<String> keys, ArrayList<Integer> counts) {
+    public StringIntAdapter(Activity activity, ArrayList<TwoTuple<String, Integer>> histogram) {
         super();
         this.activity = activity;
-        this.keys = keys;
-        this.counts = counts;
+        this.histogram = histogram;
     }
 
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
-        return keys.size();
+        return histogram.size();
     }
 
     @Override
@@ -58,8 +56,8 @@ public class StringIntAdapter extends BaseAdapter {
             textViewCount = (TextView) rowView.findViewById(R.id.list_view_count);
         }
 
-        textViewKey.setText(keys.get(position));
-        textViewCount.setText(counts.get(position).toString());
+        textViewKey.setText(histogram.get(position).a);
+        textViewCount.setText(histogram.get(position).b.toString());
 
         return rowView;
     }

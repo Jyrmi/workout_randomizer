@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import adapter.StringIntAdapter;
+import adapter.TwoTuple;
 import sqlite.WorkoutContract;
 import sqlite.WorkoutDbHelper;
 
@@ -35,7 +35,6 @@ public class ResultsActivity extends AppCompatActivity {
     private final static String PREFERENCES_SELECTED_MUSCLE_GROUPS =
             "goodcompanyname.myapplication.workout_randomizer.selected_muscle_groups";
 
-    Button buttonRestart;
     Button buttonClearData;
     FloatingActionButton fab;
 
@@ -95,7 +94,7 @@ public class ResultsActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(sharedPreferencesTag, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
-        editor.commit();
+        editor.apply();
     }
 
     public void updatePreferences(String sharedPreferencesTag, ArrayList<?> selections) {
@@ -109,7 +108,7 @@ public class ResultsActivity extends AppCompatActivity {
                 editor.putInt(key.toString(), count + 1);
             }
 
-            editor.commit();
+            editor.apply();
         }
     }
 
@@ -117,20 +116,18 @@ public class ResultsActivity extends AppCompatActivity {
      * Update the list view to reflect exercises and their counts.
      */
     public void updateListView(String sharedPreferencesTag, int listViewResId) {
-        LinkedHashMap<String, Integer> histogram;
+        LinkedHashMap<String, Integer> databaseEntries;
 
         sharedPreferences = getSharedPreferences(sharedPreferencesTag, Context.MODE_PRIVATE);
-        histogram = new LinkedHashMap(sharedPreferences.getAll());
+        databaseEntries = new LinkedHashMap(sharedPreferences.getAll());
 
-        ArrayList<String> keys = new ArrayList<>();
-        ArrayList<Integer> counts = new ArrayList<>();
+        ArrayList<TwoTuple<String, Integer>> histogram = new ArrayList<>();
 
-        for (Map.Entry<String, Integer> entry : histogram.entrySet()) {
-            keys.add(entry.getKey());
-            counts.add(entry.getValue());
+        for (Map.Entry<String, Integer> entry : databaseEntries.entrySet()) {
+            histogram.add(new TwoTuple(entry.getKey(), entry.getValue()));
         }
 
-        StringIntAdapter counterAdapter = new StringIntAdapter(this, keys, counts);
+        StringIntAdapter counterAdapter = new StringIntAdapter(this, histogram);
 
         ListView listViewStats = (ListView) findViewById(listViewResId);
         listViewStats.setAdapter(counterAdapter);
@@ -163,7 +160,7 @@ public class ResultsActivity extends AppCompatActivity {
         );
 
         if (c.moveToFirst()) {
-            while (c.isAfterLast() == false) {
+            while (!c.isAfterLast()) {
                 String workout = c.getString(c.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_WORKOUT));
                 String date = c.getString(c.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_DATE));
 
@@ -172,6 +169,8 @@ public class ResultsActivity extends AppCompatActivity {
                 c.moveToNext();
             }
         }
+
+        c.close();
     }
 
     private void clearTable() {

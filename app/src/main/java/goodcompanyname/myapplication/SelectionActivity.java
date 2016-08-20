@@ -213,7 +213,7 @@ public class SelectionActivity extends AppCompatActivity {
         }
     }
 
-    public void toggleButtonsVisibility(ArrayList<Button> list, int visibility) {
+    private void toggleButtonsVisibility(ArrayList<Button> list, int visibility) {
         for (Button button : list) {
             button.setVisibility(visibility);
         }
@@ -406,15 +406,10 @@ public class SelectionActivity extends AppCompatActivity {
     }
 
     /** Called when the user clicks the Send button */
-    public void navigateToWorkout() {
+    private void navigateToWorkout() {
         // Do something in response to button
         Intent intent = new Intent(this, WorkoutActivity.class);
         intent.putExtra("EXTRA_MUSCLE_GROUPS", selectedMuscleGroups);
         startActivity(intent);
-    }
-
-    /** Called when the user clicks the Send button */
-    public void toastInvalidSelection() {
-        Toast.makeText(this, R.string.invalid_selection, Toast.LENGTH_SHORT).show();
     }
 }

@@ -19,6 +19,11 @@ android {
         }
     }
 
+    allprojects {
+        repositories {
+            maven { url "https://jitpack.io" }
+        }
+    }
 }
 
 dependencies {
@@ -31,4 +36,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
     compile 'com.android.support:appcompat-v7:23+'
     compile 'com.android.support:design:23+'
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
 }

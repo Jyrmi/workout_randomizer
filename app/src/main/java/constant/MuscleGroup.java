@@ -1,6 +1,9 @@
 package constant;
 
 import java.util.ArrayList;
+import java.util.Random;
+
+import adapter.TwoTuple;
 
 /**
  * Created by jeremy on 8/9/16.
@@ -29,6 +32,13 @@ public enum MuscleGroup {
             case QUADS: return "Quads";
             default: throw new IllegalArgumentException();
         }
+    }
+
+    public TwoTuple<String, MuscleGroup> pickOneRandomExercise() {
+        ArrayList<String> exerciseList = getExercises();
+        Random gen = new Random();
+        int random = gen.nextInt(exerciseList.size());
+        return new TwoTuple<>(getExercises().get(random), this);
     }
 
     public ArrayList<String> getExercises() {
