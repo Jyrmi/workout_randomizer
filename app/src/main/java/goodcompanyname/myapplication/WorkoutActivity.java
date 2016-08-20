@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 
+import adapter.ExerciseRecyclerAdapter;
 import adapter.StringStringAdapter;
 import constant.MuscleGroup;
 import sqlite.WorkoutContract;
@@ -30,7 +34,8 @@ public class WorkoutActivity extends AppCompatActivity {
 
     private static final String TAG = "WorkoutActivity";
 
-    private ListView listViewExercises;
+//    private ListView listViewExercises;
+    private RecyclerView recyclerViewExercises;
     private Button buttonDone;
     FloatingActionButton fab;
 
@@ -63,10 +68,36 @@ public class WorkoutActivity extends AppCompatActivity {
             exerciseList.add(muscleGroup.getExercises().get(random));
         }
 
-        StringStringAdapter exerciseAdapter = new StringStringAdapter(this, muscleGroupList, exerciseList);
+//        StringStringAdapter exerciseAdapter = new StringStringAdapter(this, muscleGroupList, exerciseList);
 
-        listViewExercises = (ListView) findViewById(R.id.exercises_list_view);
-        listViewExercises.setAdapter(exerciseAdapter);
+        ExerciseRecyclerAdapter exerciseAdapter = new ExerciseRecyclerAdapter(exerciseList, muscleGroupList);
+
+        recyclerViewExercises = (RecyclerView) findViewById(R.id.exercises_recycler_view);
+        recyclerViewExercises.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewExercises.setAdapter(exerciseAdapter);
+
+        ItemTouchHelper mIth = new ItemTouchHelper(
+            new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
+                    ItemTouchHelper.LEFT) {
+                public boolean onMove(RecyclerView recyclerView,
+                                      RecyclerView.ViewHolder viewHolder,
+                                      RecyclerView.ViewHolder target) {
+                    final int fromPos = viewHolder.getAdapterPosition();
+                    final int toPos = target.getAdapterPosition();
+                    // move item in `fromPos` to `toPos` in adapter.
+                    return true;// true if moved, false otherwise
+                }
+                public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                    // remove from adapter
+                }
+            }
+        );
+
+        mIth.attachToRecyclerView(recyclerViewExercises);
+
+
+//        listViewExercises = (ListView) findViewById(R.id.exercises_list_view);
+//        listViewExercises.setAdapter(exerciseAdapter);
 
         fab = (FloatingActionButton) findViewById(R.id.fab_workout);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -76,8 +107,8 @@ public class WorkoutActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 int i;
-                for (i = 0; i < listViewExercises.getChildCount(); i++) {
-                    View cardView = listViewExercises.getChildAt(i);
+                for (i = 0; i < recyclerViewExercises.getChildCount(); i++) {
+                    View cardView = recyclerViewExercises.getChildAt(i);
                     CheckBox checkBox =
                             (CheckBox) cardView.findViewById(R.id.list_view_checkbox);
 
