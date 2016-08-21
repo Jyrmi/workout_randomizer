@@ -1,13 +1,14 @@
 package goodcompanyname.myapplication;
 
-import android.content.Intent;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -17,10 +18,11 @@ import java.util.ArrayList;
 
 import constant.MuscleGroup;
 
-public class SelectionActivity extends AppCompatActivity {
+public class SelectionFragment extends Fragment {
     // todo: change "finish" button to circle with + symbol
 
-    private static final String TAG = "SelectionActivity";
+    private static final String TAG = "SelectionFragment";
+    public static final String ARG_PAGE = "ARG_PAGE";
 
     ImageView imageGroupA;
     ImageView imageGroupB;
@@ -51,51 +53,85 @@ public class SelectionActivity extends AppCompatActivity {
     Button buttonRearHamstrings;
     Button buttonRearCalves;
 
-    ImageButton buttonTurn;
-    FloatingActionButton fab;
+    FloatingActionButton fabGenerate;
+    FloatingActionButton fabRotate;
 
-    Boolean forward;
+    OnMuscleGroupsSelectedListener callback;
+
     ArrayList<MuscleGroup> selectedMuscleGroups;
     ArrayList<Button> frontButtons;
     ArrayList<Button> rearButtons;
+    Boolean forward;
+
+    // Container Activity must implement this interface
+    protected interface OnMuscleGroupsSelectedListener {
+        void onFinishSelection(ArrayList<MuscleGroup> selectedMuscleGroups);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
 
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            callback = (OnMuscleGroupsSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnMuscleGroupsSelectedListener");
+        }
+    }
+
+    public static SelectionFragment newInstance(int pageNo) {
+        Bundle args = new Bundle();
+        args.putInt(ARG_PAGE, pageNo);
+        SelectionFragment fragment = new SelectionFragment();
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_selection);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_selection, container, false);
 
         forward = true;
         selectedMuscleGroups = new ArrayList();
 
-        imageGroupA = (ImageView) findViewById(R.id.image_group_a);
-        imageGroupB = (ImageView) findViewById(R.id.image_group_b);
-        imageGroupC = (ImageView) findViewById(R.id.image_group_c);
-        imageGroupD = (ImageView) findViewById(R.id.image_group_d);
+        imageGroupA = (ImageView) view.findViewById(R.id.image_group_a);
+        imageGroupB = (ImageView) view.findViewById(R.id.image_group_b);
+        imageGroupC = (ImageView) view.findViewById(R.id.image_group_c);
+        imageGroupD = (ImageView) view.findViewById(R.id.image_group_d);
 
-        buttonAbsLower = (Button) findViewById(R.id.button_abs_lower);
-        buttonAbsUpper = (Button) findViewById(R.id.button_abs_upper);
-        buttonBiceps = (Button) findViewById(R.id.button_biceps);
-        buttonChest = (Button) findViewById(R.id.button_chest);
-        buttonForearms = (Button) findViewById(R.id.button_forearms);
-        buttonFrontCalves = (Button) findViewById(R.id.button_front_calves);
-        buttonFrontHamstrings = (Button) findViewById(R.id.button_front_hamstrings);
-        buttonFrontLatsLeft = (Button) findViewById(R.id.button_front_lats_left);
-        buttonFrontLatsRight = (Button) findViewById(R.id.button_front_lats_right);
-        buttonFrontShoulders = (Button) findViewById(R.id.button_front_shoulders);
-        buttonFrontTraps = (Button) findViewById(R.id.button_front_traps);
-        buttonNeck = (Button) findViewById(R.id.button_neck);
-        buttonQuads = (Button) findViewById(R.id.button_quads);
+        buttonAbsLower = (Button) view.findViewById(R.id.button_abs_lower);
+        buttonAbsUpper = (Button) view.findViewById(R.id.button_abs_upper);
+        buttonBiceps = (Button) view.findViewById(R.id.button_biceps);
+        buttonChest = (Button) view.findViewById(R.id.button_chest);
+        buttonForearms = (Button) view.findViewById(R.id.button_forearms);
+        buttonFrontCalves = (Button) view.findViewById(R.id.button_front_calves);
+        buttonFrontHamstrings = (Button) view.findViewById(R.id.button_front_hamstrings);
+        buttonFrontLatsLeft = (Button) view.findViewById(R.id.button_front_lats_left);
+        buttonFrontLatsRight = (Button) view.findViewById(R.id.button_front_lats_right);
+        buttonFrontShoulders = (Button) view.findViewById(R.id.button_front_shoulders);
+        buttonFrontTraps = (Button) view.findViewById(R.id.button_front_traps);
+        buttonNeck = (Button) view.findViewById(R.id.button_neck);
+        buttonQuads = (Button) view.findViewById(R.id.button_quads);
 
-        buttonRearTraps = (Button) findViewById(R.id.button_rear_traps);
-        buttonRearShoulders = (Button) findViewById(R.id.button_rear_shoulders);
-        buttonTriceps = (Button) findViewById(R.id.button_triceps);
-        buttonRearForearms = (Button) findViewById(R.id.button_rear_forearms);
-        buttonMiddleBack = (Button) findViewById(R.id.button_middle_back);
-        buttonLowerBack = (Button) findViewById(R.id.button_lower_back);
-        buttonGlutes = (Button) findViewById(R.id.button_glutes);
-        buttonRearHamstrings = (Button) findViewById(R.id.button_rear_hamstrings);
-        buttonRearCalves = (Button) findViewById(R.id.button_rear_calves);
+        buttonRearTraps = (Button) view.findViewById(R.id.button_rear_traps);
+        buttonRearShoulders = (Button) view.findViewById(R.id.button_rear_shoulders);
+        buttonTriceps = (Button) view.findViewById(R.id.button_triceps);
+        buttonRearForearms = (Button) view.findViewById(R.id.button_rear_forearms);
+        buttonMiddleBack = (Button) view.findViewById(R.id.button_middle_back);
+        buttonLowerBack = (Button) view.findViewById(R.id.button_lower_back);
+        buttonGlutes = (Button) view.findViewById(R.id.button_glutes);
+        buttonRearHamstrings = (Button) view.findViewById(R.id.button_rear_hamstrings);
+        buttonRearCalves = (Button) view.findViewById(R.id.button_rear_calves);
 
         selectedMuscleGroups = new ArrayList<>();
 
@@ -152,42 +188,44 @@ public class SelectionActivity extends AppCompatActivity {
 
         toggleButtonsVisibility(frontButtons, View.VISIBLE);
 
-        buttonTurn = (ImageButton) findViewById(R.id.button_turn_body);
-        buttonTurn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                turnBody();
-            }
-        });
-
-        fab = (FloatingActionButton) findViewById(R.id.fab_selection);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fabGenerate = (FloatingActionButton) view.findViewById(R.id.fab_selection);
+        fabGenerate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (selectedMuscleGroups.isEmpty()) {
                     Snackbar.make(view, "Select at least one", Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();
                 } else {
-                    navigateToWorkout();
+                    callback.onFinishSelection(selectedMuscleGroups);
+                    resetSelection();
                 }
             }
         });
+
+        fabRotate = (FloatingActionButton) view.findViewById(R.id.fab_selection_rotate);
+        fabRotate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                turnBody();
+            }
+        });
+
+        return view;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+    public void resetSelection() {
+        selectedMuscleGroups.clear();
+        if (forward) {
+            setGroupImageResourceFront(imageGroupA); // Update image resources
+            setGroupImageResourceFront(imageGroupB);
+            setGroupImageResourceFront(imageGroupC);
+            setGroupImageResourceFront(imageGroupD);
+        } else {
+            setGroupImageResourceRear(imageGroupA); // Update image resources
+            setGroupImageResourceRear(imageGroupB);
+            setGroupImageResourceRear(imageGroupC);
+            setGroupImageResourceRear(imageGroupD);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -403,13 +441,5 @@ public class SelectionActivity extends AppCompatActivity {
                 imageView.setImageResource(R.drawable.h_none);
             }
         }
-    }
-
-    /** Called when the user clicks the Send button */
-    private void navigateToWorkout() {
-        // Do something in response to button
-        Intent intent = new Intent(this, WorkoutActivity.class);
-        intent.putExtra("EXTRA_MUSCLE_GROUPS", selectedMuscleGroups);
-        startActivity(intent);
     }
 }

@@ -6,8 +6,8 @@
     style="@style/CardView"
 
     card_view:cardUseCompatPadding="true"
-    card_view:cardElevation="3dp"
-    card_view:cardCornerRadius="8dp">
+    card_view:cardElevation="2dp"
+    card_view:cardCornerRadius="6dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -25,10 +25,6 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:textSize="@dimen/sub_text" />
-
-        <CheckBox android:id="@+id/card_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

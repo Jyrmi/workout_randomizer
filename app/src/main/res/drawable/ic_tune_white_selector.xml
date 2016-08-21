@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_tune_white_selected_24dp" android:state_selected="true" />
+    <item android:drawable="@drawable/ic_tune_white_unselected_24dp" />
+</selector>

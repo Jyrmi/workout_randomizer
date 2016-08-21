@@ -11,29 +11,34 @@
         android:orientation="vertical"
         android:layout_margin="20dp">
 
-        <TextView
+        <com.github.mikephil.charting.charts.RadarChart
+            android:id="@+id/muscle_radar_chart"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/main_text"
-            android:text="@string/list_muscle_groups" />
+            android:layout_height="360dp" />
 
-        <ListView
-            android:id="@+id/list_view_muscle_group_stats"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="#00000000" />
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textSize="@dimen/main_text"-->
+            <!--android:text="@string/list_muscle_groups" />-->
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/main_text"
-            android:text="@string/list_exercises" />
+        <!--<ListView-->
+            <!--android:id="@+id/list_view_muscle_group_stats"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:divider="#00000000" />-->
 
-        <ListView
-            android:id="@+id/list_view_exercise_stats"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="#00000000" />
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textSize="@dimen/main_text"-->
+            <!--android:text="@string/list_exercises" />-->
+
+        <!--<ListView-->
+            <!--android:id="@+id/list_view_exercise_stats"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:divider="#00000000" />-->
 
     </LinearLayout>
 

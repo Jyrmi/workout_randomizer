@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#5c5c8a</color>
+    <color name="colorPrimaryDark">#3d3d5c</color>
+    <color name="colorAccent">#8585ad</color>
+
     <color name="transparent">#00FFFFFF</color>
+
     <color name="white">#FFFFFF</color>
+    <color name="white_dim">#8AFFFFFF</color>
+    <color name="white_dimmer">#DEFFFFFF</color>
+
     <color name="pantone_448c">#4A412A</color>
+    <color name="pantone_448c_dim">#8A4A412A</color>
 </resources>
