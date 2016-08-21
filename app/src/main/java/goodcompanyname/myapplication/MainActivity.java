@@ -1,5 +1,7 @@
 package goodcompanyname.myapplication;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,13 +23,17 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import adapter.TwoTuple;
 import constant.MuscleGroup;
 
 
 public class MainActivity extends AppCompatActivity
         implements SelectionFragment.OnMuscleGroupsSelectedListener {
+    // todo: remember queued exercises for next launch
 
     private static final String TAG = "MainActivity";
+    private final static String PREFERENCES_QUEUED_EXERCISES =
+            "goodcompanyname.myapplication.workout_randomizer.queued_exercises";
 
     private TabLayout tabLayout;
 
@@ -71,6 +77,24 @@ public class MainActivity extends AppCompatActivity
 
             tabLayout.getTabAt(0).getCustomView().setSelected(true);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // Remember the current list of queued exercises for the next time the app is started.
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                PREFERENCES_QUEUED_EXERCISES, Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+
+        for (TwoTuple<String, MuscleGroup> exercise : workoutFragment.getQueuedExercises()) {
+            editor.putString(exercise.a, exercise.b.toString());
+        }
+
+        editor.apply();
     }
 
     private class PagerAdapter extends FragmentPagerAdapter {

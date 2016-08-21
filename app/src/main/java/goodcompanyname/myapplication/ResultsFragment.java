@@ -47,8 +47,6 @@ public class ResultsFragment extends Fragment {
 
     private final static String TAG = "ResultsFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
-    private final static String PREFERENCES_SELECTED_EXERCISES =
-            "goodcompanyname.myapplication.workout_randomizer.selected_exercises";
     private final static String PREFERENCES_SELECTED_MUSCLE_GROUPS =
             "goodcompanyname.myapplication.workout_randomizer.selected_muscle_groups";
 
@@ -110,7 +108,6 @@ public class ResultsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 clearPreferences(PREFERENCES_SELECTED_MUSCLE_GROUPS);
-                clearPreferences(PREFERENCES_SELECTED_EXERCISES);
 
                 /* WTFF DONT DO THIS, NOTIFYHASCHANGED() EXISTS */
 

@@ -1,6 +1,8 @@
 package goodcompanyname.myapplication;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +19,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import adapter.ExerciseRecyclerAdapter;
 import adapter.TwoTuple;
@@ -30,6 +35,8 @@ public class WorkoutFragment extends Fragment {
 
     private static final String TAG = "WorkoutFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
+    private final static String PREFERENCES_QUEUED_EXERCISES =
+            "goodcompanyname.myapplication.workout_randomizer.queued_exercises";
 
     TextView textViewEmpty;
 
@@ -64,9 +71,42 @@ public class WorkoutFragment extends Fragment {
         }
     }
 
+    private void writeExerciseDbEntry(TwoTuple<String, MuscleGroup> exercise, String status) {
+        // Gets the data repository in write mode
+        ExerciseDbHelper mDbHelper = new ExerciseDbHelper(getActivity());
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        String dateAndTime = Calendar.getInstance().getTime().toString();
+        ContentValues values = new ContentValues();
+        values.put(ExerciseContract.ExerciseEntry.COLUMN_EXERCISE, exercise.a);
+        values.put(ExerciseContract.ExerciseEntry.COLUMN_GROUP, exercise.b.toString());
+        values.put(ExerciseContract.ExerciseEntry.COLUMN_DATE, dateAndTime);
+        values.put(ExerciseContract.ExerciseEntry.COLUMN_STATUS, status);
+
+        // Insert the new row, returning the primary key value of the new row
+        db.insert(ExerciseContract.ExerciseEntry.TABLE_NAME, null, values);
+
+        db.close();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Fetch the saved list of exercises and show them in the view.
+        LinkedHashMap<String, Integer> entries;
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
+                PREFERENCES_QUEUED_EXERCISES, Context.MODE_PRIVATE);
+
+        LinkedHashMap<String, String> savedExercises = new LinkedHashMap(sharedPreferences.getAll());
+
+        exerciseList = new ArrayList();
+        for (Map.Entry<String, String> entry : savedExercises.entrySet()) {
+            exerciseList.add(
+                    new TwoTuple(entry.getKey(), MuscleGroup.toMuscleGroup(entry.getValue())));
+        }
     }
 
     @Override
@@ -74,9 +114,11 @@ public class WorkoutFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_workout, container, false);
 
+        // Hide the "No exercises queued" message if there are queued exercises retrieved from prefs
         textViewEmpty = (TextView) view.findViewById(R.id.text_no_exercises);
+        if (!exerciseList.isEmpty()) textViewEmpty.setVisibility(View.INVISIBLE);
 
-        exerciseList = new ArrayList();
+        if (exerciseList == null) exerciseList = new ArrayList();
         exerciseAdapter = new ExerciseRecyclerAdapter(exerciseList);
 
         recyclerViewExercises = (RecyclerView) view.findViewById(R.id.exercises_recycler_view);
@@ -127,27 +169,12 @@ public class WorkoutFragment extends Fragment {
         return view;
     }
 
+    public ArrayList<TwoTuple<String, MuscleGroup>> getQueuedExercises() {
+        return exerciseList;
+    }
+
     /** Make a toast */
     public void makeToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    private void writeExerciseDbEntry(TwoTuple<String, MuscleGroup> exercise, String status) {
-        // Gets the data repository in write mode
-        ExerciseDbHelper mDbHelper = new ExerciseDbHelper(getActivity());
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-        // Create a new map of values, where column names are the keys
-        String dateAndTime = Calendar.getInstance().getTime().toString();
-        ContentValues values = new ContentValues();
-        values.put(ExerciseContract.ExerciseEntry.COLUMN_EXERCISE, exercise.a);
-        values.put(ExerciseContract.ExerciseEntry.COLUMN_GROUP, exercise.b.toString());
-        values.put(ExerciseContract.ExerciseEntry.COLUMN_DATE, dateAndTime);
-        values.put(ExerciseContract.ExerciseEntry.COLUMN_STATUS, status);
-
-        // Insert the new row, returning the primary key value of the new row
-        db.insert(ExerciseContract.ExerciseEntry.TABLE_NAME, null, values);
-
-        db.close();
     }
 }

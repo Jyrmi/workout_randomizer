@@ -3,6 +3,8 @@ package constant;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.microedition.khronos.opengles.GL;
+
 import adapter.TwoTuple;
 
 /**
@@ -30,6 +32,27 @@ public enum MuscleGroup {
             case TRICEPS: return "Triceps";
             case NECK: return "Neck";
             case QUADS: return "Quads";
+            default: throw new IllegalArgumentException();
+        }
+    }
+
+    public static MuscleGroup toMuscleGroup(String string) {
+        switch (string) {
+            case "Abs": return ABS;
+            case "Biceps": return BICEPS;
+            case "Chest": return CHEST;
+            case "Forearms": return FOREARMS;
+            case "Calves": return CALVES;
+            case "Glutes": return GLUTES;
+            case "Hamstrings": return HAMSTRINGS;
+            case "Lats": return LATS;
+            case "Lower Back": return LOWER_BACK;
+            case "Middle Back": return MIDDLE_BACK;
+            case "Shoulders": return SHOULDERS;
+            case "Traps": return TRAPS;
+            case "Triceps": return TRICEPS;
+            case "Neck": return NECK;
+            case "Quads": return QUADS;
             default: throw new IllegalArgumentException();
         }
     }
