@@ -1,6 +1,7 @@
 package goodcompanyname.myapplication;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,13 +52,13 @@ public class ResultsFragment extends Fragment {
     private final static String PREFERENCES_SELECTED_MUSCLE_GROUPS =
             "goodcompanyname.myapplication.workout_randomizer.selected_muscle_groups";
 
-    Button buttonClearData;
     FloatingActionButton fab;
 
     SharedPreferences sharedPreferences;
     ArrayList<String> selectedMuscleGroups;
     ArrayList<String> completedExercises;
     ArrayList<String> skippedExercises;
+    DialogInterface.OnClickListener dialogClickListener;
 
     RadarChart muscleGroupsChart;
     RadarDataSet radarDataSet;
@@ -94,27 +96,35 @@ public class ResultsFragment extends Fragment {
         completedExercises = new ArrayList<>();
         skippedExercises = new ArrayList<>();
 
-        fab = (FloatingActionButton) view.findViewById(R.id.fab_results_restart);
+        dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        //Yes button clicked
+                        clearPreferences(PREFERENCES_SELECTED_MUSCLE_GROUPS);
+                        clearTable();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        break;
+                }
+            }
+        };
+
+        fab = (FloatingActionButton) view.findViewById(R.id.fab_clear_data);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                readTable();
-                makeToast("reading db and logging to logcat.");
-            }
-        });
-
-        buttonClearData = (Button) view.findViewById(R.id.clear_data_button);
-        buttonClearData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clearPreferences(PREFERENCES_SELECTED_MUSCLE_GROUPS);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("Clear all data?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
 
                 /* WTFF DONT DO THIS, NOTIFYHASCHANGED() EXISTS */
 
 //                updateListView(PREFERENCES_SELECTED_MUSCLE_GROUPS, R.id.list_view_muscle_group_stats);
 //                updateListView(PREFERENCES_SELECTED_EXERCISES, R.id.list_view_exercise_stats);
-
-                clearTable();
             }
         });
 
