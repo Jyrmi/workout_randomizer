@@ -1,34 +1,37 @@
 package goodcompanyname.myapplication;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import adapter.TwoTuple;
 import constant.PreferenceTags;
-import sqlite.ExerciseContract;
+import constant.Setting;
+import constant.SettingsCategory;
 
 /**
  * Created by jeremy on 8/20/16.
  */
 public class SettingsFragment extends Fragment {
-    // todo: create options for isolation/compound, difficulty, and syncing exercise db via web scrape and "about" information
 
     private static final String TAG = "SettingsFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
 
     // Exercise Types section
-    CheckBox[] typeCheckBoxes;
     CheckBox checkBoxCardio;
     CheckBox checkBoxOlympic;
     CheckBox checkBoxPlyometrics;
@@ -38,7 +41,6 @@ public class SettingsFragment extends Fragment {
     CheckBox checkBoxStrongman;
 
     // Equipment section
-    CheckBox[] equipmentCheckBoxes;
     CheckBox checkBoxBands;
     CheckBox checkBoxBarbell;
     CheckBox checkBoxBody;
@@ -54,20 +56,17 @@ public class SettingsFragment extends Fragment {
     CheckBox checkBoxOther;
 
     // Mechanics Section
-    CheckBox[] mechanicsCheckBoxes;
     CheckBox checkBoxCompound;
     CheckBox checkBoxIsolation;
     CheckBox checkBoxNeither;
 
     // Force Section
-    CheckBox[] forceCheckBoxes;
     CheckBox checkBoxPush;
     CheckBox checkBoxPull;
     CheckBox checkBoxStatic;
     CheckBox checkBoxOtherForce;
 
     // Difficulty section
-    CheckBox[] difficultyCheckBoxes;
     CheckBox checkBoxEasy;
     CheckBox checkBoxMedium;
     CheckBox checkBoxHard;
@@ -76,27 +75,9 @@ public class SettingsFragment extends Fragment {
     CheckBox checkBoxYes;
     CheckBox checkBoxNo;
 
-    OnSettingsRequestedListener callback;
     private int mPageNo;
-
-    // Container Activity must implement this interface
-    protected interface OnSettingsRequestedListener {
-        void onSettingsRequested();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception
-        try {
-            callback = (OnSettingsRequestedListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnMuscleGroupsSelectedListener");
-        }
-    }
+    private HashMap<CheckBox, Setting> checkBoxToSetting;
+    private HashMap<Setting, CheckBox> settingToCheckBox;
 
     public static SettingsFragment newInstance(int pageNo) {
 
@@ -115,6 +96,9 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        checkBoxToSetting = new HashMap<>();
+        settingToCheckBox = new HashMap<>();
 
         // Exercise Types section
         checkBoxCardio = (CheckBox) view.findViewById(R.id.checkbox_cardio);
@@ -160,6 +144,100 @@ public class SettingsFragment extends Fragment {
         checkBoxYes = (CheckBox) view.findViewById(R.id.checkbox_yes);
         checkBoxNo = (CheckBox) view.findViewById(R.id.checkbox_no);
 
+
+
+        // Associate CheckBoxes with their Setting
+
+        // Exercise Types section
+        checkBoxToSetting.put(checkBoxCardio, Setting.CARDIO);
+        checkBoxToSetting.put(checkBoxOlympic, Setting.OLYMPIC_WEIGHTLIFTING);
+        checkBoxToSetting.put(checkBoxPlyometrics, Setting.PLYOMETRICS);
+        checkBoxToSetting.put(checkBoxPowerlifting, Setting.POWERLIFTING);
+        checkBoxToSetting.put(checkBoxStrength, Setting.STRENGTH);
+        checkBoxToSetting.put(checkBoxStretching, Setting.STRETCHING);
+        checkBoxToSetting.put(checkBoxStrongman, Setting.STRONGMAN);
+
+        // Equipment section
+        checkBoxToSetting.put(checkBoxBands, Setting.BANDS);
+        checkBoxToSetting.put(checkBoxBarbell, Setting.BARBELL);
+        checkBoxToSetting.put(checkBoxBody, Setting.BODY_ONLY);
+        checkBoxToSetting.put(checkBoxCable, Setting.CABLE);
+        checkBoxToSetting.put(checkBoxDumbbell, Setting.DUMBBELL);
+        checkBoxToSetting.put(checkBoxEzBar, Setting.EZ_CURL_BAR);
+        checkBoxToSetting.put(checkBoxExerciseBall, Setting.EXERCISE_BALL);
+        checkBoxToSetting.put(checkBoxFoamRoll, Setting.FOAM_ROLL);
+        checkBoxToSetting.put(checkBoxKettlebells, Setting.KETTLEBELLS);
+        checkBoxToSetting.put(checkBoxMachine, Setting.MACHINE);
+        checkBoxToSetting.put(checkBoxMedicineBall, Setting.MEDICINE_BALL);
+        checkBoxToSetting.put(checkBoxNone, Setting.NONE);
+        checkBoxToSetting.put(checkBoxOther, Setting.OTHER);
+
+        // Mechanics Section
+        checkBoxToSetting.put(checkBoxCompound, Setting.COMPOUND);
+        checkBoxToSetting.put(checkBoxIsolation, Setting.ISOLATION);
+        checkBoxToSetting.put(checkBoxNeither, Setting.NEITHER);
+
+        // Force Section
+        checkBoxToSetting.put(checkBoxPush, Setting.PUSH);
+        checkBoxToSetting.put(checkBoxPull, Setting.PULL);
+        checkBoxToSetting.put(checkBoxStatic, Setting.STATIC);
+        checkBoxToSetting.put(checkBoxOtherForce, Setting.OTHER_FORCE);
+
+        // Difficulty section
+        checkBoxToSetting.put(checkBoxEasy, Setting.BEGINNER);
+        checkBoxToSetting.put(checkBoxMedium, Setting.INTERMEDIATE);
+        checkBoxToSetting.put(checkBoxHard, Setting.EXPERT);
+
+        // Sports section
+        checkBoxToSetting.put(checkBoxYes, Setting.YES);
+        checkBoxToSetting.put(checkBoxNo, Setting.NO);
+
+
+
+        // Exercise Types section
+        settingToCheckBox.put(Setting.CARDIO, checkBoxCardio);
+        settingToCheckBox.put(Setting.OLYMPIC_WEIGHTLIFTING, checkBoxOlympic);
+        settingToCheckBox.put(Setting.PLYOMETRICS, checkBoxPlyometrics);
+        settingToCheckBox.put(Setting.POWERLIFTING, checkBoxPowerlifting);
+        settingToCheckBox.put(Setting.STRENGTH, checkBoxStrength);
+        settingToCheckBox.put(Setting.STRETCHING, checkBoxStretching);
+        settingToCheckBox.put(Setting.STRONGMAN, checkBoxStrongman);
+
+        // Equipment section
+        settingToCheckBox.put(Setting.BANDS, checkBoxBands);
+        settingToCheckBox.put(Setting.BARBELL, checkBoxBarbell);
+        settingToCheckBox.put(Setting.BODY_ONLY, checkBoxBody);
+        settingToCheckBox.put(Setting.CABLE, checkBoxCable);
+        settingToCheckBox.put(Setting.DUMBBELL, checkBoxDumbbell);
+        settingToCheckBox.put(Setting.EZ_CURL_BAR, checkBoxEzBar);
+        settingToCheckBox.put(Setting.EXERCISE_BALL, checkBoxExerciseBall);
+        settingToCheckBox.put(Setting.FOAM_ROLL, checkBoxFoamRoll);
+        settingToCheckBox.put(Setting.KETTLEBELLS, checkBoxKettlebells);
+        settingToCheckBox.put(Setting.MACHINE, checkBoxMachine);
+        settingToCheckBox.put(Setting.MEDICINE_BALL, checkBoxMedicineBall);
+        settingToCheckBox.put(Setting.NONE, checkBoxNone);
+        settingToCheckBox.put(Setting.OTHER, checkBoxOther);
+
+        // Mechanics Section
+        settingToCheckBox.put(Setting.COMPOUND, checkBoxCompound);
+        settingToCheckBox.put(Setting.ISOLATION, checkBoxIsolation);
+        settingToCheckBox.put(Setting.NEITHER, checkBoxNeither);
+
+        // Force Section
+        settingToCheckBox.put(Setting.PUSH, checkBoxPush);
+        settingToCheckBox.put(Setting.PULL, checkBoxPull);
+        settingToCheckBox.put(Setting.STATIC, checkBoxStatic);
+        settingToCheckBox.put(Setting.OTHER_FORCE, checkBoxOtherForce);
+
+        // Difficulty section
+        settingToCheckBox.put(Setting.BEGINNER, checkBoxEasy);
+        settingToCheckBox.put(Setting.INTERMEDIATE, checkBoxMedium);
+        settingToCheckBox.put(Setting.EXPERT, checkBoxHard);
+
+        // Sports section
+        settingToCheckBox.put(Setting.YES, checkBoxYes);
+        settingToCheckBox.put(Setting.NO, checkBoxNo);
+
         recallSettings();
 
 //        // Contain in arrays for convenience
@@ -172,70 +250,18 @@ public class SettingsFragment extends Fragment {
 //        mechanicsCheckBoxes = new CheckBox[]{checkBoxCompound, checkBoxIsolation, checkBoxNeither};
 //        difficultyCheckBoxes = new CheckBox[]{checkBoxEasy, checkBoxMedium, checkBoxHard};
 
+//        Button testButton = (Button) view.findViewById(R.id.test_button);
+//        testButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                TwoTuple<String, ArrayList<String>> settingsQuery = getSettingsAsQuery();
+//                TwoTuple<String, ArrayList<String>> settingsQuery = generateWhereClause();
+//                Log.d(TAG, settingsQuery.a);
+//                Log.d(TAG, settingsQuery.b.toString());
+//            }
+//        });
+
         return view;
-    }
-
-    public HashMap<String, ArrayList<String>> getSettings() {
-        HashMap<String, ArrayList<String>> settings = new HashMap<>();
-        ArrayList<String> typeSettings = new ArrayList<>();
-        ArrayList<String> equipmentSettings = new ArrayList<>();
-        ArrayList<String> mechanicsSettings = new ArrayList<>();
-        ArrayList<String> forceSettings = new ArrayList<>();
-        ArrayList<String> difficultySettings = new ArrayList<>();
-        ArrayList<String> sportsSettings = new ArrayList<>();
-
-        // Exercise Types section
-        if (checkBoxCardio.isChecked()) {typeSettings.add("Cardio");}
-        if (checkBoxOlympic.isChecked()) {typeSettings.add("Olympic Weightlifting");}
-        if (checkBoxPlyometrics.isChecked()) {typeSettings.add("Plyometrics");}
-        if (checkBoxPowerlifting.isChecked()) {typeSettings.add("Powerlifting");}
-        if (checkBoxStrength.isChecked()) {typeSettings.add("Strength");}
-        if (checkBoxStretching.isChecked()) {typeSettings.add("Stretching");}
-        if (checkBoxStrongman.isChecked()) {typeSettings.add("Strongman");}
-
-        // Equipment section
-        if (checkBoxBands.isChecked()) {equipmentSettings.add("Bands");}
-        if (checkBoxBarbell.isChecked()) {equipmentSettings.add("Barbell");}
-        if (checkBoxBody.isChecked()) {equipmentSettings.add("Body Only");}
-        if (checkBoxCable.isChecked()) {equipmentSettings.add("Cable");}
-        if (checkBoxDumbbell.isChecked()) {equipmentSettings.add("Dumbbell");}
-        if (checkBoxEzBar.isChecked()) {equipmentSettings.add("E-Z Curl Bar");}
-        if (checkBoxExerciseBall.isChecked()) {equipmentSettings.add("Exercise Ball");}
-        if (checkBoxFoamRoll.isChecked()) {equipmentSettings.add("Foam Roll");}
-        if (checkBoxKettlebells.isChecked()) {equipmentSettings.add("Kettlebells");}
-        if (checkBoxMachine.isChecked()) {equipmentSettings.add("Machine");}
-        if (checkBoxMedicineBall.isChecked()) {equipmentSettings.add("Medicine Ball");}
-        if (checkBoxNone.isChecked()) {equipmentSettings.add("None");}
-        if (checkBoxOther.isChecked()) {equipmentSettings.add("Other");}
-
-        // Mechanics Section
-        if (checkBoxCompound.isChecked()) {mechanicsSettings.add("Compound");}
-        if (checkBoxIsolation.isChecked()) {mechanicsSettings.add("Isolation");}
-        if (checkBoxNeither.isChecked()) {mechanicsSettings.add("N/A");}
-
-        // Force Section
-        if (checkBoxPush.isChecked()) {forceSettings.add("Push");}
-        if (checkBoxPull.isChecked()) {forceSettings.add("Pull");}
-        if (checkBoxStatic.isChecked()) {forceSettings.add("Static");}
-        if (checkBoxOtherForce.isChecked()) {forceSettings.add("N/A Force");}
-
-        // Difficulty section
-        if (checkBoxEasy.isChecked()) {difficultySettings.add("Beginner");}
-        if (checkBoxMedium.isChecked()) {difficultySettings.add("Intermediate");}
-        if (checkBoxHard.isChecked()) {difficultySettings.add("Expert");}
-
-        // Sports section
-        if (checkBoxYes.isChecked()) {sportsSettings.add("Yes");}
-        if (checkBoxNo.isChecked()) {sportsSettings.add("No");}
-
-        settings.put(ExerciseContract.ExerciseEntry.COLUMN_TYPE, typeSettings);
-        settings.put(ExerciseContract.ExerciseEntry.COLUMN_EQUIPMENT, equipmentSettings);
-        settings.put(ExerciseContract.ExerciseEntry.COLUMN_MECHANICS, mechanicsSettings);
-        settings.put(ExerciseContract.ExerciseEntry.COLUMN_FORCE, forceSettings);
-        settings.put(ExerciseContract.ExerciseEntry.COLUMN_DIFFICULTY, difficultySettings);
-        settings.put(ExerciseContract.ExerciseEntry.COLUMN_SPORT, sportsSettings);
-
-        return settings;
     }
 
     private void recallSettings() {
@@ -243,86 +269,105 @@ public class SettingsFragment extends Fragment {
                 getActivity().getSharedPreferences(PreferenceTags.PREFERENCES_SETTINGS,
                         Context.MODE_PRIVATE);
 
-        HashMap<String, Boolean> settings = (HashMap) sharedPreferences.getAll();
+        HashMap<String, String> settings = (HashMap) sharedPreferences.getAll();
 
-        Log.d(TAG, settings.toString());
-
-        for (Map.Entry<String, Boolean> settingsEntry : settings.entrySet()) {
-
-            Log.d(TAG, settingsEntry.getKey());
-
-            switch (settingsEntry.getKey()) {
-                case "Cardio": checkBoxCardio.setChecked(true); break;
-                case "Olympic Weightlifting": checkBoxOlympic.setChecked(true); break;
-                case "Plyometrics": checkBoxPlyometrics.setChecked(true); break;
-                case "Powerlifting": checkBoxPowerlifting.setChecked(true); break;
-                case "Strength": checkBoxStrength.setChecked(true); break;
-                case "Stretching": checkBoxStretching.setChecked(true); break;
-                case "Strongman": checkBoxStrongman.setChecked(true); break;
-                case "Bands": checkBoxBands.setChecked(true); break;
-                case "Barbell": checkBoxBarbell.setChecked(true); break;
-                case "Body Only": checkBoxBody.setChecked(true); break;
-                case "Cable": checkBoxCable.setChecked(true); break;
-                case "Dumbbell": checkBoxDumbbell.setChecked(true); break;
-                case "E-Z Curl Bar": checkBoxEzBar.setChecked(true); break;
-                case "Exercise Ball": checkBoxExerciseBall.setChecked(true); break;
-                case "Foam Roll": checkBoxFoamRoll.setChecked(true); break;
-                case "Kettlebells": checkBoxKettlebells.setChecked(true); break;
-                case "Machine": checkBoxMachine.setChecked(true); break;
-                case "Medicine Ball": checkBoxMedicineBall.setChecked(true); break;
-                case "None": checkBoxNone.setChecked(true); break;
-                case "Other": checkBoxOther.setChecked(true); break;
-                case "Compound": checkBoxCompound.setChecked(true); break;
-                case "Isolation": checkBoxIsolation.setChecked(true); break;
-                case "N/A": checkBoxNeither.setChecked(true); break;
-                case "Push": checkBoxPush.setChecked(true); break;
-                case "Pull": checkBoxPull.setChecked(true); break;
-                case "Static": checkBoxStatic.setChecked(true); break;
-                case "N/A Force": checkBoxOtherForce.setChecked(true); break;
-                case "Beginner": checkBoxEasy.setChecked(true); break;
-                case "Intermediate": checkBoxMedium.setChecked(true); break;
-                case "Expert": checkBoxHard.setChecked(true); break;
-                case "Yes": checkBoxYes.setChecked(true); break;
-                case "No": checkBoxNo.setChecked(true); break;
-                default: throw new IllegalArgumentException();
-            }
+        for (Map.Entry<String, String> settingsEntry : settings.entrySet()) {
+            Setting s = Setting.toSetting(settingsEntry.getKey());
+            settingToCheckBox.get(s).setChecked(true);
         }
     }
 
+    public HashMap<SettingsCategory, ArrayList<Setting>> getSettings() {
+        HashMap<SettingsCategory, ArrayList<Setting>> settings = new HashMap<>();
+
+        for (Map.Entry<CheckBox, Setting> entry : checkBoxToSetting.entrySet()) {
+            if (entry.getKey().isChecked()) {
+                Setting setting = entry.getValue();
+                if (!settings.containsKey(setting.getCategory())) {
+                    settings.put(setting.getCategory(), new ArrayList<Setting>());
+                }
+                settings.get(setting.getCategory()).add(setting);
+            }
+        }
+
+        return settings;
+    }
+
+    public void updatePreferences() {
+        SharedPreferences sharedPreferences =
+                getActivity().getSharedPreferences(PreferenceTags.PREFERENCES_SETTINGS,
+                        Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        for (Map.Entry<CheckBox, Setting> entry : checkBoxToSetting.entrySet()) {
+            Setting s = entry.getValue();
+            if (entry.getKey().isChecked()) {
+                editor.putString(s.toString(), s.getCategory().toString());
+            } else {
+                editor.remove(s.toString());
+            }
+        }
+
+        editor.apply();
+    }
+
     public void checkAll() {
-        checkBoxCardio.setChecked(true);
-        checkBoxOlympic.setChecked(true);
-        checkBoxPlyometrics.setChecked(true);
-        checkBoxPowerlifting.setChecked(true);
-        checkBoxStrength.setChecked(true);
-        checkBoxStretching.setChecked(true);
-        checkBoxStrongman.setChecked(true);
-        checkBoxBands.setChecked(true);
-        checkBoxBarbell.setChecked(true);
-        checkBoxBody.setChecked(true);
-        checkBoxCable.setChecked(true);
-        checkBoxDumbbell.setChecked(true);
-        checkBoxEzBar.setChecked(true);
-        checkBoxExerciseBall.setChecked(true);
-        checkBoxFoamRoll.setChecked(true);
-        checkBoxKettlebells.setChecked(true);
-        checkBoxMachine.setChecked(true);
-        checkBoxMedicineBall.setChecked(true);
-        checkBoxNone.setChecked(true);
-        checkBoxOther.setChecked(true);
-        checkBoxCompound.setChecked(true);
-        checkBoxIsolation.setChecked(true);
-        checkBoxNeither.setChecked(true);
-        checkBoxEasy.setChecked(true);
-        checkBoxMedium.setChecked(true);
-        checkBoxHard.setChecked(true);
-        checkBoxYes.setChecked(true);
-        checkBoxNo.setChecked(true);
+        for (Map.Entry<CheckBox, Setting> entry : checkBoxToSetting.entrySet()) {
+            entry.getKey().setChecked(true);
+        }
     }
 
-    public Map.Entry<String, String[]> getSettingsAsQuery() {
-        
+//    public TwoTuple<String, ArrayList<String>> getSettingsAsQuery() {
+//
+//        ArrayList<String> whereClauseSections = new ArrayList<>();
+//        ArrayList<String> queryArgs = new ArrayList<>();
+//
+//        HashMap<SettingsCategory, ArrayList<Setting>> settings = getSettings();
+//
+//        for (Map.Entry<SettingsCategory, ArrayList<Setting>> entry : settings.entrySet()) {
+//            ArrayList<String> whereStatements = new ArrayList<>();
+//            for (Setting value : entry.getValue()) {
+//                whereStatements.add(entry.getKey() + "=?");
+//                queryArgs.add(value.toString());
+//            }
+//            whereClauseSections.add("(" + TextUtils.join(" OR ", whereStatements) + ")");
+//        }
+//
+//        String fullWhereClause = TextUtils.join(" AND ", whereClauseSections);
+//
+//        return new TwoTuple<>(fullWhereClause, queryArgs);
+//    }
 
-        return null;
-    }
+//    public TwoTuple<String, ArrayList<String>> generateWhereClause() {
+//        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
+//                PreferenceTags.PREFERENCES_SETTINGS, Context.MODE_PRIVATE);
+//
+//        ArrayList<String> whereClauseSections = new ArrayList<>();
+//        ArrayList<String> queryArgs = new ArrayList<>();
+//
+//        HashMap<String, String> settings = (HashMap) sharedPreferences.getAll();
+//        HashMap<String, ArrayList<String>> categories = new HashMap<>();
+//
+//        for (Map.Entry<String, String> entry : settings.entrySet()) {
+//            String category = entry.getValue();
+//            if (!categories.containsKey(category)) {
+//                categories.put(category, new ArrayList<String>());
+//            }
+//            categories.get(category).add(entry.getKey());
+//        }
+//
+//        for (Map.Entry<String, ArrayList<String>> entry : categories.entrySet()) {
+//            ArrayList<String> whereStatements = new ArrayList<>();
+//            for (String setting : entry.getValue()) {
+//                whereStatements.add(entry.getKey() + "=?");
+//                queryArgs.add(setting);
+//            }
+//            whereClauseSections.add("(" + TextUtils.join(" OR ", whereStatements) + ")");
+//        }
+//
+//        String fullWhereClause = TextUtils.join(" AND ", whereClauseSections);
+//
+//        return new TwoTuple<>(fullWhereClause, queryArgs);
+//    }
 }

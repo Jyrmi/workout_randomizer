@@ -8,12 +8,9 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,17 +21,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Map;
-
-import adapter.TwoTuple;
-import constant.MuscleGroup;
 import constant.PreferenceTags;
-import constant.Settings;
+import constant.Setting;
 
 
 public class MainActivity extends AppCompatActivity
-        implements SelectionFragment.OnMuscleGroupsSelectedListener,
-        SettingsFragment.OnSettingsRequestedListener {
+        implements SelectionFragment.OnMuscleGroupsSelectedListener {
 
     private static final String TAG = "MainActivity";
 
@@ -58,13 +50,10 @@ public class MainActivity extends AppCompatActivity
             Snackbar.make(selectionFragment.getView(), "You already have 10+ exercises waiting!",
                     Snackbar.LENGTH_SHORT).setAction("Action", null).show();
         } else {
+            settingsFragment.updatePreferences();
             workoutFragment.addMuscleGroupSelections(selectedMuscleGroups);
             tabLayout.getTabAt(1).select();
         }
-    }
-
-    public void onSettingsRequested() {
-        Log.d(TAG, settingsFragment.getSettings().toString());
     }
 
     @Override
@@ -98,28 +87,8 @@ public class MainActivity extends AppCompatActivity
     public void onPause() {
         super.onPause();
 
-        // Remember settings
-        SharedPreferences sharedPreferences = getSharedPreferences(
-                PreferenceTags.PREFERENCES_SETTINGS, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        for (Map.Entry<String, ArrayList<String>> settingsEntry :
-                settingsFragment.getSettings().entrySet()) {
-            for (String setting : settingsEntry.getValue()) {
-                editor.putBoolean(setting, true);
-            }
-        }
-        editor.apply();
-
-        // Remember the current list of queued exercises for the next time the app is started.
-        sharedPreferences = getSharedPreferences(
-                PreferenceTags.PREFERENCES_QUEUED_EXERCISES, Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.clear();
-        for (TwoTuple<String, String> exercise : workoutFragment.exerciseList) {
-            editor.putString(exercise.a, exercise.b.toString());
-        }
-        editor.apply();
+        settingsFragment.updatePreferences();
+        workoutFragment.updatePreferences();
     }
 
     public void firstRunSettingsCheck() {
@@ -135,8 +104,8 @@ public class MainActivity extends AppCompatActivity
 
             // Do first run stuff here
             SharedPreferences.Editor editor = settingsPreferences.edit();
-            for (Settings value : Settings.values()) {
-                editor.putBoolean(value.toString(), true);
+            for (Setting value : Setting.values()) {
+                editor.putString(value.toString(), value.getCategory().toString());
             }
             editor.apply();
 

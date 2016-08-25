@@ -773,6 +773,16 @@
                 android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="@dimen/empty_space" />
+
+        <Button android:id="@+id/test_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="show query" />
+
         <Space
             android:layout_width="1dp"
             android:layout_height="@dimen/bottom_empty_space" />

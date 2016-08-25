@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,20 +19,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.toolbox.StringRequest;
-
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 
 import adapter.ExerciseRecyclerAdapter;
-import adapter.FourTuple;
 import adapter.TwoTuple;
-import constant.MuscleGroup;
 import constant.PreferenceTags;
-import constant.Settings;
 import sqlite.ExerciseContract;
 import sqlite.ExerciseDb;
 import sqlite.LogsContract;
@@ -72,7 +69,7 @@ public class WorkoutFragment extends Fragment {
                 // the user's settings
                 TwoTuple<String, String> queryResult = pickOneRandomExercise(muscleGroup);
                 if (queryResult == null) {
-                    makeToast("No exercises matched your preferences.");
+                    makeToast("No " + muscleGroup + " exercises matched your preferences.");
                 } else {
                     exerciseList.add(queryResult);
                 }
@@ -109,11 +106,20 @@ public class WorkoutFragment extends Fragment {
                 ExerciseContract.ExerciseEntry.COLUMN_NAME,
         };
 
+        // Get the settings to create the WHERE clause
+        TwoTuple<String, ArrayList<String>> whereClause = generateWhereClause();
+        String whereSQL = whereClause.a;
+        ArrayList<String> whereArgs = whereClause.b;
+        whereArgs.add(0, muscleGroup);
+
         // WHERE clause
-        String selection = ExerciseContract.ExerciseEntry.COLUMN_GROUP + " = ?";
+        String selection = ExerciseContract.ExerciseEntry.COLUMN_GROUP + "=? AND " + whereSQL;
 
         // Arguments to the WHERE clause
-        String[] selectionArgs = {muscleGroup};
+        String[] selectionArgs = whereArgs.toArray(new String[0]);
+
+        Log.d(TAG, selection);
+        Log.d(TAG, whereArgs.toString());
 
         // How you want the results sorted in the resulting Cursor
         String sortOrder =
@@ -145,6 +151,38 @@ public class WorkoutFragment extends Fragment {
         db.close();
 
         return queryResult;
+    }
+
+    public TwoTuple<String, ArrayList<String>> generateWhereClause() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
+                PreferenceTags.PREFERENCES_SETTINGS, Context.MODE_PRIVATE);
+
+        ArrayList<String> whereClauseSections = new ArrayList<>();
+        ArrayList<String> queryArgs = new ArrayList<>();
+
+        HashMap<String, String> settings = (HashMap) sharedPreferences.getAll();
+        HashMap<String, ArrayList<String>> categories = new HashMap<>();
+
+        for (Map.Entry<String, String> entry : settings.entrySet()) {
+            String category = entry.getValue();
+            if (!categories.containsKey(category)) {
+                categories.put(category, new ArrayList<String>());
+            }
+            categories.get(category).add(entry.getKey());
+        }
+
+        for (Map.Entry<String, ArrayList<String>> entry : categories.entrySet()) {
+            ArrayList<String> whereStatements = new ArrayList<>();
+            for (String setting : entry.getValue()) {
+                whereStatements.add(entry.getKey() + "=?");
+                queryArgs.add(setting);
+            }
+            whereClauseSections.add("(" + TextUtils.join(" OR ", whereStatements) + ")");
+        }
+
+        String fullWhereClause = TextUtils.join(" AND ", whereClauseSections);
+
+        return new TwoTuple<>(fullWhereClause, queryArgs);
     }
 
     private void writeLogEntry(TwoTuple<String, String> exercise, String status) {
@@ -220,7 +258,8 @@ public class WorkoutFragment extends Fragment {
                         TwoTuple<String, String> queryResult = pickOneRandomExercise(exercise.b);
                         makeToast("Skipped.");
                         if (queryResult == null) {
-                            makeToast("No exercises matched your preferences.");
+                            makeToast("No " + exercise.b + " exercises matched your preferences.");
+                            exerciseList.remove(position);
                         } else exerciseList.set(position, queryResult);
                     } else {
                         exerciseList.remove(position);
@@ -246,6 +285,18 @@ public class WorkoutFragment extends Fragment {
         });
 
         return view;
+    }
+
+    public void updatePreferences() {
+        // Remember the current list of queued exercises for the next time the app is started.
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
+                PreferenceTags.PREFERENCES_QUEUED_EXERCISES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        for (TwoTuple<String, String> exercise : exerciseList) {
+            editor.putString(exercise.a, exercise.b.toString());
+        }
+        editor.apply();
     }
 
     /** Make a toast */

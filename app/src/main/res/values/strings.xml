@@ -25,7 +25,7 @@
     <string name="button_restart">Start Over</string>
     <string name="button_clear_data">Clear All Data</string>
 
-    <!--Settings Activity-->
+    <!--Setting Activity-->
     <string name="exercise_type_section">Exercise Types</string>
     <string name="cardio">Cardio</string>
     <string name="olympic">Olympic Weightlifting</string>
