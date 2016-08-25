@@ -1,6 +1,8 @@
 package goodcompanyname.myapplication;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,9 +19,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import constant.MuscleGroup;
+import constant.PreferenceTags;
 
 public class SelectionFragment extends Fragment {
-    // todo: change "finish" button to circle with + symbol
 
     private static final String TAG = "SelectionFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
@@ -58,14 +60,14 @@ public class SelectionFragment extends Fragment {
 
     OnMuscleGroupsSelectedListener callback;
 
-    ArrayList<MuscleGroup> selectedMuscleGroups;
+    ArrayList<String> selectedMuscleGroups;
     ArrayList<Button> frontButtons;
     ArrayList<Button> rearButtons;
     Boolean forward;
 
     // Container Activity must implement this interface
     protected interface OnMuscleGroupsSelectedListener {
-        void onFinishSelection(ArrayList<MuscleGroup> selectedMuscleGroups);
+        void onFinishSelection(ArrayList<String> selectedMuscleGroups);
     }
 
     @Override
@@ -135,29 +137,29 @@ public class SelectionFragment extends Fragment {
 
         selectedMuscleGroups = new ArrayList<>();
 
-        setButtonListenerFront(buttonAbsLower, MuscleGroup.ABS, imageGroupC);
-        setButtonListenerFront(buttonAbsUpper, MuscleGroup.ABS, imageGroupC);
-        setButtonListenerFront(buttonBiceps, MuscleGroup.BICEPS, imageGroupB);
-        setButtonListenerFront(buttonChest, MuscleGroup.CHEST, imageGroupA);
-        setButtonListenerFront(buttonForearms, MuscleGroup.FOREARMS, imageGroupB);
-        setButtonListenerFront(buttonFrontCalves, MuscleGroup.CALVES, imageGroupD);
-        setButtonListenerFront(buttonFrontHamstrings, MuscleGroup.HAMSTRINGS, imageGroupC);
-        setButtonListenerFront(buttonFrontLatsLeft, MuscleGroup.LATS, imageGroupC);
-        setButtonListenerFront(buttonFrontLatsRight, MuscleGroup.LATS, imageGroupC);
-        setButtonListenerFront(buttonFrontShoulders, MuscleGroup.SHOULDERS, imageGroupB);
-        setButtonListenerFront(buttonFrontTraps, MuscleGroup.TRAPS, imageGroupA);
-        setButtonListenerFront(buttonNeck, MuscleGroup.NECK, imageGroupA);
-        setButtonListenerFront(buttonQuads, MuscleGroup.QUADS, imageGroupD);
+        setButtonListenerFront(buttonAbsLower, "Abdominals", imageGroupC);
+        setButtonListenerFront(buttonAbsUpper, "Abdominals", imageGroupC);
+        setButtonListenerFront(buttonBiceps, "Biceps", imageGroupB);
+        setButtonListenerFront(buttonChest, "Chest", imageGroupA);
+        setButtonListenerFront(buttonForearms, "Forearms", imageGroupB);
+        setButtonListenerFront(buttonFrontCalves, "Calves", imageGroupD);
+        setButtonListenerFront(buttonFrontHamstrings, "Hamstrings", imageGroupC);
+        setButtonListenerFront(buttonFrontLatsLeft, "Lats", imageGroupC);
+        setButtonListenerFront(buttonFrontLatsRight, "Lats", imageGroupC);
+        setButtonListenerFront(buttonFrontShoulders, "Shoulders", imageGroupB);
+        setButtonListenerFront(buttonFrontTraps, "Traps", imageGroupA);
+        setButtonListenerFront(buttonNeck, "Neck", imageGroupA);
+        setButtonListenerFront(buttonQuads, "Quadriceps", imageGroupD);
 
-        setButtonListenerRear(buttonRearTraps, MuscleGroup.TRAPS, imageGroupA);
-        setButtonListenerRear(buttonRearShoulders, MuscleGroup.SHOULDERS, imageGroupA);
-        setButtonListenerRear(buttonTriceps, MuscleGroup.TRICEPS, imageGroupB);
-        setButtonListenerRear(buttonRearForearms, MuscleGroup.FOREARMS, imageGroupB);
-        setButtonListenerRear(buttonMiddleBack, MuscleGroup.MIDDLE_BACK, imageGroupC);
-        setButtonListenerRear(buttonLowerBack, MuscleGroup.LOWER_BACK, imageGroupC);
-        setButtonListenerRear(buttonGlutes, MuscleGroup.GLUTES, imageGroupD);
-        setButtonListenerRear(buttonRearHamstrings, MuscleGroup.HAMSTRINGS, imageGroupD);
-        setButtonListenerRear(buttonRearCalves, MuscleGroup.CALVES, imageGroupD);
+        setButtonListenerRear(buttonRearTraps, "Traps", imageGroupA);
+        setButtonListenerRear(buttonRearShoulders, "Shoulders", imageGroupA);
+        setButtonListenerRear(buttonTriceps, "Triceps", imageGroupB);
+        setButtonListenerRear(buttonRearForearms, "Forearms", imageGroupB);
+        setButtonListenerRear(buttonMiddleBack, "Middle Back", imageGroupC);
+        setButtonListenerRear(buttonLowerBack, "Lower Back", imageGroupC);
+        setButtonListenerRear(buttonGlutes, "Glutes", imageGroupD);
+        setButtonListenerRear(buttonRearHamstrings, "Hamstrings", imageGroupD);
+        setButtonListenerRear(buttonRearCalves, "Calves", imageGroupD);
 
         frontButtons = new ArrayList();
         rearButtons = new ArrayList();
@@ -197,6 +199,8 @@ public class SelectionFragment extends Fragment {
                             .setAction("Action", null).show();
                 } else {
                     callback.onFinishSelection(selectedMuscleGroups);
+                    updatePreferences(PreferenceTags.PREFERENCES_SELECTED_MUSCLE_GROUPS,
+                            selectedMuscleGroups);
                     resetSelection();
                 }
             }
@@ -211,6 +215,22 @@ public class SelectionFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void updatePreferences(String sharedPreferencesTag, ArrayList<?> selections) {
+        SharedPreferences sharedPreferences =
+                getActivity().getSharedPreferences(sharedPreferencesTag, Context.MODE_PRIVATE);
+        if (!selections.isEmpty()) {
+            int count;
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            for (Object key : selections) {
+                count = sharedPreferences.getInt(key.toString(), 0);
+                editor.putInt(key.toString(), count + 1);
+            }
+
+            editor.apply();
+        }
     }
 
     public void resetSelection() {
@@ -262,7 +282,7 @@ public class SelectionFragment extends Fragment {
      * @param button the button.
      * @param imageView the ImageView associated with the button.
      */
-    private void setButtonListenerFront(Button button, final MuscleGroup muscleGroup,
+    private void setButtonListenerFront(Button button, final String muscleGroup,
                                         final ImageView imageView) {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -283,7 +303,7 @@ public class SelectionFragment extends Fragment {
      * @param button the button.
      * @param imageView the ImageView associated with the button.
      */
-    private void setButtonListenerRear(Button button, final MuscleGroup muscleGroup,
+    private void setButtonListenerRear(Button button, final String muscleGroup,
                                        final ImageView imageView) {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -301,81 +321,81 @@ public class SelectionFragment extends Fragment {
 
     private void setGroupImageResourceFront(ImageView imageView) {
         if (imageView == imageGroupA) {
-            if (selectedMuscleGroups.contains(MuscleGroup.NECK) &&
-                    selectedMuscleGroups.contains(MuscleGroup.TRAPS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.CHEST)) {
+            if (selectedMuscleGroups.contains("Neck") &&
+                    selectedMuscleGroups.contains("Traps") &&
+                    selectedMuscleGroups.contains("Chest")) {
                 imageView.setImageResource(R.drawable.a_all);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.NECK) &&
-                    selectedMuscleGroups.contains(MuscleGroup.TRAPS)) {
+            } else if (selectedMuscleGroups.contains("Neck") &&
+                    selectedMuscleGroups.contains("Traps")) {
                 imageView.setImageResource(R.drawable.a_neck_traps);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.NECK) &&
-                    selectedMuscleGroups.contains(MuscleGroup.CHEST)) {
+            } else if (selectedMuscleGroups.contains("Neck") &&
+                    selectedMuscleGroups.contains("Chest")) {
                 imageView.setImageResource(R.drawable.a_neck_chest);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.TRAPS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.CHEST)) {
+            } else if (selectedMuscleGroups.contains("Traps") &&
+                    selectedMuscleGroups.contains("Chest")) {
                 imageView.setImageResource(R.drawable.a_traps_chest);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.NECK)) {
+            } else if (selectedMuscleGroups.contains("Neck")) {
                 imageView.setImageResource(R.drawable.a_neck);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.TRAPS)) {
+            } else if (selectedMuscleGroups.contains("Traps")) {
                 imageView.setImageResource(R.drawable.a_traps);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.CHEST)) {
+            } else if (selectedMuscleGroups.contains("Chest")) {
                 imageView.setImageResource(R.drawable.a_chest);
             } else {
                 imageView.setImageResource(R.drawable.a_none);
             }
         } else if (imageView == imageGroupB) {
-            if (selectedMuscleGroups.contains(MuscleGroup.SHOULDERS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.BICEPS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.FOREARMS)) {
+            if (selectedMuscleGroups.contains("Shoulders") &&
+                    selectedMuscleGroups.contains("Biceps") &&
+                    selectedMuscleGroups.contains("Forearms")) {
                 imageView.setImageResource(R.drawable.b_all);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.SHOULDERS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.BICEPS)) {
+            } else if (selectedMuscleGroups.contains("Shoulders") &&
+                    selectedMuscleGroups.contains("Biceps")) {
                 imageView.setImageResource(R.drawable.b_shoulders_biceps);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.SHOULDERS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.FOREARMS)) {
+            } else if (selectedMuscleGroups.contains("Shoulders") &&
+                    selectedMuscleGroups.contains("Forearms")) {
                 imageView.setImageResource(R.drawable.b_shoulders_forearms);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.BICEPS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.FOREARMS)) {
+            } else if (selectedMuscleGroups.contains("Biceps") &&
+                    selectedMuscleGroups.contains("Forearms")) {
                 imageView.setImageResource(R.drawable.b_biceps_forearms);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.SHOULDERS)) {
+            } else if (selectedMuscleGroups.contains("Shoulders")) {
                 imageView.setImageResource(R.drawable.b_shoulders);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.BICEPS)) {
+            } else if (selectedMuscleGroups.contains("Biceps")) {
                 imageView.setImageResource(R.drawable.b_biceps);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.FOREARMS)) {
+            } else if (selectedMuscleGroups.contains("Forearms")) {
                 imageView.setImageResource(R.drawable.b_forearms);
             } else {
                 imageView.setImageResource(R.drawable.b_none);
             }
         } else if (imageView == imageGroupC) {
-            if (selectedMuscleGroups.contains(MuscleGroup.LATS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.ABS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.HAMSTRINGS)) {
+            if (selectedMuscleGroups.contains("Lats") &&
+                    selectedMuscleGroups.contains("Abdominals") &&
+                    selectedMuscleGroups.contains("Hamstrings")) {
                 imageView.setImageResource(R.drawable.c_all);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.LATS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.ABS)) {
+            } else if (selectedMuscleGroups.contains("Lats") &&
+                    selectedMuscleGroups.contains("Abdominals")) {
                 imageView.setImageResource(R.drawable.c_lats_abs);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.LATS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.HAMSTRINGS)) {
+            } else if (selectedMuscleGroups.contains("Lats") &&
+                    selectedMuscleGroups.contains("Hamstrings")) {
                 imageView.setImageResource(R.drawable.c_lats_hamstrings);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.ABS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.HAMSTRINGS)) {
+            } else if (selectedMuscleGroups.contains("Abdominals") &&
+                    selectedMuscleGroups.contains("Hamstrings")) {
                 imageView.setImageResource(R.drawable.c_abs_hamstrings);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.LATS)) {
+            } else if (selectedMuscleGroups.contains("Lats")) {
                 imageView.setImageResource(R.drawable.c_lats);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.ABS)) {
+            } else if (selectedMuscleGroups.contains("Abdominals")) {
                 imageView.setImageResource(R.drawable.c_abs);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.HAMSTRINGS)) {
+            } else if (selectedMuscleGroups.contains("Hamstrings")) {
                 imageView.setImageResource(R.drawable.c_hamstrings);
             } else {
                 imageView.setImageResource(R.drawable.c_none);
             }
         } else if (imageView == imageGroupD) {
-            if (selectedMuscleGroups.contains(MuscleGroup.QUADS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.CALVES)) {
+            if (selectedMuscleGroups.contains("Quadriceps") &&
+                    selectedMuscleGroups.contains("Calves")) {
                 imageView.setImageResource(R.drawable.d_all);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.QUADS)) {
+            } else if (selectedMuscleGroups.contains("Quadriceps")) {
                 imageView.setImageResource(R.drawable.d_quads);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.CALVES)) {
+            } else if (selectedMuscleGroups.contains("Calves")) {
                 imageView.setImageResource(R.drawable.d_calves);
             } else {
                 imageView.setImageResource(R.drawable.d_none);
@@ -385,57 +405,57 @@ public class SelectionFragment extends Fragment {
 
     private void setGroupImageResourceRear(ImageView imageView) {
         if (imageView == imageGroupA) {
-            if (selectedMuscleGroups.contains(MuscleGroup.TRAPS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.SHOULDERS)) {
+            if (selectedMuscleGroups.contains("Traps") &&
+                    selectedMuscleGroups.contains("Shoulders")) {
                 imageView.setImageResource(R.drawable.e_all);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.TRAPS)) {
+            } else if (selectedMuscleGroups.contains("Traps")) {
                 imageView.setImageResource(R.drawable.e_traps);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.SHOULDERS)) {
+            } else if (selectedMuscleGroups.contains("Shoulders")) {
                 imageView.setImageResource(R.drawable.e_shoulders);
             } else {
                 imageView.setImageResource(R.drawable.e_none);
             }
         } else if (imageView == imageGroupB) {
-            if (selectedMuscleGroups.contains(MuscleGroup.TRICEPS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.FOREARMS)) {
+            if (selectedMuscleGroups.contains("Triceps") &&
+                    selectedMuscleGroups.contains("Forearms")) {
                 imageView.setImageResource(R.drawable.f_all);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.TRICEPS)) {
+            } else if (selectedMuscleGroups.contains("Triceps")) {
                 imageView.setImageResource(R.drawable.f_triceps);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.FOREARMS)) {
+            } else if (selectedMuscleGroups.contains("Forearms")) {
                 imageView.setImageResource(R.drawable.f_forearms);
             } else {
                 imageView.setImageResource(R.drawable.f_none);
             }
         } else if (imageView == imageGroupC) {
-            if (selectedMuscleGroups.contains(MuscleGroup.MIDDLE_BACK) &&
-                    selectedMuscleGroups.contains(MuscleGroup.LOWER_BACK)) {
+            if (selectedMuscleGroups.contains("Middle Back") &&
+                    selectedMuscleGroups.contains("Lower Back")) {
                 imageView.setImageResource(R.drawable.g_all);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.MIDDLE_BACK)) {
+            } else if (selectedMuscleGroups.contains("Middle Back")) {
                 imageView.setImageResource(R.drawable.g_middle_back);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.LOWER_BACK)) {
+            } else if (selectedMuscleGroups.contains("Lower Back")) {
                 imageView.setImageResource(R.drawable.g_lower_back);
             } else {
                 imageView.setImageResource(R.drawable.g_none);
             }
         } else if (imageView == imageGroupD) {
-            if (selectedMuscleGroups.contains(MuscleGroup.GLUTES) &&
-                    selectedMuscleGroups.contains(MuscleGroup.HAMSTRINGS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.CALVES)) {
+            if (selectedMuscleGroups.contains("Glutes") &&
+                    selectedMuscleGroups.contains("Hamstrings") &&
+                    selectedMuscleGroups.contains("Calves")) {
                 imageView.setImageResource(R.drawable.h_all);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.GLUTES) &&
-                    selectedMuscleGroups.contains(MuscleGroup.HAMSTRINGS)) {
+            } else if (selectedMuscleGroups.contains("Glutes") &&
+                    selectedMuscleGroups.contains("Hamstrings")) {
                 imageView.setImageResource(R.drawable.h_glutes_hamstrings);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.GLUTES) &&
-                    selectedMuscleGroups.contains(MuscleGroup.CALVES)) {
+            } else if (selectedMuscleGroups.contains("Glutes") &&
+                    selectedMuscleGroups.contains("Calves")) {
                 imageView.setImageResource(R.drawable.h_glutes_calves);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.HAMSTRINGS) &&
-                    selectedMuscleGroups.contains(MuscleGroup.CALVES)) {
+            } else if (selectedMuscleGroups.contains("Hamstrings") &&
+                    selectedMuscleGroups.contains("Calves")) {
                 imageView.setImageResource(R.drawable.h_hamstrings_calves);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.GLUTES)) {
+            } else if (selectedMuscleGroups.contains("Glutes")) {
                 imageView.setImageResource(R.drawable.h_glutes);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.HAMSTRINGS)) {
+            } else if (selectedMuscleGroups.contains("Hamstrings")) {
                 imageView.setImageResource(R.drawable.h_hamstrings);
-            } else if (selectedMuscleGroups.contains(MuscleGroup.CALVES)) {
+            } else if (selectedMuscleGroups.contains("Calves")) {
                 imageView.setImageResource(R.drawable.h_calves);
             } else {
                 imageView.setImageResource(R.drawable.h_none);

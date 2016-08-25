@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <!--<ImageView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:tint="@color/colorLight"-->
+        <!--android:src="@drawable/ic_accessibility_white_selected_24dp" />-->
+
     <ImageView
         android:id="@+id/image_group_a"
         style="@style/MuscleGroupsImage"

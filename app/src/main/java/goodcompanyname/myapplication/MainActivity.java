@@ -2,6 +2,8 @@ package goodcompanyname.myapplication;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,23 +24,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import adapter.TwoTuple;
 import constant.MuscleGroup;
+import constant.PreferenceTags;
+import constant.Settings;
 
 
 public class MainActivity extends AppCompatActivity
-        implements SelectionFragment.OnMuscleGroupsSelectedListener {
-    // todo: remember queued exercises for next launch
+        implements SelectionFragment.OnMuscleGroupsSelectedListener,
+        SettingsFragment.OnSettingsRequestedListener {
 
     private static final String TAG = "MainActivity";
-    private final static String PREFERENCES_QUEUED_EXERCISES =
-            "goodcompanyname.myapplication.workout_randomizer.queued_exercises";
 
     private TabLayout tabLayout;
 
+    SelectionFragment selectionFragment;
     WorkoutFragment workoutFragment;
     ResultsFragment resultsFragment;
+    SettingsFragment settingsFragment;
 
     private int[] tabIcons = {
             R.drawable.ic_accessibility_white_selector,
@@ -47,11 +52,19 @@ public class MainActivity extends AppCompatActivity
             R.drawable.ic_tune_white_selector
     };
 
-    public void onFinishSelection(ArrayList<MuscleGroup> selectedMuscleGroups) {
+    public void onFinishSelection(ArrayList<String> selectedMuscleGroups) {
         Log.d(TAG, "MainActivity.onFinishSelection()");
-        workoutFragment.addMuscleGroupSelections(selectedMuscleGroups);
-        resultsFragment.addMuscleGroupSelections(selectedMuscleGroups);
-        tabLayout.getTabAt(1).select();
+        if (workoutFragment.exerciseList.size() >= 10) { // Don't queue past 10 exercises
+            Snackbar.make(selectionFragment.getView(), "You already have 10+ exercises waiting!",
+                    Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+        } else {
+            workoutFragment.addMuscleGroupSelections(selectedMuscleGroups);
+            tabLayout.getTabAt(1).select();
+        }
+    }
+
+    public void onSettingsRequested() {
+        Log.d(TAG, settingsFragment.getSettings().toString());
     }
 
     @Override
@@ -77,24 +90,67 @@ public class MainActivity extends AppCompatActivity
 
             tabLayout.getTabAt(0).getCustomView().setSelected(true);
         }
+
+        firstRunSettingsCheck();
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onPause() {
+        super.onPause();
 
-        // Remember the current list of queued exercises for the next time the app is started.
+        // Remember settings
         SharedPreferences sharedPreferences = getSharedPreferences(
-                PREFERENCES_QUEUED_EXERCISES, Context.MODE_PRIVATE);
-
+                PreferenceTags.PREFERENCES_SETTINGS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
+        for (Map.Entry<String, ArrayList<String>> settingsEntry :
+                settingsFragment.getSettings().entrySet()) {
+            for (String setting : settingsEntry.getValue()) {
+                editor.putBoolean(setting, true);
+            }
+        }
+        editor.apply();
 
-        for (TwoTuple<String, MuscleGroup> exercise : workoutFragment.getQueuedExercises()) {
+        // Remember the current list of queued exercises for the next time the app is started.
+        sharedPreferences = getSharedPreferences(
+                PreferenceTags.PREFERENCES_QUEUED_EXERCISES, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.clear();
+        for (TwoTuple<String, String> exercise : workoutFragment.exerciseList) {
             editor.putString(exercise.a, exercise.b.toString());
         }
-
         editor.apply();
+    }
+
+    public void firstRunSettingsCheck() {
+        // Set all settings to true on first run
+        SharedPreferences settingsPreferences = getSharedPreferences(
+                PreferenceTags.PREFERENCES_SETTINGS, Context.MODE_PRIVATE);
+
+        SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if (defaultPreferences.getBoolean("firstrun", true)) {
+
+            clearPreferences();
+
+            // Do first run stuff here
+            SharedPreferences.Editor editor = settingsPreferences.edit();
+            for (Settings value : Settings.values()) {
+                editor.putBoolean(value.toString(), true);
+            }
+            editor.apply();
+
+            // Set "firstrun" to false
+            editor = defaultPreferences.edit();
+            editor.putBoolean("firstrun", false).apply();
+        }
+    }
+
+    public void clearPreferences() {
+        PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
+        getSharedPreferences(PreferenceTags.PREFERENCES_SETTINGS, Context.MODE_PRIVATE).edit().clear().apply();
+        getSharedPreferences(PreferenceTags.PREFERENCES_QUEUED_EXERCISES, Context.MODE_PRIVATE).edit().clear().apply();
+        getSharedPreferences(PreferenceTags.PREFERENCES_SELECTED_MUSCLE_GROUPS, Context.MODE_PRIVATE).edit().clear().apply();
     }
 
     private class PagerAdapter extends FragmentPagerAdapter {
@@ -122,7 +178,8 @@ public class MainActivity extends AppCompatActivity
             switch (pos) {
 
                 case 0:
-                    return SelectionFragment.newInstance(1);
+                    selectionFragment = SelectionFragment.newInstance(1);
+                    return selectionFragment;
                 case 1:
                     workoutFragment = WorkoutFragment.newInstance(2);
                     return workoutFragment;
@@ -130,7 +187,8 @@ public class MainActivity extends AppCompatActivity
                     resultsFragment = ResultsFragment.newInstance(3);
                     return resultsFragment;
                 case 3:
-                    return SettingsFragment.newInstance(4);
+                    settingsFragment = SettingsFragment.newInstance(4);
+                    return settingsFragment;
 
             }
             return null;

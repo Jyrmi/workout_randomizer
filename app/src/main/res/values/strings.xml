@@ -24,4 +24,49 @@
     <string name="list_exercises">Exercises Completed</string>
     <string name="button_restart">Start Over</string>
     <string name="button_clear_data">Clear All Data</string>
+
+    <!--Settings Activity-->
+    <string name="exercise_type_section">Exercise Types</string>
+    <string name="cardio">Cardio</string>
+    <string name="olympic">Olympic Weightlifting</string>
+    <string name="plyometrics">Plyometrics</string>
+    <string name="powerlifting">Powerlifting</string>
+    <string name="strength">Strength</string>
+    <string name="stretching">Stretching</string>
+    <string name="strongman">Strongman</string>
+
+    <string name="equipment_section">Equipment</string>
+    <string name="bands">Bands</string>
+    <string name="barbell">Barbell</string>
+    <string name="body">Body Only</string>
+    <string name="cable">Cable</string>
+    <string name="dumbbell">Dumbbell</string>
+    <string name="ez_bar">E-Z Curl Bar</string>
+    <string name="exercise_ball">Exercise Ball</string>
+    <string name="foam_roll">Foam Roll</string>
+    <string name="kettlebells">Kettlebells</string>
+    <string name="machine">Machine</string>
+    <string name="medicine_ball">Medicine Ball</string>
+    <string name="none">None</string>
+    <string name="other">Other</string>
+
+    <string name="mechanics_section">Mechanics</string>
+    <string name="compound">Compound</string>
+    <string name="isolation">Isolation</string>
+    <string name="neither">N/A</string>
+
+    <string name="force_section">Force</string>
+    <string name="push">Push</string>
+    <string name="pull">Pull</string>
+    <string name="static_force">Static</string>
+
+    <string name="difficulty_section">Exercise Difficulty</string>
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+
+    <string name="sports_section">Sports Exercises</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
 </resources>

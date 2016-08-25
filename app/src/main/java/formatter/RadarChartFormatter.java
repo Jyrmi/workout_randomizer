@@ -15,9 +15,9 @@ import constant.MuscleGroup;
 public class RadarChartFormatter implements AxisValueFormatter {
     private static final String TAG = "RadarChartFormatter";
 
-    private ArrayList<MuscleGroup> mValues;
+    private ArrayList<String> mValues;
 
-    public RadarChartFormatter(ArrayList<MuscleGroup> values) {
+    public RadarChartFormatter(ArrayList<String> values) {
         this.mValues = values;
     }
 

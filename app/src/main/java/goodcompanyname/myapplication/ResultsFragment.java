@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,35 +30,35 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import adapter.FourTuple;
+import adapter.LogsAdapter;
 import adapter.StringIntAdapter;
 import adapter.TwoTuple;
 import constant.MuscleGroup;
+import constant.PreferenceTags;
 import formatter.RadarChartFormatter;
-import sqlite.ExerciseContract;
-import sqlite.ExerciseDbHelper;
+import sqlite.LogsContract;
+import sqlite.LogsDbHelper;
 
 /**
  * Created by jeremy on 8/11/16.
  */
 public class ResultsFragment extends Fragment {
     // todo: more graphs of relevant information
-    // todo: why write preferences here? They can be written where they are selected in SelectionFragment
-    // todo: and accessed here. Don't pass it between fragments needlessly. Same goes for other data.
-    // todo: same goes for sqlite.
 
     private final static String TAG = "ResultsFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
-    private final static String PREFERENCES_SELECTED_MUSCLE_GROUPS =
-            "goodcompanyname.myapplication.workout_randomizer.selected_muscle_groups";
 
-    FloatingActionButton fab;
+    FloatingActionButton fabClearData;
+    FloatingActionButton fabLogs;
 
+    ListView listViewLogs;
+
+    LogsAdapter logsAdapter;
     SharedPreferences sharedPreferences;
-    ArrayList<String> selectedMuscleGroups;
-    ArrayList<String> completedExercises;
-    ArrayList<String> skippedExercises;
     DialogInterface.OnClickListener dialogClickListener;
 
+    Boolean showingChart;
     RadarChart muscleGroupsChart;
     RadarDataSet radarDataSet;
     RadarData radarData;
@@ -73,15 +72,6 @@ public class ResultsFragment extends Fragment {
         return fragment;
     }
 
-    /**
-     * Responds to SelectionFragment's button for generating exercises for selected muscle groups.
-     * @param selectedMuscleGroups list of muscle groups selected within SelectionFragment.
-     */
-    protected void addMuscleGroupSelections(ArrayList<MuscleGroup> selectedMuscleGroups) {
-        Log.d(TAG, "ResultsFragment.addMuscleGroupSelections()");
-        updatePreferences(PREFERENCES_SELECTED_MUSCLE_GROUPS, selectedMuscleGroups);
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,9 +82,11 @@ public class ResultsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_results, container, false);
 
-        selectedMuscleGroups = new ArrayList<>();
-        completedExercises = new ArrayList<>();
-        skippedExercises = new ArrayList<>();
+        showingChart = true;
+
+        listViewLogs = (ListView) view.findViewById(R.id.list_view_logs);
+        logsAdapter = new LogsAdapter(getActivity(), readTable());
+        listViewLogs.setAdapter(logsAdapter);
 
         dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -102,7 +94,7 @@ public class ResultsFragment extends Fragment {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         //Yes button clicked
-                        clearPreferences(PREFERENCES_SELECTED_MUSCLE_GROUPS);
+                        clearPreferences(PreferenceTags.PREFERENCES_SELECTED_MUSCLE_GROUPS);
                         clearTable();
                         break;
 
@@ -113,30 +105,33 @@ public class ResultsFragment extends Fragment {
             }
         };
 
-        fab = (FloatingActionButton) view.findViewById(R.id.fab_clear_data);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fabClearData = (FloatingActionButton) view.findViewById(R.id.fab_clear_data);
+        fabClearData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage("Clear all data?").setPositiveButton("Yes", dialogClickListener)
                         .setNegativeButton("No", dialogClickListener).show();
-
-                /* WTFF DONT DO THIS, NOTIFYHASCHANGED() EXISTS */
-
-//                updateListView(PREFERENCES_SELECTED_MUSCLE_GROUPS, R.id.list_view_muscle_group_stats);
-//                updateListView(PREFERENCES_SELECTED_EXERCISES, R.id.list_view_exercise_stats);
             }
         });
 
-                /* WTFF DONT DO THIS, NOTIFYHASCHANGED() EXISTS */
-
-//        // Update completed muscle group and exercise counts in their shared preferences files.
-//        updatePreferences(PREFERENCES_SELECTED_MUSCLE_GROUPS, selectedMuscleGroups);
-//        updatePreferences(PREFERENCES_SELECTED_EXERCISES, completedExercises);
-//
-//        // Update the list views in the window with the selections and their counts
-//        updateListView(PREFERENCES_SELECTED_MUSCLE_GROUPS, R.id.list_view_muscle_group_stats);
-//        updateListView(PREFERENCES_SELECTED_EXERCISES, R.id.list_view_exercise_stats);
+        fabLogs = (FloatingActionButton) view.findViewById(R.id.fab_logs);
+        fabLogs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (showingChart) { // Chart is in view, logs are hidden.
+                    showingChart = false;
+                    fabLogs.setImageResource(R.drawable.ic_trending_up_white_selected_24dp);
+                    listViewLogs.setVisibility(View.VISIBLE);
+                    muscleGroupsChart.setVisibility(View.INVISIBLE);
+                } else { // Logs are in view, chart is hidden.
+                    showingChart = true;
+                    fabLogs.setImageResource(R.drawable.ic_format_list_bulleted_white_24dp);
+                    listViewLogs.setVisibility(View.INVISIBLE);
+                    muscleGroupsChart.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         setRadarChart(view);
 
@@ -154,13 +149,13 @@ public class ResultsFragment extends Fragment {
         editor.apply();
     }
 
-    private ArrayList<TwoTuple<MuscleGroup, Integer>> getPreferences(String sharedPreferencesTag) {
-        ArrayList<TwoTuple<MuscleGroup, Integer>> entries = new ArrayList<>();
+    private ArrayList<TwoTuple<String, Integer>> getPreferences(String sharedPreferencesTag) {
+        ArrayList<TwoTuple<String, Integer>> entries = new ArrayList<>();
 
         sharedPreferences = getActivity().getSharedPreferences(sharedPreferencesTag, Context.MODE_PRIVATE);
 
         int count;
-        for (MuscleGroup muscleGroup : MuscleGroup.values()) {
+        for (String muscleGroup : MuscleGroup.getGroupsAsStrings()) {
             count = sharedPreferences.getInt(muscleGroup.toString(), 0);
             if (count > 0) {
                 entries.add(new TwoTuple(muscleGroup, count));
@@ -168,21 +163,6 @@ public class ResultsFragment extends Fragment {
         }
 
         return entries;
-    }
-
-    private void updatePreferences(String sharedPreferencesTag, ArrayList<?> selections) {
-        sharedPreferences = getActivity().getSharedPreferences(sharedPreferencesTag, Context.MODE_PRIVATE);
-        if (!selections.isEmpty()) {
-            int count;
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-
-            for (Object key : selections) {
-                count = sharedPreferences.getInt(key.toString(), 0);
-                editor.putInt(key.toString(), count + 1);
-            }
-
-            editor.apply();
-        }
     }
 
     /**
@@ -206,26 +186,27 @@ public class ResultsFragment extends Fragment {
         listViewStats.setAdapter(counterAdapter);
     }
 
-    private void readTable() {
-        ExerciseDbHelper mDbHelper = new ExerciseDbHelper(getActivity());
+    private ArrayList<FourTuple<String, String, String, String>> readTable() {
+        ArrayList<FourTuple<String, String, String, String>> dbEntries = new ArrayList<>();
+        LogsDbHelper mDbHelper = new LogsDbHelper(getActivity());
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         String[] projection = {
-                ExerciseContract.ExerciseEntry._ID,
-                ExerciseContract.ExerciseEntry.COLUMN_EXERCISE,
-                ExerciseContract.ExerciseEntry.COLUMN_GROUP,
-                ExerciseContract.ExerciseEntry.COLUMN_DATE,
-                ExerciseContract.ExerciseEntry.COLUMN_STATUS
+                LogsContract.LogEntry._ID,
+                LogsContract.LogEntry.COLUMN_EXERCISE,
+                LogsContract.LogEntry.COLUMN_GROUP,
+                LogsContract.LogEntry.COLUMN_DATE,
+                LogsContract.LogEntry.COLUMN_STATUS
         };
 
         // How you want the results sorted in the resulting Cursor
         String sortOrder =
-                ExerciseContract.ExerciseEntry.COLUMN_DATE + " DESC";
+                LogsContract.LogEntry.COLUMN_DATE + " DESC";
 
         Cursor c = db.query(
-                ExerciseContract.ExerciseEntry.TABLE_NAME,  // The table to query
+                LogsContract.LogEntry.TABLE_NAME,  // The table to query
                 projection,                               // The columns to return
                 null,                                     // The columns for the WHERE clause
                 null,                                     // The values for the WHERE clause
@@ -236,10 +217,12 @@ public class ResultsFragment extends Fragment {
 
         if (c.moveToFirst()) {
             while (!c.isAfterLast()) {
-                String exercise = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_EXERCISE));
-                String group = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_GROUP));
-                String date = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_DATE));
-                String status = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_STATUS));
+                String exercise = c.getString(c.getColumnIndex(LogsContract.LogEntry.COLUMN_EXERCISE));
+                String group = c.getString(c.getColumnIndex(LogsContract.LogEntry.COLUMN_GROUP));
+                String date = c.getString(c.getColumnIndex(LogsContract.LogEntry.COLUMN_DATE));
+                String status = c.getString(c.getColumnIndex(LogsContract.LogEntry.COLUMN_STATUS));
+
+                dbEntries.add(new FourTuple<>(exercise, group, date, status));
 
                 Log.d(TAG, date + " " + status + " " + group + " " + exercise);
 
@@ -249,18 +232,20 @@ public class ResultsFragment extends Fragment {
 
         c.close();
         db.close();
+
+        return dbEntries;
     }
 
     private void clearTable() {
-        ExerciseDbHelper mDbHelper = new ExerciseDbHelper(getActivity());
+        LogsDbHelper mDbHelper = new LogsDbHelper(getActivity());
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        db.delete(ExerciseContract.ExerciseEntry.TABLE_NAME, null, null);
+        db.delete(LogsContract.LogEntry.TABLE_NAME, null, null);
         db.close();
     }
 
     private void setRadarChart(View view) {
         muscleGroupsChart = (RadarChart) view.findViewById(R.id.muscle_radar_chart);
-        ArrayList<MuscleGroup> correspondingMuscleGroups = new ArrayList<>();
+        ArrayList<String> correspondingMuscleGroups = new ArrayList<>();
 
         muscleGroupsChart.setDescription("");
 //
@@ -269,8 +254,8 @@ public class ResultsFragment extends Fragment {
 //        muscleGroupsChart.setWebAlpha(100);
 
         ArrayList<RadarEntry> radarChartEntries = new ArrayList<>();
-        for (TwoTuple<MuscleGroup, Integer> entry :
-                getPreferences(PREFERENCES_SELECTED_MUSCLE_GROUPS)) {
+        for (TwoTuple<String, Integer> entry :
+                getPreferences(PreferenceTags.PREFERENCES_SELECTED_MUSCLE_GROUPS)) {
             radarChartEntries.add(new RadarEntry(entry.b));
             correspondingMuscleGroups.add(entry.a);
         }
@@ -314,13 +299,6 @@ public class ResultsFragment extends Fragment {
         l.setYEntrySpace(5f);
         l.setTextColor(Color.BLACK);
     }
-
-//    private void clearChart() {
-//        ArrayList<RadarEntry> emptyEntryList = new ArrayList<>();
-//        radarDataSet = new RadarDataSet(emptyEntryList, "Selected Muscle Groups");
-//        radarData = new RadarData(radarDataSet);
-//        muscleGroupsChart.invalidate();
-//    }
 
     /** Make a toast */
     public void makeToast(String message) {

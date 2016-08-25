@@ -3,6 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
     style="@style/CardView"
 
     card_view:cardUseCompatPadding="true"

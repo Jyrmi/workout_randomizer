@@ -3,6 +3,7 @@ package goodcompanyname.myapplication;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,32 +18,36 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.StringRequest;
+
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Random;
 
 import adapter.ExerciseRecyclerAdapter;
+import adapter.FourTuple;
 import adapter.TwoTuple;
 import constant.MuscleGroup;
+import constant.PreferenceTags;
+import constant.Settings;
 import sqlite.ExerciseContract;
-import sqlite.ExerciseDbHelper;
+import sqlite.ExerciseDb;
+import sqlite.LogsContract;
+import sqlite.LogsDbHelper;
 
 public class WorkoutFragment extends Fragment {
     // todo: expand cardviews or flip them on click to show tooltips and guides
-    // todo: write swiped exercises to sqlite db
 
     private static final String TAG = "WorkoutFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
-    private final static String PREFERENCES_QUEUED_EXERCISES =
-            "goodcompanyname.myapplication.workout_randomizer.queued_exercises";
 
     TextView textViewEmpty;
 
     FloatingActionButton fab;
 
-    private ArrayList<TwoTuple<String, MuscleGroup>> exerciseList;
+    protected ArrayList<TwoTuple<String, String>> exerciseList;
     private RecyclerView recyclerViewExercises;
     ExerciseRecyclerAdapter exerciseAdapter;
 
@@ -59,33 +64,104 @@ public class WorkoutFragment extends Fragment {
      * Responds to SelectionFragment's button for generating exercises for selected muscle groups.
      * @param selectedMuscleGroups list of muscle groups selected within SelectionFragment.
      */
-    protected void addMuscleGroupSelections(ArrayList<MuscleGroup> selectedMuscleGroups) {
+    protected void addMuscleGroupSelections(ArrayList<String> selectedMuscleGroups) {
         Log.d(TAG, "WorkoutFragment.addMuscleGroupSelections()");
         if (!selectedMuscleGroups.isEmpty()) {
-            for (MuscleGroup muscleGroup : selectedMuscleGroups) {
+            for (String muscleGroup : selectedMuscleGroups) {
+                // Query exercise.db in the assets/databases directory for exercises matching
+                // the user's settings
+                TwoTuple<String, String> queryResult = pickOneRandomExercise(muscleGroup);
+                if (queryResult == null) {
+                    makeToast("No exercises matched your preferences.");
+                } else {
+                    exerciseList.add(queryResult);
+                }
+
+                // OLD CODE FOR HARDCODED EXERCISES
                 // Get one random exercise from this muscle group
-                exerciseList.add(muscleGroup.pickOneRandomExercise());
+//                exerciseList.add(muscleGroup.pickOneRandomExercise());
             }
             if (exerciseAdapter != null) exerciseAdapter.notifyDataSetChanged();
             textViewEmpty.setVisibility(View.INVISIBLE);
         }
     }
 
-    private void writeExerciseDbEntry(TwoTuple<String, MuscleGroup> exercise, String status) {
+    public TwoTuple<String, String> pickOneRandomExercise(String muscleGroup) {
+        ArrayList<String> queryResult = queryExercises(muscleGroup);
+
+        if (queryResult.size() > 0) {
+            Random gen = new Random();
+            int random = gen.nextInt(queryResult.size());
+            return new TwoTuple(queryResult.get(random), muscleGroup);
+        } else return null;
+    }
+
+    protected ArrayList<String> queryExercises(String muscleGroup) {
+        ArrayList<String> queryResult = new ArrayList<>();
+
+        ExerciseDb exerciseDb = new ExerciseDb(getActivity());
+        SQLiteDatabase db = exerciseDb.getReadableDatabase();
+
+
+        // Define a projection that specifies which columns from the database
+        // you will actually use after this query.
+        String[] projection = {
+                ExerciseContract.ExerciseEntry.COLUMN_NAME,
+        };
+
+        // WHERE clause
+        String selection = ExerciseContract.ExerciseEntry.COLUMN_GROUP + " = ?";
+
+        // Arguments to the WHERE clause
+        String[] selectionArgs = {muscleGroup};
+
+        // How you want the results sorted in the resulting Cursor
+        String sortOrder =
+                ExerciseContract.ExerciseEntry.COLUMN_NAME + " ASC";
+
+        Cursor c = db.query(
+                ExerciseContract.ExerciseEntry.TABLE_NAME,  // The table to query
+                projection,                               // The columns to return
+                selection,                                // The columns for the WHERE clause
+                selectionArgs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                sortOrder                                 // The sort order
+        );
+
+        if (c.moveToFirst()) {
+            while (!c.isAfterLast()) {
+                String exercise = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_NAME));
+
+                queryResult.add(exercise);
+
+                Log.d(TAG, exercise);
+
+                c.moveToNext();
+            }
+        }
+
+        c.close();
+        db.close();
+
+        return queryResult;
+    }
+
+    private void writeLogEntry(TwoTuple<String, String> exercise, String status) {
         // Gets the data repository in write mode
-        ExerciseDbHelper mDbHelper = new ExerciseDbHelper(getActivity());
+        LogsDbHelper mDbHelper = new LogsDbHelper(getActivity());
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         // Create a new map of values, where column names are the keys
         String dateAndTime = Calendar.getInstance().getTime().toString();
         ContentValues values = new ContentValues();
-        values.put(ExerciseContract.ExerciseEntry.COLUMN_EXERCISE, exercise.a);
-        values.put(ExerciseContract.ExerciseEntry.COLUMN_GROUP, exercise.b.toString());
-        values.put(ExerciseContract.ExerciseEntry.COLUMN_DATE, dateAndTime);
-        values.put(ExerciseContract.ExerciseEntry.COLUMN_STATUS, status);
+        values.put(LogsContract.LogEntry.COLUMN_EXERCISE, exercise.a);
+        values.put(LogsContract.LogEntry.COLUMN_GROUP, exercise.b);
+        values.put(LogsContract.LogEntry.COLUMN_DATE, dateAndTime);
+        values.put(LogsContract.LogEntry.COLUMN_STATUS, status);
 
         // Insert the new row, returning the primary key value of the new row
-        db.insert(ExerciseContract.ExerciseEntry.TABLE_NAME, null, values);
+        db.insert(LogsContract.LogEntry.TABLE_NAME, null, values);
 
         db.close();
     }
@@ -98,14 +174,14 @@ public class WorkoutFragment extends Fragment {
         LinkedHashMap<String, Integer> entries;
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
-                PREFERENCES_QUEUED_EXERCISES, Context.MODE_PRIVATE);
+                PreferenceTags.PREFERENCES_QUEUED_EXERCISES, Context.MODE_PRIVATE);
 
         LinkedHashMap<String, String> savedExercises = new LinkedHashMap(sharedPreferences.getAll());
 
         exerciseList = new ArrayList();
         for (Map.Entry<String, String> entry : savedExercises.entrySet()) {
             exerciseList.add(
-                    new TwoTuple(entry.getKey(), MuscleGroup.toMuscleGroup(entry.getValue())));
+                    new TwoTuple(entry.getKey(), entry.getValue()));
         }
     }
 
@@ -139,17 +215,20 @@ public class WorkoutFragment extends Fragment {
                 public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                     String status = "skipped";
                     int position = viewHolder.getAdapterPosition();
-                    TwoTuple<String, MuscleGroup> exercise = exerciseList.get(position);
+                    TwoTuple<String, String> exercise = exerciseList.get(position);
                     if (direction == ItemTouchHelper.LEFT) { // Skip this exercise and replace it
-                        exerciseList.set(position, exercise.b.pickOneRandomExercise());
+                        TwoTuple<String, String> queryResult = pickOneRandomExercise(exercise.b);
                         makeToast("Skipped.");
+                        if (queryResult == null) {
+                            makeToast("No exercises matched your preferences.");
+                        } else exerciseList.set(position, queryResult);
                     } else {
                         exerciseList.remove(position);
                         status = "completed";
                         if (exerciseList.isEmpty()) textViewEmpty.setVisibility(View.VISIBLE);
                         makeToast("Exercise complete.");
                     }
-                    writeExerciseDbEntry(exercise, status);
+                    writeLogEntry(exercise, status);
                     exerciseAdapter.notifyDataSetChanged();
                 }
             }
@@ -167,10 +246,6 @@ public class WorkoutFragment extends Fragment {
         });
 
         return view;
-    }
-
-    public ArrayList<TwoTuple<String, MuscleGroup>> getQueuedExercises() {
-        return exerciseList;
     }
 
     /** Make a toast */

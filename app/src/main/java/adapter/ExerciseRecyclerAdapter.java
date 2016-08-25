@@ -11,14 +11,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import constant.MuscleGroup;
 import goodcompanyname.myapplication.R;
 
 /**
  * Created by josephchoi on 8/20/16.
  */
 public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecyclerAdapter.ViewHolder> {
-    private ArrayList<TwoTuple<String, MuscleGroup>> exercises;
+    private ArrayList<TwoTuple<String, String>> exercises;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -33,7 +32,7 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ExerciseRecyclerAdapter(ArrayList<TwoTuple<String, MuscleGroup>> exercises) {
+    public ExerciseRecyclerAdapter(ArrayList<TwoTuple<String, String>> exercises) {
         this.exercises = exercises;
     }
 

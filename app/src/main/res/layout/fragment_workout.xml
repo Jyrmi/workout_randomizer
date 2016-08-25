@@ -4,6 +4,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <!--<ImageView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:tint="@color/colorLight"-->
+        <!--android:src="@drawable/ic_rowing_white_selected_24dp" />-->
+
     <android.support.v7.widget.RecyclerView
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
@@ -28,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/no_exercises"
+        android:textColor="@color/colorAccent"
         android:textSize="@dimen/main_text"/>
 
 </android.support.design.widget.CoordinatorLayout>

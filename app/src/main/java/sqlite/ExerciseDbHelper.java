@@ -18,10 +18,20 @@ public class ExerciseDbHelper extends SQLiteOpenHelper{
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + ExerciseContract.ExerciseEntry.TABLE_NAME + " (" +
                     ExerciseContract.ExerciseEntry._ID + " " + ID_TYPE + COMMA_SEP +
-                    ExerciseContract.ExerciseEntry.COLUMN_EXERCISE + TEXT_TYPE + COMMA_SEP +
+                    ExerciseContract.ExerciseEntry.COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
                     ExerciseContract.ExerciseEntry.COLUMN_GROUP + TEXT_TYPE + COMMA_SEP +
-                    ExerciseContract.ExerciseEntry.COLUMN_DATE + TEXT_TYPE + COMMA_SEP +
-                    ExerciseContract.ExerciseEntry.COLUMN_STATUS + TEXT_TYPE + " )";
+                    ExerciseContract.ExerciseEntry.COLUMN_OTHER_GROUPS + TEXT_TYPE + COMMA_SEP +
+                    ExerciseContract.ExerciseEntry.COLUMN_DIFFICULTY + TEXT_TYPE + COMMA_SEP +
+                    ExerciseContract.ExerciseEntry.COLUMN_TYPE + TEXT_TYPE + COMMA_SEP +
+                    ExerciseContract.ExerciseEntry.COLUMN_MECHANICS + TEXT_TYPE + COMMA_SEP +
+                    ExerciseContract.ExerciseEntry.COLUMN_EQUIPMENT + TEXT_TYPE + COMMA_SEP +
+                    ExerciseContract.ExerciseEntry.COLUMN_FORCE + TEXT_TYPE + COMMA_SEP +
+                    ExerciseContract.ExerciseEntry.COLUMN_SPORT + TEXT_TYPE + COMMA_SEP +
+                    ExerciseContract.ExerciseEntry.COLUMN_RATING + TEXT_TYPE + COMMA_SEP +
+                    ExerciseContract.ExerciseEntry.COLUMN_MALE_VIDEO + TEXT_TYPE + COMMA_SEP +
+                    ExerciseContract.ExerciseEntry.COLUMN_MALE_IMAGES + TEXT_TYPE + COMMA_SEP +
+                    ExerciseContract.ExerciseEntry.COLUMN_FEMALE_VIDEO + TEXT_TYPE + COMMA_SEP +
+                    ExerciseContract.ExerciseEntry.COLUMN_FEMALE_IMAGES + TEXT_TYPE + " )";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + ExerciseContract.ExerciseEntry.TABLE_NAME;
