@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,6 +76,9 @@ public class SettingsFragment extends Fragment {
     CheckBox checkBoxYes;
     CheckBox checkBoxNo;
 
+    // Gender Section
+    CheckBox checkBoxMale;
+
     private int mPageNo;
     private HashMap<CheckBox, Setting> checkBoxToSetting;
     private HashMap<Setting, CheckBox> settingToCheckBox;
@@ -95,6 +99,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         checkBoxToSetting = new HashMap<>();
@@ -144,6 +149,9 @@ public class SettingsFragment extends Fragment {
         checkBoxYes = (CheckBox) view.findViewById(R.id.checkbox_yes);
         checkBoxNo = (CheckBox) view.findViewById(R.id.checkbox_no);
 
+        // Gender Section
+        checkBoxMale = (CheckBox) view.findViewById(R.id.checkbox_male);
+
 
 
         // Associate CheckBoxes with their Setting
@@ -192,6 +200,9 @@ public class SettingsFragment extends Fragment {
         checkBoxToSetting.put(checkBoxYes, Setting.YES);
         checkBoxToSetting.put(checkBoxNo, Setting.NO);
 
+        // Gender section
+        checkBoxToSetting.put(checkBoxMale, Setting.MALE);
+
 
 
         // Exercise Types section
@@ -238,43 +249,16 @@ public class SettingsFragment extends Fragment {
         settingToCheckBox.put(Setting.YES, checkBoxYes);
         settingToCheckBox.put(Setting.NO, checkBoxNo);
 
+        // Gender section
+        settingToCheckBox.put(Setting.MALE, checkBoxMale);
+
         recallSettings();
 
-//        // Contain in arrays for convenience
-//        typeCheckBoxes = new CheckBox[]{checkBoxCardio, checkBoxOlympic, checkBoxPlyometrics,
-//                checkBoxPowerlifting, checkBoxStrength, checkBoxStretching, checkBoxStrongman};
-//        equipmentCheckBoxes = new CheckBox[]{checkBoxBands, checkBoxBarbell, checkBoxBody,
-//                checkBoxCable, checkBoxDumbbell, checkBoxEzBar, checkBoxExerciseBall,
-//                checkBoxFoamRoll, checkBoxKettlebells, checkBoxMachine, checkBoxMedicineBall,
-//                checkBoxNone, checkBoxOther};
-//        mechanicsCheckBoxes = new CheckBox[]{checkBoxCompound, checkBoxIsolation, checkBoxNeither};
-//        difficultyCheckBoxes = new CheckBox[]{checkBoxEasy, checkBoxMedium, checkBoxHard};
-
-//        Button testButton = (Button) view.findViewById(R.id.test_button);
-//        testButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                TwoTuple<String, ArrayList<String>> settingsQuery = getSettingsAsQuery();
-//                TwoTuple<String, ArrayList<String>> settingsQuery = generateWhereClause();
-//                Log.d(TAG, settingsQuery.a);
-//                Log.d(TAG, settingsQuery.b.toString());
-//            }
-//        });
+        for (CheckBox checkBox : checkBoxToSetting.keySet()) {
+            setOnCheckListener(checkBox);
+        }
 
         return view;
-    }
-
-    private void recallSettings() {
-        SharedPreferences sharedPreferences =
-                getActivity().getSharedPreferences(PreferenceTags.PREFERENCES_SETTINGS,
-                        Context.MODE_PRIVATE);
-
-        HashMap<String, String> settings = (HashMap) sharedPreferences.getAll();
-
-        for (Map.Entry<String, String> settingsEntry : settings.entrySet()) {
-            Setting s = Setting.toSetting(settingsEntry.getKey());
-            settingToCheckBox.get(s).setChecked(true);
-        }
     }
 
     public HashMap<SettingsCategory, ArrayList<Setting>> getSettings() {
@@ -291,6 +275,45 @@ public class SettingsFragment extends Fragment {
         }
 
         return settings;
+    }
+
+    private void recallSettings() {
+        SharedPreferences sharedPreferences =
+                getActivity().getSharedPreferences(PreferenceTags.PREFERENCES_SETTINGS,
+                        Context.MODE_PRIVATE);
+
+        HashMap<String, String> settings = (HashMap) sharedPreferences.getAll();
+
+        for (Map.Entry<String, String> settingsEntry : settings.entrySet()) {
+            Setting s = Setting.toSetting(settingsEntry.getKey());
+            settingToCheckBox.get(s).setChecked(true);
+        }
+    }
+
+    private void writeSetting(Setting setting, Boolean checked) {
+        SharedPreferences sharedPreferences =
+                getActivity().getSharedPreferences(PreferenceTags.PREFERENCES_SETTINGS,
+                        Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        if (checked) {
+            editor.putString(setting.toString(), setting.getCategory().toString());
+        } else {
+            if (sharedPreferences.getString(setting.toString(), null) != null)
+                editor.remove(setting.toString());
+        }
+
+        editor.apply();
+    }
+
+    public void setOnCheckListener(final CheckBox checkBox) {
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                writeSetting(checkBoxToSetting.get(checkBox), b);
+            }
+        });
     }
 
     public void updatePreferences() {
@@ -311,63 +334,4 @@ public class SettingsFragment extends Fragment {
 
         editor.apply();
     }
-
-    public void checkAll() {
-        for (Map.Entry<CheckBox, Setting> entry : checkBoxToSetting.entrySet()) {
-            entry.getKey().setChecked(true);
-        }
-    }
-
-//    public TwoTuple<String, ArrayList<String>> getSettingsAsQuery() {
-//
-//        ArrayList<String> whereClauseSections = new ArrayList<>();
-//        ArrayList<String> queryArgs = new ArrayList<>();
-//
-//        HashMap<SettingsCategory, ArrayList<Setting>> settings = getSettings();
-//
-//        for (Map.Entry<SettingsCategory, ArrayList<Setting>> entry : settings.entrySet()) {
-//            ArrayList<String> whereStatements = new ArrayList<>();
-//            for (Setting value : entry.getValue()) {
-//                whereStatements.add(entry.getKey() + "=?");
-//                queryArgs.add(value.toString());
-//            }
-//            whereClauseSections.add("(" + TextUtils.join(" OR ", whereStatements) + ")");
-//        }
-//
-//        String fullWhereClause = TextUtils.join(" AND ", whereClauseSections);
-//
-//        return new TwoTuple<>(fullWhereClause, queryArgs);
-//    }
-
-//    public TwoTuple<String, ArrayList<String>> generateWhereClause() {
-//        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
-//                PreferenceTags.PREFERENCES_SETTINGS, Context.MODE_PRIVATE);
-//
-//        ArrayList<String> whereClauseSections = new ArrayList<>();
-//        ArrayList<String> queryArgs = new ArrayList<>();
-//
-//        HashMap<String, String> settings = (HashMap) sharedPreferences.getAll();
-//        HashMap<String, ArrayList<String>> categories = new HashMap<>();
-//
-//        for (Map.Entry<String, String> entry : settings.entrySet()) {
-//            String category = entry.getValue();
-//            if (!categories.containsKey(category)) {
-//                categories.put(category, new ArrayList<String>());
-//            }
-//            categories.get(category).add(entry.getKey());
-//        }
-//
-//        for (Map.Entry<String, ArrayList<String>> entry : categories.entrySet()) {
-//            ArrayList<String> whereStatements = new ArrayList<>();
-//            for (String setting : entry.getValue()) {
-//                whereStatements.add(entry.getKey() + "=?");
-//                queryArgs.add(setting);
-//            }
-//            whereClauseSections.add("(" + TextUtils.join(" OR ", whereStatements) + ")");
-//        }
-//
-//        String fullWhereClause = TextUtils.join(" AND ", whereClauseSections);
-//
-//        return new TwoTuple<>(fullWhereClause, queryArgs);
-//    }
 }

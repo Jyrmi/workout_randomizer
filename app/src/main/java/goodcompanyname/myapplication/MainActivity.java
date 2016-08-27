@@ -27,6 +27,7 @@ import constant.Setting;
 
 public class MainActivity extends AppCompatActivity
         implements SelectionFragment.OnMuscleGroupsSelectedListener {
+    // todo: logical back navigation
 
     private static final String TAG = "MainActivity";
 
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity
 
     SelectionFragment selectionFragment;
     WorkoutFragment workoutFragment;
-    ResultsFragment resultsFragment;
+    StatsFragment statsFragment;
     SettingsFragment settingsFragment;
 
     private int[] tabIcons = {
@@ -50,9 +51,8 @@ public class MainActivity extends AppCompatActivity
             Snackbar.make(selectionFragment.getView(), "You already have 10+ exercises waiting!",
                     Snackbar.LENGTH_SHORT).setAction("Action", null).show();
         } else {
-            settingsFragment.updatePreferences();
-            workoutFragment.addMuscleGroupSelections(selectedMuscleGroups);
             tabLayout.getTabAt(1).select();
+            workoutFragment.addMuscleGroupSelections(selectedMuscleGroups);
         }
     }
 
@@ -64,8 +64,10 @@ public class MainActivity extends AppCompatActivity
         // Setup the viewPager
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager());
-        if (viewPager != null)
+        if (viewPager != null) {
+            viewPager.setOffscreenPageLimit(3);
             viewPager.setAdapter(pagerAdapter);
+        }
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         if (tabLayout != null) {
@@ -87,15 +89,21 @@ public class MainActivity extends AppCompatActivity
     public void onPause() {
         super.onPause();
 
-        settingsFragment.updatePreferences();
         workoutFragment.updatePreferences();
+    }
+
+    @Override
+    public void onBackPressed(){
+        FragmentManager fm = getSupportFragmentManager();
+        if (fm.getBackStackEntryCount() > 0) {
+            fm.popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     public void firstRunSettingsCheck() {
         // Set all settings to true on first run
-        SharedPreferences settingsPreferences = getSharedPreferences(
-                PreferenceTags.PREFERENCES_SETTINGS, Context.MODE_PRIVATE);
-
         SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (defaultPreferences.getBoolean("firstrun", true)) {
@@ -103,6 +111,8 @@ public class MainActivity extends AppCompatActivity
             clearPreferences();
 
             // Do first run stuff here
+            SharedPreferences settingsPreferences = getSharedPreferences(
+                    PreferenceTags.PREFERENCES_SETTINGS, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = settingsPreferences.edit();
             for (Setting value : Setting.values()) {
                 editor.putString(value.toString(), value.getCategory().toString());
@@ -153,8 +163,8 @@ public class MainActivity extends AppCompatActivity
                     workoutFragment = WorkoutFragment.newInstance(2);
                     return workoutFragment;
                 case 2:
-                    resultsFragment = ResultsFragment.newInstance(3);
-                    return resultsFragment;
+                    statsFragment = StatsFragment.newInstance(3);
+                    return statsFragment;
                 case 3:
                     settingsFragment = SettingsFragment.newInstance(4);
                     return settingsFragment;

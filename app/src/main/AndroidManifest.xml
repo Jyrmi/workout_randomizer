@@ -35,7 +35,7 @@
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
         -->
         <activity
-            android:name=".ResultsFragment"
+            android:name=".StatsFragment"
             android:label="@string/title_activity_activity_results"></activity>
 
         <meta-data

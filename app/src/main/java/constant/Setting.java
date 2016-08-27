@@ -19,7 +19,9 @@ public enum Setting {
 
     BEGINNER, INTERMEDIATE, EXPERT,
 
-    YES, NO;
+    YES, NO,
+
+    MALE;
 
     @Override
     public String toString() {
@@ -56,6 +58,7 @@ public enum Setting {
             case EXPERT: return "Expert";
             case YES: return "Yes";
             case NO: return "No";
+            case MALE: return "Male";
             default: throw new IllegalArgumentException();
         }
     }
@@ -94,6 +97,7 @@ public enum Setting {
             case "Expert": return EXPERT;
             case "Yes": return YES;
             case "No": return NO;
+            case "Male": return MALE;
             default: throw new IllegalArgumentException();
         }
     }
@@ -132,6 +136,7 @@ public enum Setting {
             case EXPERT: return SettingsCategory.DIFFICULTY;
             case YES: return SettingsCategory.SPORTS;
             case NO: return SettingsCategory.SPORTS;
+            case MALE: return SettingsCategory.GENDER;
             default: throw new IllegalArgumentException();
         }
     }

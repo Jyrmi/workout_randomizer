@@ -6,7 +6,7 @@ import sqlite.ExerciseContract;
  * Created by jeremy on 8/25/16.
  */
 public enum SettingsCategory {
-    TYPE, EQUIPMENT, MECHANICS, FORCE, DIFFICULTY, SPORTS;
+    TYPE, EQUIPMENT, MECHANICS, FORCE, DIFFICULTY, SPORTS, GENDER;
 
     @Override
     public String toString() {
@@ -17,6 +17,7 @@ public enum SettingsCategory {
             case FORCE: return ExerciseContract.ExerciseEntry.COLUMN_FORCE;
             case DIFFICULTY: return ExerciseContract.ExerciseEntry.COLUMN_DIFFICULTY;
             case SPORTS: return ExerciseContract.ExerciseEntry.COLUMN_SPORT;
+            case GENDER: return "Gender";
             default: throw new IllegalArgumentException();
         }
     }

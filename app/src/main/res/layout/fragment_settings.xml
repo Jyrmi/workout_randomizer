@@ -22,10 +22,7 @@
             android:text="@string/exercise_type_section"
             android:textSize="@dimen/header_text" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
+        <View style="@style/Line" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -174,9 +171,7 @@
 
         </RelativeLayout>
 
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="@dimen/empty_space" />
+        <Space style="@style/EmptySpace" />
 
         <TextView
             android:layout_width="match_parent"
@@ -184,10 +179,7 @@
             android:text="@string/equipment_section"
             android:textSize="@dimen/header_text" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
+        <View style="@style/Line" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -462,9 +454,7 @@
 
         </RelativeLayout>
 
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="@dimen/empty_space" />
+        <Space style="@style/EmptySpace" />
 
         <TextView
             android:layout_width="match_parent"
@@ -472,10 +462,7 @@
             android:text="@string/mechanics_section"
             android:textSize="@dimen/header_text" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
+        <View style="@style/Line" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -540,9 +527,7 @@
 
         </RelativeLayout>
 
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="@dimen/empty_space" />
+        <Space style="@style/EmptySpace" />
 
         <TextView
             android:layout_width="match_parent"
@@ -550,10 +535,7 @@
             android:text="@string/force_section"
             android:textSize="@dimen/header_text" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
+        <View style="@style/Line" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -639,9 +621,7 @@
 
         </RelativeLayout>
 
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="@dimen/empty_space" />
+        <Space style="@style/EmptySpace" />
 
         <TextView
             android:layout_width="match_parent"
@@ -649,10 +629,7 @@
             android:text="@string/difficulty_section"
             android:textSize="@dimen/header_text" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
+        <View style="@style/Line" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -717,9 +694,7 @@
 
         </RelativeLayout>
 
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="@dimen/empty_space" />
+        <Space style="@style/EmptySpace" />
 
         <TextView
             android:layout_width="match_parent"
@@ -727,10 +702,7 @@
             android:text="@string/sports_section"
             android:textSize="@dimen/header_text" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
+        <View style="@style/Line" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -774,18 +746,39 @@
 
         </RelativeLayout>
 
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="@dimen/empty_space" />
+        <Space style="@style/EmptySpace" />
 
-        <Button android:id="@+id/test_button"
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="show query" />
+            android:text="@string/gender_section"
+            android:textSize="@dimen/header_text"
+            android:layout_alignParentStart="true" />
 
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="@dimen/bottom_empty_space" />
+        <View style="@style/Line" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/male"
+                android:textSize="@dimen/main_text"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true" />
+
+            <CheckBox
+                android:id="@+id/checkbox_male"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+        <Space style="@style/LargeSpace" />
 
     </LinearLayout>
 

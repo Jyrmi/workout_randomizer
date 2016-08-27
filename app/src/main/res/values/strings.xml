@@ -69,4 +69,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
+    <string name="gender_section">Gender</string>
+    <string name="male">Show male media</string>
+
 </resources>

@@ -22,6 +22,7 @@ import constant.MuscleGroup;
 import constant.PreferenceTags;
 
 public class SelectionFragment extends Fragment {
+    // todo: repartition the images to include abductors/adductors muscle groups
 
     private static final String TAG = "SelectionFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
