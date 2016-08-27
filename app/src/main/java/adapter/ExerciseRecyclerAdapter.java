@@ -7,9 +7,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -74,17 +77,22 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(view.getContext(), ExerciseDetailsActivity.class);
-            intent.putExtra("EXTRA_NAME", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_NAME));
-            intent.putExtra("EXTRA_GROUP", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_GROUP));
-            if (isMale(view.getContext())) {
-                intent.putExtra("EXTRA_IMAGES", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_MALE_IMAGES));
-                intent.putExtra("EXTRA_VIDEO", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_MALE_VIDEO));
+            if (isOnline(view.getContext())) {
+                Intent intent = new Intent(view.getContext(), ExerciseDetailsActivity.class);
+                intent.putExtra("EXTRA_NAME", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_NAME));
+                intent.putExtra("EXTRA_GROUP", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_GROUP));
+                if (isMale(view.getContext())) {
+                    intent.putExtra("EXTRA_IMAGES", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_MALE_IMAGES));
+                    intent.putExtra("EXTRA_VIDEO", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_MALE_VIDEO));
+                } else {
+                    intent.putExtra("EXTRA_IMAGES", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_IMAGES));
+                    intent.putExtra("EXTRA_VIDEO", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_VIDEO));
+                }
+                view.getContext().startActivity(intent);
             } else {
-                intent.putExtra("EXTRA_IMAGES", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_IMAGES));
-                intent.putExtra("EXTRA_VIDEO", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_VIDEO));
+                Snackbar.make(view, "The guides work best with an internet connection.",
+                        Snackbar.LENGTH_SHORT).setAction("Action", null).show();
             }
-            view.getContext().startActivity(intent);
         }
 
         public Boolean isMale(Context context) {
@@ -94,6 +102,17 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
             if (sharedPreferences.getString("Male", null) == null) {
                 return false;
             } else return true;
+        }
+
+        /**
+         * Checks whether the device is connected to the internet.
+         * @return whether connected.
+         */
+        public boolean isOnline(Context context) {
+            ConnectivityManager cm =
+                    (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+            return netInfo != null && netInfo.isConnectedOrConnecting();
         }
     }
 

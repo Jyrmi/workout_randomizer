@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
@@ -88,13 +90,6 @@ public class WorkoutFragment extends Fragment {
         textViewEmpty = (TextView) view.findViewById(R.id.text_no_exercises);
         if (!exerciseList.isEmpty()) textViewEmpty.setVisibility(View.INVISIBLE);
 
-//        fab = (FloatingActionButton) view.findViewById(R.id.fab_workout);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//            }
-//        });
-
         if (exerciseList == null) exerciseList = new ArrayList();
         exerciseAdapter = new ExerciseRecyclerAdapter(exerciseList);
 
@@ -108,10 +103,7 @@ public class WorkoutFragment extends Fragment {
                     public boolean onMove(RecyclerView recyclerView,
                                           RecyclerView.ViewHolder viewHolder,
                                           RecyclerView.ViewHolder target) {
-//                    final int fromPos = viewHolder.getAdapterPosition();
-//                    final int toPos = target.getAdapterPosition();
-                        // move item in `fromPos` to `toPos` in adapter.
-                        return true;// true if moved, false otherwise
+                        return true; // true if moved, false otherwise
                     }
                     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                         String status = "skipped";

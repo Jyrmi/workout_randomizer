@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,7 +37,6 @@ import sqlite.ExerciseContract;
  */
 public class ExerciseDetailsActivity extends AppCompatActivity {
     // todo: general cleanup/structuring (2)
-    // todo: if no internet connectivity, display tooltips to suggest to establish such (3)
 
     public static final String TAG = "ExerciseDetailsActivity";
 
@@ -64,14 +65,13 @@ public class ExerciseDetailsActivity extends AppCompatActivity {
         textViewName.setText(getIntent().getExtras().getString("EXTRA_NAME"));
         textViewGroup.setText(getIntent().getExtras().getString("EXTRA_GROUP"));
 
-        setImages();
-        setVideo();
+        String images = getIntent().getExtras().getString("EXTRA_IMAGES");
+        if (images != null) setImages(images);
+        String videoUrl = getIntent().getExtras().getString("EXTRA_VIDEO");
+        if (videoUrl != null) setVideo(videoUrl);
     }
 
-    public Boolean setImages() {
-//        String videoUrl = getIntent().getExtras().getString("EXTRA_VIDEO");
-        String images = getIntent().getExtras().getString("EXTRA_IMAGES");
-
+    public Boolean setImages(String images) {
         if (images == null) return false;
 
         String[] imageUrls = TextUtils.split(images , ",");
@@ -124,8 +124,7 @@ public class ExerciseDetailsActivity extends AppCompatActivity {
         }
     }
 
-    public Boolean setVideo() {
-        String videoUrl = getIntent().getExtras().getString("EXTRA_VIDEO");
+    public Boolean setVideo(String videoUrl) {
 
         if (videoUrl == null) return false;
 
