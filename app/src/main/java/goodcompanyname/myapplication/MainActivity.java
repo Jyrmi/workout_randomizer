@@ -15,19 +15,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Stack;
+
 import constant.PreferenceTags;
 import constant.Setting;
 
 
 public class MainActivity extends AppCompatActivity
         implements SelectionFragment.OnMuscleGroupsSelectedListener {
-    // todo: logical back navigation
 
     private static final String TAG = "MainActivity";
 
@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity
     WorkoutFragment workoutFragment;
     StatsFragment statsFragment;
     SettingsFragment settingsFragment;
+
+    public static Stack<Integer> backstack = new Stack<>();
 
     private int[] tabIcons = {
             R.drawable.ic_accessibility_white_selector,
@@ -52,9 +54,7 @@ public class MainActivity extends AppCompatActivity
                     Snackbar.LENGTH_SHORT).setAction("Action", null).show();
         } else {
             tabLayout.getTabAt(1).select();
-            Snackbar.make(selectionFragment.getView(),
-                    "Swipe cards left to skip, right to complete.",
-                    Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+//            MySharedPrefs.putDefaultBool(this, "newexercises", true);
             workoutFragment.addMuscleGroupSelections(selectedMuscleGroups);
         }
     }
@@ -97,11 +97,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        FragmentManager fm = getSupportFragmentManager();
-        if (fm.getBackStackEntryCount() > 0) {
-            fm.popBackStack();
-        } else {
+        if (backstack.empty()) {
             super.onBackPressed();
+        } else {
+            tabLayout.getTabAt(backstack.pop()).select();
         }
     }
 
@@ -124,7 +123,9 @@ public class MainActivity extends AppCompatActivity
 
             // Set "firstrun" to false
             editor = defaultPreferences.edit();
-            editor.putBoolean("firstrun", false).apply();
+            editor.putBoolean("firstrun", false);
+            editor.putBoolean("showtooltips", true);
+            editor.apply();
         }
     }
 
@@ -145,9 +146,20 @@ public class MainActivity extends AppCompatActivity
             super(fm);
         }
 
-        public View getTabView(int position) {
+        public View getTabView(final int position) {
             // Given you have a custom layout in `res/layout/custom_tab.xml` with a TextView and ImageView
             View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.tab, null);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Very bootleg backstack implementation, but it's the only way after several
+                    // hours of digging around...
+                    if (position != tabLayout.getSelectedTabPosition()) {
+                        backstack.push(tabLayout.getSelectedTabPosition());
+                    }
+                    tabLayout.getTabAt(position).select();
+                }
+            });
             TextView title = (TextView) view.findViewById(R.id.title);
             title.setText(mTabsTitle[position]);
             ImageView icon = (ImageView) view.findViewById(R.id.icon);

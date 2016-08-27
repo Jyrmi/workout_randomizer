@@ -7,17 +7,17 @@
     <string name="title_activity_activity_workout">Workout Activity</string>
     <string name="title_activity_activity_results">Results Activity</string>
 
-    <string name="button_send">Login</string>
-
-    <string name="button_turn_body">Turn</string>
+    <!--Selection Activity-->
+    <string name="selection_tooltip">Press the rotate button to turn the body,
+    the muscles to target them, or the forward arrow to generate exercises.</string>
 
     <!--Workout Activity-->
     <string name="button_generate_workout">Generate</string>
-    <string name="invalid_selection">Select at least one.</string>
-    <string name="list_muscle_group"></string>
-    <string name="volley_string"></string>
+    <string name="invalid_selection">Select at least one muscle group.</string>
     <string name="button_done">I\'m done</string>
     <string name="no_exercises">No exercises queued.</string>
+    <string name="workout_tooltip">Swipe exercises left to skip or right to complete. Touch
+    exercises to view their guides.</string>
 
     <!--Results Activity-->
     <string name="list_muscle_groups">Muscle Groups Selected</string>

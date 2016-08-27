@@ -21,4 +21,26 @@
         android:text="@string/no_exercises"
         style="@style/Tooltip" />
 
+    <RelativeLayout
+        android:id="@+id/workout_tooltip"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimaryDarkTransparent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="@dimen/app_margin"
+            android:textColor="@color/white"
+            android:textSize="@dimen/header_text"
+            android:text="@string/workout_tooltip"/>
+
+    </RelativeLayout>
+
 </android.support.design.widget.CoordinatorLayout>

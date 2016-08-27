@@ -21,17 +21,16 @@ import com.github.mikephil.charting.data.RadarDataSet;
 import com.github.mikephil.charting.data.RadarEntry;
 
 import java.util.ArrayList;
-import adapter.TwoTuple;
+
 import constant.MuscleGroup;
 import constant.PreferenceTags;
+import constant.TwoTuple;
 import formatter.RadarChartFormatter;
 
 /**
  * Created by jeremy on 8/11/16.
  */
 public class RadarFragment extends Fragment {
-    // todo: sub-tabs to display the different sets of data (logs, charts, ...)
-    // todo: more graphs of relevant information
 
     private final static String TAG = "StatsFragment";
     private static final String emptyChart = "Generate some workouts to see your selections.";
@@ -64,13 +63,7 @@ public class RadarFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_radar, container, false);
 
         tooltip = (TextView) view.findViewById(R.id.results_tooltip);
-
-        if (setRadarChart(view)) {
-            tooltip.setVisibility(View.GONE);
-        } else {
-            tooltip.setVisibility(View.VISIBLE);
-            tooltip.setText(emptyChart);
-        }
+        muscleGroupsChart = (RadarChart) view.findViewById(R.id.radar_chart);
 
         return view;
     }
@@ -92,11 +85,14 @@ public class RadarFragment extends Fragment {
         return entries;
     }
 
-    private Boolean setRadarChart(View view) {
-        muscleGroupsChart = (RadarChart) view.findViewById(R.id.radar_chart);
+    public Boolean refreshChart() {
+        tooltip.setVisibility(View.GONE);
+
         ArrayList<String> correspondingMuscleGroups = new ArrayList<>();
 
         muscleGroupsChart.setDescription("");
+        muscleGroupsChart.setNoDataText("");
+        muscleGroupsChart.setNoDataTextDescription("");
 
         muscleGroupsChart.setWebLineWidth(1f);
         muscleGroupsChart.setWebLineWidthInner(1f);
@@ -110,18 +106,17 @@ public class RadarFragment extends Fragment {
         }
 
         if (radarChartEntries.isEmpty()) {
-            muscleGroupsChart.setNoDataText("");
-            muscleGroupsChart.setNoDataTextDescription("");
-
             muscleGroupsChart.setVisibility(View.GONE);
+            tooltip.setVisibility(View.VISIBLE);
+            tooltip.setText(emptyChart);
             return false;
         }
 
         radarDataSet = new RadarDataSet(radarChartEntries, "Selected Muscle Groups");
         radarDataSet.setColor(Color.parseColor("#"+Integer.toHexString(ContextCompat.getColor(
-                view.getContext(), R.color.colorAccent))));
+                getActivity(), R.color.colorAccent))));
         radarDataSet.setFillColor(Color.parseColor("#"+Integer.toHexString(ContextCompat.getColor(
-                view.getContext(), R.color.colorLight))));
+                getActivity(), R.color.colorLight))));
         radarDataSet.setDrawFilled(true);
         radarDataSet.setFillAlpha(180);
         radarDataSet.setLineWidth(2f);

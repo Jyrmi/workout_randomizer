@@ -12,4 +12,7 @@
     <dimen name="bottom_empty_space">50dp</dimen>
     <dimen name="main_tab_layout_height">56dp</dimen>
     <dimen name="sub_tab_layout_stats_height">42dp</dimen>
+    <dimen name="video_view">300dp</dimen>
+    <dimen name="details_header">30sp</dimen>
+    <dimen name="details_main">20sp</dimen>
 </resources>

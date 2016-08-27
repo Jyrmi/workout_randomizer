@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,21 +54,24 @@ public class LogsFragment extends Fragment{
 
         tooltip = (TextView) view.findViewById(R.id.logs_tooltip);
 
-        logsAdapter = new LogsRecyclerAdapter(readTable());
         recyclerView = (RecyclerView) view.findViewById(R.id.logs_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(logsAdapter);
 
-        if (readTable().isEmpty()) {
+        return view;
+    }
+
+    public void refreshLogs() {
+        ArrayList<HashMap<String, String>> logs = readTable();
+        if (logs.isEmpty()) {
             recyclerView.setVisibility(View.GONE);
             tooltip.setVisibility(View.VISIBLE);
             tooltip.setText(emptyLogs);
         } else {
+            logsAdapter = new LogsRecyclerAdapter(logs);
+            recyclerView.setAdapter(logsAdapter);
             recyclerView.setVisibility(View.VISIBLE);
             tooltip.setVisibility(View.GONE);
         }
-
-        return view;
     }
 
     private ArrayList<HashMap<String, String>> readTable() {

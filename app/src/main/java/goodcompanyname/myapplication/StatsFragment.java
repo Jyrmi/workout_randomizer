@@ -1,8 +1,6 @@
 package goodcompanyname.myapplication;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import constant.PreferenceTags;
+import preferences.MySharedPrefs;
 import sqlite.LogsContract;
 import sqlite.LogsDbHelper;
 
@@ -26,22 +24,18 @@ import sqlite.LogsDbHelper;
  * Created by jeremy on 8/11/16.
  */
 public class StatsFragment extends Fragment {
-    // todo: sub-tabs to display the different sets of data (logs, charts, ...)
-    // todo: more graphs of relevant information
+    // todo: more graphs of relevant information (8)
 
     private final static String TAG = "StatsFragment";
-    private static final String emptyChart = "Generate some workouts to see your selections.";
     public static final String ARG_PAGE = "ARG_PAGE";
 
     TabLayout tabLayout;
-    ViewPager viewPager;
     FloatingActionButton fabClearData;
     TextView tooltip;
 
     RadarFragment radarFragment;
     LogsFragment logsFragment;
 
-    SharedPreferences sharedPreferences;
     DialogInterface.OnClickListener dialogClickListener;
 
     private int[] tabIcons = {
@@ -97,8 +91,9 @@ public class StatsFragment extends Fragment {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         //Yes button clicked
-                        clearPreferences(PreferenceTags.PREFERENCES_SELECTED_MUSCLE_GROUPS);
+                        MySharedPrefs.clearAll(getActivity());
                         clearTable();
+                        refreshAllViews();
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -121,22 +116,39 @@ public class StatsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Update all charts/logs when the user switches to this tab.
+     * @param isVisibleToUser whether the tab has come into view. I think.
+     */
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        // Make sure that we are currently visible
+        if (this.isVisible()) {
+            refreshAllViews();
+        }
+    }
+
+    private void refreshAllViews() {
+        radarFragment.refreshChart();
+        logsFragment.refreshLogs();
+
+//        if (MySharedPrefs.getDefaultBool(getContext(), "newexercises")) {
+//            radarFragment.refreshChart();
+//            MySharedPrefs.putDefaultBool(getContext(), "newexercises", false);
+//        }
+//        if (MySharedPrefs.getDefaultBool(getContext(), "newlogs")) {
+//            logsFragment.refreshLogs();
+//            MySharedPrefs.putDefaultBool(getContext(), "newlogs", false);
+//        }
+    }
+
     private void clearTable() {
         LogsDbHelper mDbHelper = new LogsDbHelper(getActivity());
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         db.delete(LogsContract.LogEntry.TABLE_NAME, null, null);
         db.close();
-    }
-
-    /**
-     * Clears a shared preference file of the specified tag.
-     * @param sharedPreferencesTag the string representing the preferences file.
-     */
-    private void clearPreferences(String sharedPreferencesTag) {
-        sharedPreferences = getActivity().getSharedPreferences(sharedPreferencesTag, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
     }
 
     private class PagerAdapter extends FragmentPagerAdapter {

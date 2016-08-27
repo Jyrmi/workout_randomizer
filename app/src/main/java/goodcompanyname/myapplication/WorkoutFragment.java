@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,22 +29,24 @@ import java.util.Map;
 import java.util.Random;
 
 import adapter.ExerciseRecyclerAdapter;
-import adapter.TwoTuple;
 import constant.PreferenceTags;
+import constant.TwoTuple;
 import sqlite.ExerciseContract;
 import sqlite.ExerciseDb;
 import sqlite.LogsContract;
 import sqlite.LogsDbHelper;
 
 public class WorkoutFragment extends Fragment {
+    // todo: smooth replace cards (6)
+    // todo: smoothly insert cards (7)
+    // todo: center-align card text and generally make them look better (7)
+    // todo: move database operations to their respective classes (8)
 
     private static final String TAG = "WorkoutFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
 
+    RelativeLayout tooltip;
     TextView textViewEmpty;
-    FloatingActionButton fab;
-
-    Boolean showingDetails = false;
 
     protected ArrayList<HashMap<String, String>> exerciseList;
     private RecyclerView recyclerViewExercises;
@@ -141,7 +144,29 @@ public class WorkoutFragment extends Fragment {
 
         mIth.attachToRecyclerView(recyclerViewExercises);
 
+        firstRunSettingsCheck(view);
+
         return view;
+    }
+
+    public void firstRunSettingsCheck(View view) {
+        // Show tooltips on first run
+        final SharedPreferences defaultPreferences =
+                PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        if (defaultPreferences.getBoolean("showtooltips", true)) {
+            tooltip = (RelativeLayout) view.findViewById(R.id.workout_tooltip);
+            tooltip.setVisibility(View.VISIBLE);
+            tooltip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    tooltip.setVisibility(View.GONE);
+                    SharedPreferences.Editor editor = defaultPreferences.edit();
+                    editor.putBoolean("showtooltips", false);
+                    editor.apply();
+                }
+            });
+        }
     }
 
     /**
@@ -368,6 +393,8 @@ public class WorkoutFragment extends Fragment {
         db.insert(LogsContract.LogEntry.TABLE_NAME, null, values);
 
         db.close();
+
+//        MySharedPrefs.putDefaultBool(getActivity(), "newlogs", true);
     }
 
     public void updatePreferences() {

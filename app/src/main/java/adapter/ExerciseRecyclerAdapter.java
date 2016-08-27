@@ -44,8 +44,6 @@ import sqlite.ExerciseDb;
  * Created by josephchoi on 8/20/16.
  */
 public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecyclerAdapter.ViewHolder> {
-    // todo: fix video stream
-    // todo: query media based on gender
     private ArrayList<HashMap<String, String>> exerciseList;
 
     // Provide a reference to the views for each data item
@@ -70,8 +68,6 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
             textViewExercise.setText(exercise.get(ExerciseContract.ExerciseEntry.COLUMN_NAME));
             textViewMuscleGroup.setText(exercise.get(ExerciseContract.ExerciseEntry.COLUMN_GROUP));
-
-//            setMedia(cardView);
 
             cardView.setOnClickListener(this);
         }
@@ -98,33 +94,6 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
             if (sharedPreferences.getString("Male", null) == null) {
                 return false;
             } else return true;
-        }
-
-        private class RetrieveImageTask extends AsyncTask<String, Void, Bitmap> {
-            protected Bitmap doInBackground(String... urls) {
-                return loadImageFromNetwork(urls[0]);
-            }
-        }
-
-        private class RetrieveVideoTask extends AsyncTask<String, Void, Uri> {
-            protected Uri doInBackground(String... urls) {
-                return Uri.parse("http:" + urls[0]);
-            }
-        }
-
-        private Bitmap loadImageFromNetwork(String url) {
-            try {
-                URL imageUrl = new URL(url);
-                try {
-                    return BitmapFactory.decodeStream(imageUrl.openConnection().getInputStream());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                return null;
-            }
         }
     }
 

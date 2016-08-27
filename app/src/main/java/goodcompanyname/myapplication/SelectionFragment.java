@@ -1,31 +1,30 @@
 package goodcompanyname.myapplication;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
-import constant.MuscleGroup;
 import constant.PreferenceTags;
 
 public class SelectionFragment extends Fragment {
-    // todo: repartition the images to include abductors/adductors muscle groups
+    // todo: repartition the images to include abductors/adductors muscle groups (5)
 
     private static final String TAG = "SelectionFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
+
+    RelativeLayout tooltip;
 
     ImageView imageGroupA;
     ImageView imageGroupB;
@@ -215,7 +214,26 @@ public class SelectionFragment extends Fragment {
             }
         });
 
+        firstRunSettingsCheck(view);
+
         return view;
+    }
+
+    public void firstRunSettingsCheck(View view) {
+        // Show tooltips on first run
+        SharedPreferences defaultPreferences =
+                PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        if (defaultPreferences.getBoolean("showtooltips", true)) {
+            tooltip = (RelativeLayout) view.findViewById(R.id.selection_tooltip);
+            tooltip.setVisibility(View.VISIBLE);
+            tooltip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    tooltip.setVisibility(View.GONE);
+                }
+            });
+        }
     }
 
     private void updatePreferences(String sharedPreferencesTag, ArrayList<?> selections) {

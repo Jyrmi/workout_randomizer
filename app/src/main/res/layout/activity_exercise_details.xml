@@ -1,71 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/app_margin">
+    android:layout_width="match_parent">
 
     <RelativeLayout
-        android:id="@+id/details_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView android:id="@+id/details_name"
+        <VideoView
+            android:id="@+id/details_video"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/video_view" />
+
+        <RelativeLayout
+            android:id="@+id/details_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/app_margin"
+            android:layout_below="@id/details_video">
+
+            <TextView android:id="@+id/details_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="exercise name"
+                android:textSize="@dimen/details_header" />
+
+            <TextView android:id="@+id/details_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="exercise group"
+                android:textSize="@dimen/details_main"
+                android:layout_below="@id/details_name" />
+
+        </RelativeLayout>
+
+        <Space style="@style/EmptySpace"
+            android:id="@+id/header_space"
+            android:layout_below="@id/details_header"/>
+
+        <RelativeLayout
+            android:id="@+id/image_container_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/header_text"
             android:layout_centerInParent="true"
-            android:layout_margin="10dp" />
+            android:layout_below="@id/header_space">
 
-        <TextView android:id="@+id/details_group"
+            <ImageView android:id="@+id/exercise_image_1"
+                style="@style/CardImage" />
+
+            <ImageView android:id="@+id/exercise_image_2"
+                android:layout_toRightOf="@id/exercise_image_1"
+                style="@style/CardImage" />
+
+        </RelativeLayout>
+
+        <HorizontalScrollView
+            android:id="@+id/image_container_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/main_text"
-            android:layout_below="@id/details_name"
-            android:layout_margin="10dp" />
+            android:orientation="horizontal"
+            android:layout_centerInParent="true"
+            android:layout_below="@id/image_container_1">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView android:id="@+id/exercise_image_3"
+                    style="@style/CardImage" />
+
+                <ImageView android:id="@+id/exercise_image_4"
+                    android:layout_toRightOf="@id/exercise_image_3"
+                    style="@style/CardImage" />
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
 
     </RelativeLayout>
 
-    <Space style="@style/EmptySpace"
-        android:id="@+id/details_space"
-        android:layout_below="@id/details_header"/>
-
-    <RelativeLayout
-        android:id="@+id/image_container_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_below="@id/details_space">
-
-        <ImageView android:id="@+id/exercise_image_1"
-            style="@style/CardImage" />
-
-        <ImageView android:id="@+id/exercise_image_2"
-            android:layout_toRightOf="@id/exercise_image_1"
-            style="@style/CardImage" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/image_container_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_centerInParent="true"
-        android:layout_below="@id/image_container_1">
-
-        <ImageView android:id="@+id/exercise_image_3"
-            style="@style/CardImage" />
-
-        <ImageView android:id="@+id/exercise_image_4"
-            android:layout_toRightOf="@id/exercise_image_3"
-            style="@style/CardImage" />
-
-    </RelativeLayout>
-
-        <!--<VideoView-->
-        <!--android:id="@+id/card_video"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content" />-->
-
-</RelativeLayout>
+</ScrollView>

@@ -1,10 +1,13 @@
 package goodcompanyname.myapplication;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,7 +18,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -29,12 +34,14 @@ import sqlite.ExerciseContract;
  * Created by jeremy on 8/26/16.
  */
 public class ExerciseDetailsActivity extends AppCompatActivity {
+    // todo: general cleanup/structuring (2)
+    // todo: if no internet connectivity, display tooltips to suggest to establish such (3)
 
     public static final String TAG = "ExerciseDetailsActivity";
-    public static final String ARG_PAGE = "ARG_PAGE";
 
     TextView textViewName;
     TextView textViewGroup;
+    VideoView exerciseVideo;
     ImageView exerciseImage1;
     ImageView exerciseImage2;
     ImageView exerciseImage3;
@@ -48,6 +55,7 @@ public class ExerciseDetailsActivity extends AppCompatActivity {
         textViewName = (TextView) findViewById(R.id.details_name);
         textViewGroup = (TextView) findViewById(R.id.details_group);
 
+        exerciseVideo = (VideoView) findViewById(R.id.details_video);
         exerciseImage1 = (ImageView) findViewById(R.id.exercise_image_1);
         exerciseImage2 = (ImageView) findViewById(R.id.exercise_image_2);
         exerciseImage3 = (ImageView) findViewById(R.id.exercise_image_3);
@@ -56,10 +64,11 @@ public class ExerciseDetailsActivity extends AppCompatActivity {
         textViewName.setText(getIntent().getExtras().getString("EXTRA_NAME"));
         textViewGroup.setText(getIntent().getExtras().getString("EXTRA_GROUP"));
 
-        setMedia();
+        setImages();
+        setVideo();
     }
 
-    public Boolean setMedia() {
+    public Boolean setImages() {
 //        String videoUrl = getIntent().getExtras().getString("EXTRA_VIDEO");
         String images = getIntent().getExtras().getString("EXTRA_IMAGES");
 
@@ -92,22 +101,6 @@ public class ExerciseDetailsActivity extends AppCompatActivity {
         }
 
         return true;
-
-//        // Setup the VideoView with the exercise's video
-//        VideoView cardVideo = (VideoView) v.findViewById(R.id.card_video);
-//        MediaController mediaController = new MediaController(v.getContext());
-//        mediaController.setAnchorView(cardVideo);
-//        cardVideo.setMediaController(mediaController);
-//        cardVideo.setVideoURI(Uri.parse("http:" + videoUrl));
-//        cardVideo.start();
-//
-//        try {
-//            cardVideo.setVideoURI(new RetrieveVideoTask().execute(queryResult.a).get());
-//            cardVideo.start();
-//            Log.d("ViewHolder.onClick()", "started video at http:" + queryResult.a);
-//        } catch (InterruptedException | ExecutionException e) {
-//            e.printStackTrace();
-//        }
     }
 
     private class RetrieveImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -129,5 +122,34 @@ public class ExerciseDetailsActivity extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public Boolean setVideo() {
+        String videoUrl = getIntent().getExtras().getString("EXTRA_VIDEO");
+
+        if (videoUrl == null) return false;
+
+        // Execute StreamVideo AsyncTask
+        try {
+            // Start the MediaController
+            MediaController mediacontroller = new MediaController(this);
+            mediacontroller.setAnchorView(exerciseVideo);
+            // Get the URL from String VideoURL
+            Uri video = Uri.parse("http:" + videoUrl);
+            exerciseVideo.setMediaController(mediacontroller);
+            exerciseVideo.setVideoURI(video);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        exerciseVideo.requestFocus();
+        exerciseVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            // Close the progress bar and play the video
+            public void onPrepared(MediaPlayer mp) {
+                exerciseVideo.start();
+            }
+        });
+
+        return true;
     }
 }
