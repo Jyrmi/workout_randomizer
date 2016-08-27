@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,14 +36,14 @@ import sqlite.LogsContract;
 import sqlite.LogsDbHelper;
 
 public class WorkoutFragment extends Fragment {
-    // todo: consider projecting media in exerciseQuery() since the adapter needs them anyway
 
     private static final String TAG = "WorkoutFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
 
     TextView textViewEmpty;
+    FloatingActionButton fab;
 
-    Boolean showingDetails;
+    Boolean showingDetails = false;
 
     protected ArrayList<HashMap<String, String>> exerciseList;
     private RecyclerView recyclerViewExercises;
@@ -55,6 +56,92 @@ public class WorkoutFragment extends Fragment {
         fragment.setArguments(args);
 
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Fetch the saved list of exercises and show them in the view.
+        LinkedHashMap<String, Integer> entries;
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
+                PreferenceTags.PREFERENCES_QUEUED_EXERCISES, Context.MODE_PRIVATE);
+
+        LinkedHashMap<String, String> savedExercises = new LinkedHashMap(sharedPreferences.getAll());
+
+        exerciseList = new ArrayList();
+        for (Map.Entry<String, String> entry : savedExercises.entrySet()) {
+            exerciseList.add(queryExercise(entry.getKey()));
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_workout, container, false);
+
+        // Hide the "No exercises queued" message if there are queued exercises retrieved from prefs
+        textViewEmpty = (TextView) view.findViewById(R.id.text_no_exercises);
+        if (!exerciseList.isEmpty()) textViewEmpty.setVisibility(View.INVISIBLE);
+
+//        fab = (FloatingActionButton) view.findViewById(R.id.fab_workout);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//            }
+//        });
+
+        if (exerciseList == null) exerciseList = new ArrayList();
+        exerciseAdapter = new ExerciseRecyclerAdapter(exerciseList);
+
+        recyclerViewExercises = (RecyclerView) view.findViewById(R.id.exercises_recycler_view);
+        recyclerViewExercises.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerViewExercises.setAdapter(exerciseAdapter);
+
+        ItemTouchHelper mIth = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+                    public boolean onMove(RecyclerView recyclerView,
+                                          RecyclerView.ViewHolder viewHolder,
+                                          RecyclerView.ViewHolder target) {
+//                    final int fromPos = viewHolder.getAdapterPosition();
+//                    final int toPos = target.getAdapterPosition();
+                        // move item in `fromPos` to `toPos` in adapter.
+                        return true;// true if moved, false otherwise
+                    }
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                        String status = "skipped";
+                        int position = viewHolder.getAdapterPosition();
+                        HashMap<String, String> exercise = exerciseList.get(position);
+                        if (direction == ItemTouchHelper.LEFT) { // Skip this exercise and replace it
+                            HashMap<String, String> queryResult = pickOneRandomExercise(
+                                    exercise.get(ExerciseContract.ExerciseEntry.COLUMN_GROUP));
+                            makeToast("Skipped.");
+                            if (queryResult == null) {
+                                makeToast("No " + exercise.get(ExerciseContract.ExerciseEntry.
+                                        COLUMN_GROUP) + " exercises matched your preferences.");
+                                exerciseList.remove(position);
+                            } else exerciseList.set(position, queryResult);
+                        } else {
+                            exerciseList.remove(position);
+                            status = "completed";
+                            if (exerciseList.isEmpty()) textViewEmpty.setVisibility(View.VISIBLE);
+                            makeToast("Exercise complete.");
+                        }
+
+                        exerciseAdapter.notifyDataSetChanged();
+                        exerciseAdapter.notifyItemRemoved(position);
+                        exerciseAdapter.notifyItemRangeChanged(position, exerciseList.size());
+
+                        writeLogEntry(exercise, status);
+                    }
+                }
+        );
+
+        mIth.attachToRecyclerView(recyclerViewExercises);
+
+        return view;
     }
 
     /**
@@ -74,10 +161,6 @@ public class WorkoutFragment extends Fragment {
                 } else {
                     exerciseList.add(randomExercise);
                 }
-
-                // OLD CODE FOR HARDCODED EXERCISES
-                // Get one random exercise from this muscle group
-//                exerciseList.add(muscleGroup.pickOneRandomExercise());
             }
             if (!missedGroups.isEmpty()) {
                 Snackbar.make(getView(), "No " + TextUtils.join(", ", missedGroups)
@@ -285,87 +368,6 @@ public class WorkoutFragment extends Fragment {
         db.insert(LogsContract.LogEntry.TABLE_NAME, null, values);
 
         db.close();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Fetch the saved list of exercises and show them in the view.
-        LinkedHashMap<String, Integer> entries;
-
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
-                PreferenceTags.PREFERENCES_QUEUED_EXERCISES, Context.MODE_PRIVATE);
-
-        LinkedHashMap<String, String> savedExercises = new LinkedHashMap(sharedPreferences.getAll());
-
-        exerciseList = new ArrayList();
-        for (Map.Entry<String, String> entry : savedExercises.entrySet()) {
-            exerciseList.add(queryExercise(entry.getKey()));
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_workout, container, false);
-
-        showingDetails = false;
-
-        // Hide the "No exercises queued" message if there are queued exercises retrieved from prefs
-        textViewEmpty = (TextView) view.findViewById(R.id.text_no_exercises);
-        if (!exerciseList.isEmpty()) textViewEmpty.setVisibility(View.INVISIBLE);
-
-        if (exerciseList == null) exerciseList = new ArrayList();
-        exerciseAdapter = new ExerciseRecyclerAdapter(exerciseList);
-
-        recyclerViewExercises = (RecyclerView) view.findViewById(R.id.exercises_recycler_view);
-        recyclerViewExercises.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerViewExercises.setAdapter(exerciseAdapter);
-
-        ItemTouchHelper mIth = new ItemTouchHelper(
-            new ItemTouchHelper.SimpleCallback(ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT,
-            ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-                public boolean onMove(RecyclerView recyclerView,
-                                      RecyclerView.ViewHolder viewHolder,
-                                      RecyclerView.ViewHolder target) {
-//                    final int fromPos = viewHolder.getAdapterPosition();
-//                    final int toPos = target.getAdapterPosition();
-                    // move item in `fromPos` to `toPos` in adapter.
-                    return true;// true if moved, false otherwise
-                }
-                public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                    String status = "skipped";
-                    int position = viewHolder.getAdapterPosition();
-                    HashMap<String, String> exercise = exerciseList.get(position);
-                    if (direction == ItemTouchHelper.LEFT) { // Skip this exercise and replace it
-                        HashMap<String, String> queryResult = pickOneRandomExercise(
-                                exercise.get(ExerciseContract.ExerciseEntry.COLUMN_GROUP));
-                        makeToast("Skipped.");
-                        if (queryResult == null) {
-                            makeToast("No " + exercise.get(ExerciseContract.ExerciseEntry.
-                                    COLUMN_GROUP) + " exercises matched your preferences.");
-                            exerciseList.remove(position);
-                        } else exerciseList.set(position, queryResult);
-                    } else {
-                        exerciseList.remove(position);
-                        status = "completed";
-                        if (exerciseList.isEmpty()) textViewEmpty.setVisibility(View.VISIBLE);
-                        makeToast("Exercise complete.");
-                    }
-
-                    exerciseAdapter.notifyDataSetChanged();
-                    exerciseAdapter.notifyItemRemoved(position);
-                    exerciseAdapter.notifyItemRangeChanged(position, exerciseList.size());
-
-                    writeLogEntry(exercise, status);
-                }
-            }
-        );
-
-        mIth.attachToRecyclerView(recyclerViewExercises);
-
-        return view;
     }
 
     public void updatePreferences() {

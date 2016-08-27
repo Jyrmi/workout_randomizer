@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity
                     Snackbar.LENGTH_SHORT).setAction("Action", null).show();
         } else {
             tabLayout.getTabAt(1).select();
+            Snackbar.make(selectionFragment.getView(),
+                    "Swipe cards left to skip, right to complete.",
+                    Snackbar.LENGTH_SHORT).setAction("Action", null).show();
             workoutFragment.addMuscleGroupSelections(selectedMuscleGroups);
         }
     }
@@ -93,7 +96,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         FragmentManager fm = getSupportFragmentManager();
         if (fm.getBackStackEntryCount() > 0) {
             fm.popBackStack();
@@ -204,13 +207,5 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /** Called when the user clicks the Send button */
-    public void navigate_to_landing(View view) {
-        // Do something in response to button
-        Intent intent = new Intent(this, SelectionFragment.class);
-        startActivity(intent);
-        finish();
     }
 }

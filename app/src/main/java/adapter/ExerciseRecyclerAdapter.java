@@ -1,6 +1,7 @@
 package adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -34,6 +35,7 @@ import java.util.concurrent.ExecutionException;
 import constant.PreferenceTags;
 import constant.Setting;
 import constant.SettingsCategory;
+import goodcompanyname.myapplication.ExerciseDetailsActivity;
 import goodcompanyname.myapplication.R;
 import sqlite.ExerciseContract;
 import sqlite.ExerciseDb;
@@ -42,7 +44,6 @@ import sqlite.ExerciseDb;
  * Created by josephchoi on 8/20/16.
  */
 public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecyclerAdapter.ViewHolder> {
-    // todo: keep video/image links to cards as parameters, don't set them on click (super buggy)
     // todo: fix video stream
     // todo: query media based on gender
     private ArrayList<HashMap<String, String>> exerciseList;
@@ -50,13 +51,10 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
+//    public static class ViewHolder extends RecyclerView.ViewHolder {
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // each data item is just a string in this case
         CardView cardView;
-        ImageView cardImage1;
-        ImageView cardImage2;
-        ImageView cardImage3;
-        ImageView cardImage4;
         HashMap<String, String> exercise;
 
         public ViewHolder(CardView cardView) {
@@ -73,83 +71,24 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
             textViewExercise.setText(exercise.get(ExerciseContract.ExerciseEntry.COLUMN_NAME));
             textViewMuscleGroup.setText(exercise.get(ExerciseContract.ExerciseEntry.COLUMN_GROUP));
 
-            setMedia(cardView);
+//            setMedia(cardView);
 
             cardView.setOnClickListener(this);
         }
 
         @Override
-        public void onClick(View v) {
-            LinearLayout detailsView = (LinearLayout) v.findViewById(R.id.card_details);
-            if (detailsView.getVisibility() == View.GONE) {
-                detailsView.setVisibility(View.VISIBLE);
+        public void onClick(View view) {
+            Intent intent = new Intent(view.getContext(), ExerciseDetailsActivity.class);
+            intent.putExtra("EXTRA_NAME", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_NAME));
+            intent.putExtra("EXTRA_GROUP", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_GROUP));
+            if (isMale(view.getContext())) {
+                intent.putExtra("EXTRA_IMAGES", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_MALE_IMAGES));
+                intent.putExtra("EXTRA_VIDEO", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_MALE_VIDEO));
             } else {
-                detailsView.setVisibility(View.GONE);
+                intent.putExtra("EXTRA_IMAGES", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_IMAGES));
+                intent.putExtra("EXTRA_VIDEO", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_VIDEO));
             }
-        }
-
-        public void setMedia(View v) {
-            cardImage1 = (ImageView) v.findViewById(R.id.card_image_1);
-            cardImage2 = (ImageView) v.findViewById(R.id.card_image_2);
-            cardImage3 = (ImageView) v.findViewById(R.id.card_image_3);
-            cardImage4 = (ImageView) v.findViewById(R.id.card_image_4);
-
-            cardImage1.setImageResource(0);
-            cardImage2.setImageResource(0);
-            cardImage3.setImageResource(0);
-            cardImage4.setImageResource(0);
-
-            String videoUrl;
-            String[] imageUrls;
-            if (isMale(v.getContext())) {
-                videoUrl = exercise.get(ExerciseContract.ExerciseEntry.COLUMN_MALE_VIDEO);
-                imageUrls = TextUtils.split(
-                        exercise.get(ExerciseContract.ExerciseEntry.COLUMN_MALE_IMAGES), ",");
-            } else {
-                videoUrl = exercise.get(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_VIDEO);
-                imageUrls = TextUtils.split(
-                        exercise.get(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_IMAGES), ",");
-            }
-
-//            // Setup the VideoView with the exercise's video
-//            VideoView cardVideo = (VideoView) v.findViewById(R.id.card_video);
-//            MediaController mediaController = new MediaController(v.getContext());
-//            mediaController.setAnchorView(cardVideo);
-//            cardVideo.setMediaController(mediaController);
-//            cardVideo.setVideoURI(Uri.parse("http:" + videoUrl));
-//            cardVideo.start();
-
-//                    try {
-//                        cardVideo.setVideoURI(new RetrieveVideoTask().execute(queryResult.a).get());
-//                        cardVideo.start();
-//                        Log.d("ViewHolder.onClick()", "started video at http:" + queryResult.a);
-//                    } catch (InterruptedException | ExecutionException e) {
-//                        e.printStackTrace();
-//                    }
-
-            // Get Images of the exercise
-            int imagesSet = 0;
-            for (String imageUrlString : imageUrls) {
-
-                Bitmap bmp = null;
-                try {
-                    bmp = new RetrieveImageTask().execute(imageUrlString).get();
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-
-                if (imagesSet == 0) {
-                    cardImage1.setImageBitmap(bmp);
-                } else if (imagesSet == 1) {
-                    cardImage2.setImageBitmap(bmp);
-                } else if (imagesSet == 2) {
-                    cardImage3.setImageBitmap(bmp);
-                } else {
-                    cardImage4.setImageBitmap(bmp);
-                }
-
-                imagesSet++;
-            }
+            view.getContext().startActivity(intent);
         }
 
         public Boolean isMale(Context context) {
@@ -201,7 +140,6 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
         CardView cardView = (CardView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_view, parent, false);
         // set the view's size, margins, paddings and layout parameters
-        cardView.findViewById(R.id.card_details).setVisibility(View.GONE);
 
         return new ViewHolder(cardView);
     }
