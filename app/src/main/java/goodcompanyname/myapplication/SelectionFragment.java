@@ -20,6 +20,8 @@ import constant.PreferenceTags;
 
 public class SelectionFragment extends Fragment {
     // todo: repartition the images to include abductors/adductors muscle groups (5)
+    // todo: allow user to pick how many exercises per muscle group they want to do
+    // todo: have a fixed tooltip at the top saying "Pick the muscle groups you with to target in your workout."
 
     private static final String TAG = "SelectionFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
@@ -224,7 +226,7 @@ public class SelectionFragment extends Fragment {
         SharedPreferences defaultPreferences =
                 PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        if (defaultPreferences.getBoolean("showtooltips", true)) {
+        if (defaultPreferences.getBoolean("firstrun", true)) {
             tooltip = (RelativeLayout) view.findViewById(R.id.selection_tooltip);
             tooltip.setVisibility(View.VISIBLE);
             tooltip.setOnClickListener(new View.OnClickListener() {

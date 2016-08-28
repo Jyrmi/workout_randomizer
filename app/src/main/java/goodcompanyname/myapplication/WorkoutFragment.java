@@ -9,6 +9,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,14 +27,20 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Random;
 
 import adapter.ExerciseRecyclerAdapter;
 import constant.PreferenceTags;
 import constant.TwoTuple;
+import preferences.MySharedPrefs;
 import sqlite.ExerciseContract;
 import sqlite.ExerciseDb;
 import sqlite.LogsContract;
@@ -42,7 +50,10 @@ public class WorkoutFragment extends Fragment {
     // todo: smooth replace cards (6)
     // todo: smoothly insert cards (7)
     // todo: center-align card text and generally make them look better (7)
-    // todo: move database operations to their respective classes (8)
+    // todo: better indicate that cards can be swiped, or add buttons on either side of the cards
+    // that skip/complete
+    // todo: consider making each entry a "workout", a box containing multiple exercises
+    // generating exercises multiple times in a short time frame would put all into the same workout
 
     private static final String TAG = "WorkoutFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
@@ -50,8 +61,10 @@ public class WorkoutFragment extends Fragment {
     RelativeLayout tooltip;
     TextView textViewEmpty;
 
-    protected ArrayList<HashMap<String, String>> exerciseList;
-    private RecyclerView recyclerViewExercises;
+    LinkedList<String> selectionQueue = new LinkedList<>();
+
+    ArrayList<HashMap<String, String>> exerciseList;
+    RecyclerView recyclerViewExercises;
     ExerciseRecyclerAdapter exerciseAdapter;
 
     public static WorkoutFragment newInstance(int pageNo) {
@@ -67,18 +80,7 @@ public class WorkoutFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Fetch the saved list of exercises and show them in the view.
-        LinkedHashMap<String, Integer> entries;
-
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
-                PreferenceTags.PREFERENCES_QUEUED_EXERCISES, Context.MODE_PRIVATE);
-
-        LinkedHashMap<String, String> savedExercises = new LinkedHashMap(sharedPreferences.getAll());
-
-        exerciseList = new ArrayList();
-        for (Map.Entry<String, String> entry : savedExercises.entrySet()) {
-            exerciseList.add(queryExercise(entry.getKey()));
-        }
+        recallQueuedExercises();
     }
 
     @Override
@@ -141,23 +143,43 @@ public class WorkoutFragment extends Fragment {
         return view;
     }
 
-    public void firstRunSettingsCheck(View view) {
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        // Make sure that we are currently visible
+        if (this.isVisible() && !selectionQueue.isEmpty()) {
+            addExercisesToView();
+        }
+    }
+
+    private void firstRunSettingsCheck(View view) {
         // Show tooltips on first run
         final SharedPreferences defaultPreferences =
                 PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        if (defaultPreferences.getBoolean("showtooltips", true)) {
+        if (defaultPreferences.getBoolean("firstrun", true)) {
             tooltip = (RelativeLayout) view.findViewById(R.id.workout_tooltip);
             tooltip.setVisibility(View.VISIBLE);
             tooltip.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     tooltip.setVisibility(View.GONE);
-                    SharedPreferences.Editor editor = defaultPreferences.edit();
-                    editor.putBoolean("showtooltips", false);
-                    editor.apply();
+                    MySharedPrefs.finishFirstRun(view.getContext());
                 }
             });
+        }
+    }
+
+    private void recallQueuedExercises() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
+                PreferenceTags.PREFERENCES_QUEUED_EXERCISES, Context.MODE_PRIVATE);
+
+        LinkedHashMap<String, String> savedExercises = new LinkedHashMap(sharedPreferences.getAll());
+
+        exerciseList = new ArrayList();
+        for (Map.Entry<String, String> entry : savedExercises.entrySet()) {
+            exerciseList.add(ExerciseDb.queryExercise(getActivity(), entry.getKey()));
         }
     }
 
@@ -168,202 +190,49 @@ public class WorkoutFragment extends Fragment {
     protected void addMuscleGroupSelections(ArrayList<String> selectedMuscleGroups) {
         Log.d(TAG, "WorkoutFragment.addMuscleGroupSelections()");
         if (!selectedMuscleGroups.isEmpty()) {
-            ArrayList<String> missedGroups = new ArrayList<>();
             for (String muscleGroup : selectedMuscleGroups) {
-                // Query exercise.db in the assets/databases directory for exercises matching
-                // the user's settings
-                HashMap<String, String> randomExercise = pickOneRandomExercise(muscleGroup);
-                if (randomExercise == null) {
-                    missedGroups.add(muscleGroup);
-                } else {
-                    exerciseList.add(randomExercise);
-                }
+                selectionQueue.add(muscleGroup);
             }
-            if (!missedGroups.isEmpty()) {
-                Snackbar.make(getView(), "No " + TextUtils.join(", ", missedGroups)
-                        + " exercises matched your settings.", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-            }
-            if (exerciseAdapter != null) exerciseAdapter.notifyDataSetChanged();
-            textViewEmpty.setVisibility(View.INVISIBLE);
         }
     }
 
+    protected void addExercisesToView() {
+        ArrayList<String> missedGroups = new ArrayList<>();
+        while (!selectionQueue.isEmpty()) {
+            String muscleGroup = selectionQueue.removeFirst();
+            // Query exercise.db in the assets/databases directory for exercises matching
+            // the user's settings
+            HashMap<String, String> randomExercise = pickOneRandomExercise(muscleGroup);
+            if (randomExercise == null) {
+                missedGroups.add(muscleGroup);
+            } else {
+//                // Smoothly add the new exercise
+//                try {
+//                    Thread.sleep(500);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+
+                exerciseList.add(randomExercise);
+//                exerciseAdapter.notifyDataSetChanged();
+            }
+        }
+        if (!missedGroups.isEmpty()) {
+            Snackbar.make(getView(), "No " + TextUtils.join(", ", missedGroups)
+                    + " exercises matched your settings.", Snackbar.LENGTH_SHORT)
+                    .setAction("Action", null).show();
+        }
+        exerciseAdapter.notifyDataSetChanged();
+        textViewEmpty.setVisibility(View.INVISIBLE);
+    }
+
     public HashMap<String, String> pickOneRandomExercise(String muscleGroup) {
-        ArrayList<HashMap<String, String>> queryResult = queryGroup(muscleGroup);
+        ArrayList<HashMap<String, String>> queryResult =
+                ExerciseDb.queryGroup(getActivity(),muscleGroup);
 
         if (queryResult.size() > 0) {
             return queryResult.get(new Random().nextInt(queryResult.size()));
         } else return null;
-    }
-
-    protected ArrayList<HashMap<String, String>> queryGroup(String muscleGroup) {
-        ArrayList<HashMap<String, String>> exercises = new ArrayList<>();
-        HashMap<String, String> exerciseDetails;
-
-        ExerciseDb exerciseDb = new ExerciseDb(getActivity());
-        SQLiteDatabase db = exerciseDb.getReadableDatabase();
-
-
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                ExerciseContract.ExerciseEntry.COLUMN_NAME,
-                ExerciseContract.ExerciseEntry.COLUMN_GROUP,
-                ExerciseContract.ExerciseEntry.COLUMN_MALE_VIDEO,
-                ExerciseContract.ExerciseEntry.COLUMN_MALE_IMAGES,
-                ExerciseContract.ExerciseEntry.COLUMN_FEMALE_VIDEO,
-                ExerciseContract.ExerciseEntry.COLUMN_FEMALE_IMAGES
-        };
-
-        // Get the settings to create the WHERE clause
-        TwoTuple<String, ArrayList<String>> whereClause = generateWhereClause();
-        String whereSQL = whereClause.a;
-        ArrayList<String> whereArgs = whereClause.b;
-        whereArgs.add(0, muscleGroup);
-
-        // WHERE clause
-        String selection = ExerciseContract.ExerciseEntry.COLUMN_GROUP + "=? AND " + whereSQL;
-
-        // Arguments to the WHERE clause
-        String[] selectionArgs = whereArgs.toArray(new String[0]);
-
-        Log.d(TAG, selection);
-        Log.d(TAG, whereArgs.toString());
-
-        Cursor c = db.query(
-                ExerciseContract.ExerciseEntry.TABLE_NAME,  // The table to query
-                projection,                               // The columns to return
-                selection,                                // The columns for the WHERE clause
-                selectionArgs,                            // The values for the WHERE clause
-                null,                                     // don't group the rows
-                null,                                     // don't filter by row groups
-                null                                 // The sort order
-        );
-
-        if (c.moveToFirst()) {
-            while (!c.isAfterLast()) {
-                exerciseDetails = new HashMap<>();
-
-                String exercise = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_NAME));
-                String group = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_GROUP));
-                String mVideo = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_MALE_VIDEO));
-                String mImages = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_MALE_IMAGES));
-                String fVideo = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_VIDEO));
-                String fImages = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_IMAGES));
-
-                exerciseDetails.put(ExerciseContract.ExerciseEntry.COLUMN_NAME, exercise);
-                exerciseDetails.put(ExerciseContract.ExerciseEntry.COLUMN_GROUP, group);
-                exerciseDetails.put(ExerciseContract.ExerciseEntry.COLUMN_MALE_VIDEO, mVideo);
-                exerciseDetails.put(ExerciseContract.ExerciseEntry.COLUMN_MALE_IMAGES, mImages);
-                exerciseDetails.put(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_VIDEO, fVideo);
-                exerciseDetails.put(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_IMAGES, fImages);
-
-                exercises.add(exerciseDetails);
-
-                c.moveToNext();
-            }
-        }
-
-        c.close();
-        db.close();
-
-        return exercises;
-    }
-
-    protected HashMap<String, String> queryExercise(String exerciseName) {
-        HashMap<String, String> exerciseDetails = new HashMap<>();
-
-        ExerciseDb exerciseDb = new ExerciseDb(getActivity());
-        SQLiteDatabase db = exerciseDb.getReadableDatabase();
-
-
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                ExerciseContract.ExerciseEntry.COLUMN_NAME,
-                ExerciseContract.ExerciseEntry.COLUMN_GROUP,
-                ExerciseContract.ExerciseEntry.COLUMN_MALE_VIDEO,
-                ExerciseContract.ExerciseEntry.COLUMN_MALE_IMAGES,
-                ExerciseContract.ExerciseEntry.COLUMN_FEMALE_VIDEO,
-                ExerciseContract.ExerciseEntry.COLUMN_FEMALE_IMAGES
-        };
-
-        // WHERE clause
-        String selection = ExerciseContract.ExerciseEntry.COLUMN_NAME + "=?";
-
-        // Arguments to the WHERE clause
-        String[] selectionArgs = {exerciseName};
-
-        Cursor c = db.query(
-                ExerciseContract.ExerciseEntry.TABLE_NAME,  // The table to query
-                projection,                               // The columns to return
-                selection,                                // The columns for the WHERE clause
-                selectionArgs,                            // The values for the WHERE clause
-                null,                                     // don't group the rows
-                null,                                     // don't filter by row groups
-                null                                 // The sort order
-        );
-
-        if (c.moveToFirst()) {
-            exerciseDetails = new HashMap<>();
-
-            String exercise = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_NAME));
-            String group = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_GROUP));
-            String mVideo = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_MALE_VIDEO));
-            String mImages = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_MALE_IMAGES));
-            String fVideo = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_VIDEO));
-            String fImages = c.getString(c.getColumnIndex(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_IMAGES));
-
-            exerciseDetails.put(ExerciseContract.ExerciseEntry.COLUMN_NAME, exercise);
-            exerciseDetails.put(ExerciseContract.ExerciseEntry.COLUMN_GROUP, group);
-            exerciseDetails.put(ExerciseContract.ExerciseEntry.COLUMN_MALE_VIDEO, mVideo);
-            exerciseDetails.put(ExerciseContract.ExerciseEntry.COLUMN_MALE_IMAGES, mImages);
-            exerciseDetails.put(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_VIDEO, fVideo);
-            exerciseDetails.put(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_IMAGES, fImages);
-
-            c.moveToNext();
-        }
-
-        c.close();
-        db.close();
-
-        return exerciseDetails;
-    }
-
-    public TwoTuple<String, ArrayList<String>> generateWhereClause() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
-                PreferenceTags.PREFERENCES_SETTINGS, Context.MODE_PRIVATE);
-
-        ArrayList<String> whereClauseSections = new ArrayList<>();
-        ArrayList<String> queryArgs = new ArrayList<>();
-
-        HashMap<String, String> settings = (HashMap) sharedPreferences.getAll();
-        HashMap<String, ArrayList<String>> categories = new HashMap<>();
-
-        for (Map.Entry<String, String> entry : settings.entrySet()) {
-            String category = entry.getValue();
-
-            if (!category.equals("Gender")) { // Gender is not a column, so it shouldn't be in the where clause.
-                if (!categories.containsKey(category)) {
-                    categories.put(category, new ArrayList<String>());
-                }
-                categories.get(category).add(entry.getKey());
-            }
-        }
-
-        for (Map.Entry<String, ArrayList<String>> entry : categories.entrySet()) {
-            ArrayList<String> whereStatements = new ArrayList<>();
-            for (String setting : entry.getValue()) {
-                whereStatements.add(entry.getKey() + "=?");
-                queryArgs.add(setting);
-            }
-            whereClauseSections.add("(" + TextUtils.join(" OR ", whereStatements) + ")");
-        }
-
-        String fullWhereClause = TextUtils.join(" AND ", whereClauseSections);
-
-        return new TwoTuple<>(fullWhereClause, queryArgs);
     }
 
     private void writeLogEntry(HashMap<String, String> exercise, String status) {

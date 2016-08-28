@@ -25,6 +25,7 @@ import sqlite.LogsDbHelper;
  */
 public class StatsFragment extends Fragment {
     // todo: more graphs of relevant information (8)
+    // todo: add "favorite muscle", "favorite exercise", "streak" information in a new text-only tab
 
     private final static String TAG = "StatsFragment";
     public static final String ARG_PAGE = "ARG_PAGE";

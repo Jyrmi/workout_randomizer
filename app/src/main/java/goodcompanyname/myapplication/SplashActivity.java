@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 public class SplashActivity extends AppCompatActivity {
+    // todo: change logo
     // todo: authentication and accompanying web server (1)
 
     /** Duration of wait **/

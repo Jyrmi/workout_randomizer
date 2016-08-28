@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity
     StatsFragment statsFragment;
     SettingsFragment settingsFragment;
 
+    ArrayList<String> selectedMuscleGroups;
+
     public static Stack<Integer> backstack = new Stack<>();
 
     private int[] tabIcons = {
@@ -53,9 +55,9 @@ public class MainActivity extends AppCompatActivity
             Snackbar.make(selectionFragment.getView(), "You already have 10+ exercises waiting!",
                     Snackbar.LENGTH_SHORT).setAction("Action", null).show();
         } else {
+            workoutFragment.addMuscleGroupSelections(selectedMuscleGroups);
             tabLayout.getTabAt(1).select();
 //            MySharedPrefs.putDefaultBool(this, "newexercises", true);
-            workoutFragment.addMuscleGroupSelections(selectedMuscleGroups);
         }
     }
 
@@ -109,24 +111,23 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (defaultPreferences.getBoolean("firstrun", true)) {
-
-            clearPreferences();
-
             // Do first run stuff here
-            SharedPreferences settingsPreferences = getSharedPreferences(
-                    PreferenceTags.PREFERENCES_SETTINGS, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = settingsPreferences.edit();
-            for (Setting value : Setting.values()) {
-                editor.putString(value.toString(), value.getCategory().toString());
-            }
-            editor.apply();
+            clearPreferences();
+            checkAllSettings();
 
-            // Set "firstrun" to false
-            editor = defaultPreferences.edit();
-            editor.putBoolean("firstrun", false);
-            editor.putBoolean("showtooltips", true);
-            editor.apply();
+            // Switch to settings so the user can setup
+            tabLayout.getTabAt(3).getCustomView().setSelected(true);
         }
+    }
+
+    private void checkAllSettings() {
+        SharedPreferences settingsPreferences = getSharedPreferences(
+                PreferenceTags.PREFERENCES_SETTINGS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settingsPreferences.edit();
+        for (Setting value : Setting.values()) {
+            editor.putString(value.toString(), value.getCategory().toString());
+        }
+        editor.apply();
     }
 
     public void clearPreferences() {

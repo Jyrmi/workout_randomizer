@@ -36,13 +36,24 @@ import sqlite.ExerciseContract;
  * Created by jeremy on 8/26/16.
  */
 public class ExerciseDetailsActivity extends AppCompatActivity {
-    // todo: general cleanup/structuring (2)
+    // todo: remember video time on pause, and move the video controls up to the video
+    // todo: check for internet connectivity and hide the video/images if not connected
 
     public static final String TAG = "ExerciseDetailsActivity";
 
+    VideoView exerciseVideo;
+
     TextView textViewName;
     TextView textViewGroup;
-    VideoView exerciseVideo;
+    TextView textViewOtherGroups;
+    TextView textViewDifficulty;
+    TextView textViewType;
+    TextView textViewMechanics;
+    TextView textViewEquipment;
+    TextView textViewForce;
+    TextView textViewSport;
+    TextView textViewRating;
+
     ImageView exerciseImage1;
     ImageView exerciseImage2;
     ImageView exerciseImage3;
@@ -55,6 +66,28 @@ public class ExerciseDetailsActivity extends AppCompatActivity {
 
         textViewName = (TextView) findViewById(R.id.details_name);
         textViewGroup = (TextView) findViewById(R.id.details_group);
+        textViewOtherGroups = (TextView) findViewById(R.id.details_other_groups);
+        textViewDifficulty = (TextView) findViewById(R.id.details_difficulty);
+        textViewType = (TextView) findViewById(R.id.details_type);
+        textViewMechanics = (TextView) findViewById(R.id.details_mechanics);
+        textViewEquipment = (TextView) findViewById(R.id.details_equipment);
+        textViewForce = (TextView) findViewById(R.id.details_force);
+        textViewSport = (TextView) findViewById(R.id.details_sport);
+        textViewRating = (TextView) findViewById(R.id.details_rating);
+
+        textViewName.setText(getIntent().getExtras().getString(ExerciseContract.ExerciseEntry.COLUMN_NAME));
+        textViewGroup.setText(getIntent().getExtras().getString(ExerciseContract.ExerciseEntry.COLUMN_GROUP));
+        String otherGroups = getIntent().getExtras().getString(ExerciseContract.ExerciseEntry.COLUMN_OTHER_GROUPS);
+        if (otherGroups != null)
+            textViewOtherGroups.setText(otherGroups.replace(",", "/"));
+        else textViewOtherGroups.setText("None");
+        textViewDifficulty.setText(getIntent().getExtras().getString(ExerciseContract.ExerciseEntry.COLUMN_DIFFICULTY));
+        textViewType.setText(getIntent().getExtras().getString(ExerciseContract.ExerciseEntry.COLUMN_TYPE));
+        textViewMechanics.setText(getIntent().getExtras().getString(ExerciseContract.ExerciseEntry.COLUMN_MECHANICS));
+        textViewEquipment.setText(getIntent().getExtras().getString(ExerciseContract.ExerciseEntry.COLUMN_EQUIPMENT));
+        textViewForce.setText(getIntent().getExtras().getString(ExerciseContract.ExerciseEntry.COLUMN_FORCE));
+        textViewSport.setText(getIntent().getExtras().getString(ExerciseContract.ExerciseEntry.COLUMN_SPORT));
+        textViewRating.setText(getIntent().getExtras().getString(ExerciseContract.ExerciseEntry.COLUMN_RATING));
 
         exerciseVideo = (VideoView) findViewById(R.id.details_video);
         exerciseImage1 = (ImageView) findViewById(R.id.exercise_image_1);
@@ -62,13 +95,27 @@ public class ExerciseDetailsActivity extends AppCompatActivity {
         exerciseImage3 = (ImageView) findViewById(R.id.exercise_image_3);
         exerciseImage4 = (ImageView) findViewById(R.id.exercise_image_4);
 
-        textViewName.setText(getIntent().getExtras().getString("EXTRA_NAME"));
-        textViewGroup.setText(getIntent().getExtras().getString("EXTRA_GROUP"));
 
         String images = getIntent().getExtras().getString("EXTRA_IMAGES");
         if (images != null) setImages(images);
         String videoUrl = getIntent().getExtras().getString("EXTRA_VIDEO");
         if (videoUrl != null) setVideo(videoUrl);
+    }
+
+    /**
+     * Remember the position in the video.
+     */
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    /**
+     * Remember the position in the video.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     public Boolean setImages(String images) {

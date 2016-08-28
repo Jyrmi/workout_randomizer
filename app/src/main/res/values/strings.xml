@@ -72,4 +72,13 @@
     <string name="gender_section">Gender</string>
     <string name="male">Show male media</string>
 
+    <!--Exercise Details Activity-->
+    <string name="othergroups">Others Involved</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="type">Exercise Type</string>
+    <string name="mechanics">Mechanics</string>
+    <string name="equipment">Equipment</string>
+    <string name="force">Force</string>
+    <string name="sport">Sport</string>
+
 </resources>

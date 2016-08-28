@@ -44,4 +44,9 @@ public class MySharedPrefs {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit().putBoolean(key, value).apply();
     }
+
+    public static void finishFirstRun(Context context) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("firstrun", false)
+                .apply();
+    }
 }

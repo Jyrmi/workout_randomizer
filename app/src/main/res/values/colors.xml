@@ -6,11 +6,17 @@
     <!--<color name="colorAccent">#8585ad</color>-->
     <!--<color name="colorLight">#b3b3cc</color>-->
 
-    <color name="colorPrimaryDark">#264d73</color>
-    <color name="colorPrimaryDarkTransparent">#e6264d73</color>
-    <color name="colorPrimary">#3973ac</color>
-    <color name="colorAccent">#6699cc</color>
-    <color name="colorLight">#9fbfdf</color>
+    <!--<color name="colorPrimaryDark">#264d73</color>-->
+    <!--<color name="colorPrimaryDarkTransparent">#e6264d73</color>-->
+    <!--<color name="colorPrimary">#3973ac</color>-->
+    <!--<color name="colorAccent">#6699cc</color>-->
+    <!--<color name="colorLight">#9fbfdf</color>-->
+
+    <color name="colorPrimaryDark">#3d5c5c</color>
+    <color name="colorPrimaryDarkTransparent">#bf3d5c5c</color>
+    <color name="colorPrimary">#5c8a8a</color>
+    <color name="colorAccent">#85adad</color>
+    <color name="colorLight">#b3cccc</color>
 
     <color name="transparent">#00FFFFFF</color>
 

@@ -20,6 +20,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -49,6 +51,8 @@ import sqlite.ExerciseDb;
 public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecyclerAdapter.ViewHolder> {
     private ArrayList<HashMap<String, String>> exerciseList;
 
+//    int lastPosition = -1;
+
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -77,22 +81,7 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
         @Override
         public void onClick(View view) {
-            if (isOnline(view.getContext())) {
-                Intent intent = new Intent(view.getContext(), ExerciseDetailsActivity.class);
-                intent.putExtra("EXTRA_NAME", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_NAME));
-                intent.putExtra("EXTRA_GROUP", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_GROUP));
-                if (isMale(view.getContext())) {
-                    intent.putExtra("EXTRA_IMAGES", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_MALE_IMAGES));
-                    intent.putExtra("EXTRA_VIDEO", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_MALE_VIDEO));
-                } else {
-                    intent.putExtra("EXTRA_IMAGES", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_IMAGES));
-                    intent.putExtra("EXTRA_VIDEO", exercise.get(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_VIDEO));
-                }
-                view.getContext().startActivity(intent);
-            } else {
-                Snackbar.make(view, "The guides work best with an internet connection.",
-                        Snackbar.LENGTH_SHORT).setAction("Action", null).show();
-            }
+            startDetailsActivity(view);
         }
 
         public Boolean isMale(Context context) {
@@ -113,6 +102,42 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                     (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo netInfo = cm.getActiveNetworkInfo();
             return netInfo != null && netInfo.isConnectedOrConnecting();
+        }
+
+        private void startDetailsActivity(View view) {
+            Intent intent = new Intent(view.getContext(), ExerciseDetailsActivity.class);
+            intent.putExtra(ExerciseContract.ExerciseEntry.COLUMN_NAME,
+                    exercise.get(ExerciseContract.ExerciseEntry.COLUMN_NAME));
+            intent.putExtra(ExerciseContract.ExerciseEntry.COLUMN_GROUP,
+                    exercise.get(ExerciseContract.ExerciseEntry.COLUMN_GROUP));
+            intent.putExtra(ExerciseContract.ExerciseEntry.COLUMN_OTHER_GROUPS,
+                    exercise.get(ExerciseContract.ExerciseEntry.COLUMN_OTHER_GROUPS));
+            intent.putExtra(ExerciseContract.ExerciseEntry.COLUMN_DIFFICULTY,
+                    exercise.get(ExerciseContract.ExerciseEntry.COLUMN_DIFFICULTY));
+            intent.putExtra(ExerciseContract.ExerciseEntry.COLUMN_TYPE,
+                    exercise.get(ExerciseContract.ExerciseEntry.COLUMN_TYPE));
+            intent.putExtra(ExerciseContract.ExerciseEntry.COLUMN_MECHANICS,
+                    exercise.get(ExerciseContract.ExerciseEntry.COLUMN_MECHANICS));
+            intent.putExtra(ExerciseContract.ExerciseEntry.COLUMN_EQUIPMENT,
+                    exercise.get(ExerciseContract.ExerciseEntry.COLUMN_EQUIPMENT));
+            intent.putExtra(ExerciseContract.ExerciseEntry.COLUMN_FORCE,
+                    exercise.get(ExerciseContract.ExerciseEntry.COLUMN_FORCE));
+            intent.putExtra(ExerciseContract.ExerciseEntry.COLUMN_SPORT,
+                    exercise.get(ExerciseContract.ExerciseEntry.COLUMN_SPORT));
+            intent.putExtra(ExerciseContract.ExerciseEntry.COLUMN_RATING,
+                    exercise.get(ExerciseContract.ExerciseEntry.COLUMN_RATING));
+            if (isMale(view.getContext())) {
+                intent.putExtra("EXTRA_IMAGES",
+                        exercise.get(ExerciseContract.ExerciseEntry.COLUMN_MALE_IMAGES));
+                intent.putExtra("EXTRA_VIDEO",
+                        exercise.get(ExerciseContract.ExerciseEntry.COLUMN_MALE_VIDEO));
+            } else {
+                intent.putExtra("EXTRA_IMAGES",
+                        exercise.get(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_IMAGES));
+                intent.putExtra("EXTRA_VIDEO",
+                        exercise.get(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_VIDEO));
+            }
+            view.getContext().startActivity(intent);
         }
     }
 
@@ -136,6 +161,8 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.bindViews(exerciseList.get(position));
+
+//        setAnimation(holder.cardView, position);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -143,4 +170,17 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
     public int getItemCount() {
         return exerciseList.size();
     }
+
+//    /**
+//     * Here is the key method to apply the animation
+//     */
+//    private void setAnimation(View viewToAnimate, int position) {
+//        // If the bound view wasn't previously displayed on screen, it's animated
+////        if (position > lastPosition) {
+//            Animation animation = AnimationUtils.loadAnimation(viewToAnimate.getContext(),
+//                    android.R.anim.slide_in_left);
+//            viewToAnimate.startAnimation(animation);
+////            lastPosition = position;
+////        }
+//    }
 }
