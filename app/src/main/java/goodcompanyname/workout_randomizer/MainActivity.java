@@ -1,4 +1,4 @@
-package goodcompanyname.myapplication;
+package goodcompanyname.workout_randomizer;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -38,8 +38,6 @@ public class MainActivity extends AppCompatActivity
     StatsFragment statsFragment;
     SettingsFragment settingsFragment;
 
-    ArrayList<String> selectedMuscleGroups;
-
     public static Stack<Integer> backstack = new Stack<>();
 
     private int[] tabIcons = {
@@ -57,7 +55,6 @@ public class MainActivity extends AppCompatActivity
         } else {
             workoutFragment.addMuscleGroupSelections(selectedMuscleGroups);
             tabLayout.getTabAt(1).select();
-//            MySharedPrefs.putDefaultBool(this, "newexercises", true);
         }
     }
 
@@ -202,23 +199,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

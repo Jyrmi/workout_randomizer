@@ -1,24 +1,13 @@
-package goodcompanyname.myapplication;
+package goodcompanyname.workout_randomizer;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
@@ -29,7 +18,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
-import constant.PreferenceTags;
 import sqlite.ExerciseContract;
 
 /**
@@ -38,6 +26,7 @@ import sqlite.ExerciseContract;
 public class ExerciseDetailsActivity extends AppCompatActivity {
     // todo: remember video time on pause, and move the video controls up to the video
     // todo: check for internet connectivity and hide the video/images if not connected
+    // todo: move the media controller to the actual video
 
     public static final String TAG = "ExerciseDetailsActivity";
 
@@ -78,9 +67,7 @@ public class ExerciseDetailsActivity extends AppCompatActivity {
         textViewName.setText(getIntent().getExtras().getString(ExerciseContract.ExerciseEntry.COLUMN_NAME));
         textViewGroup.setText(getIntent().getExtras().getString(ExerciseContract.ExerciseEntry.COLUMN_GROUP));
         String otherGroups = getIntent().getExtras().getString(ExerciseContract.ExerciseEntry.COLUMN_OTHER_GROUPS);
-        if (otherGroups != null)
-            textViewOtherGroups.setText(otherGroups.replace(",", "/"));
-        else textViewOtherGroups.setText("None");
+        if (otherGroups != null) textViewOtherGroups.setText(otherGroups.replace(",", "/"));
         textViewDifficulty.setText(getIntent().getExtras().getString(ExerciseContract.ExerciseEntry.COLUMN_DIFFICULTY));
         textViewType.setText(getIntent().getExtras().getString(ExerciseContract.ExerciseEntry.COLUMN_TYPE));
         textViewMechanics.setText(getIntent().getExtras().getString(ExerciseContract.ExerciseEntry.COLUMN_MECHANICS));

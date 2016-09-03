@@ -1,16 +1,9 @@
-package goodcompanyname.myapplication;
+package goodcompanyname.workout_randomizer;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,20 +19,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Random;
 
 import adapter.ExerciseRecyclerAdapter;
 import constant.PreferenceTags;
-import constant.TwoTuple;
 import preferences.MySharedPrefs;
 import sqlite.ExerciseContract;
 import sqlite.ExerciseDb;
@@ -54,6 +41,7 @@ public class WorkoutFragment extends Fragment {
     // that skip/complete
     // todo: consider making each entry a "workout", a box containing multiple exercises
     // generating exercises multiple times in a short time frame would put all into the same workout
+    // todo: consider eliminating swipe functionality entirely for another system
 
     private static final String TAG = "WorkoutFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
@@ -108,30 +96,23 @@ public class WorkoutFragment extends Fragment {
                         return true; // true if moved, false otherwise
                     }
                     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                        String status = "skipped";
                         int position = viewHolder.getAdapterPosition();
                         HashMap<String, String> exercise = exerciseList.get(position);
                         if (direction == ItemTouchHelper.LEFT) { // Skip this exercise and replace it
-                            HashMap<String, String> queryResult = pickOneRandomExercise(
-                                    exercise.get(ExerciseContract.ExerciseEntry.COLUMN_GROUP));
-                            makeToast("Skipped.");
-                            if (queryResult == null) {
-                                makeToast("No " + exercise.get(ExerciseContract.ExerciseEntry.
-                                        COLUMN_GROUP) + " exercises matched your preferences.");
-                                exerciseList.remove(position);
-                            } else exerciseList.set(position, queryResult);
+                            makeToast("Exercise skipped.");
+                            LogsDbHelper.writeLogEntry(getActivity(), exercise,
+                                    LogsContract.STATUS_SKIPPED);
                         } else {
-                            exerciseList.remove(position);
-                            status = "completed";
-                            if (exerciseList.isEmpty()) textViewEmpty.setVisibility(View.VISIBLE);
                             makeToast("Exercise complete.");
+                            LogsDbHelper.writeLogEntry(getActivity(), exercise,
+                                    LogsContract.STATUS_COMPLETE);
                         }
+                        exerciseList.remove(position);
+                        if (exerciseList.isEmpty()) textViewEmpty.setVisibility(View.VISIBLE);
 
                         exerciseAdapter.notifyDataSetChanged();
                         exerciseAdapter.notifyItemRemoved(position);
                         exerciseAdapter.notifyItemRangeChanged(position, exerciseList.size());
-
-                        writeLogEntry(exercise, status);
                     }
                 }
         );
@@ -206,15 +187,7 @@ public class WorkoutFragment extends Fragment {
             if (randomExercise == null) {
                 missedGroups.add(muscleGroup);
             } else {
-//                // Smoothly add the new exercise
-//                try {
-//                    Thread.sleep(500);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-
                 exerciseList.add(randomExercise);
-//                exerciseAdapter.notifyDataSetChanged();
             }
         }
         if (!missedGroups.isEmpty()) {
@@ -233,29 +206,6 @@ public class WorkoutFragment extends Fragment {
         if (queryResult.size() > 0) {
             return queryResult.get(new Random().nextInt(queryResult.size()));
         } else return null;
-    }
-
-    private void writeLogEntry(HashMap<String, String> exercise, String status) {
-        // Gets the data repository in write mode
-        LogsDbHelper mDbHelper = new LogsDbHelper(getActivity());
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-        // Create a new map of values, where column names are the keys
-        String dateAndTime = Calendar.getInstance().getTime().toString();
-        ContentValues values = new ContentValues();
-        values.put(LogsContract.LogEntry.COLUMN_EXERCISE,
-                exercise.get(ExerciseContract.ExerciseEntry.COLUMN_NAME));
-        values.put(LogsContract.LogEntry.COLUMN_GROUP,
-                exercise.get(ExerciseContract.ExerciseEntry.COLUMN_GROUP));
-        values.put(LogsContract.LogEntry.COLUMN_DATE, dateAndTime);
-        values.put(LogsContract.LogEntry.COLUMN_STATUS, status);
-
-        // Insert the new row, returning the primary key value of the new row
-        db.insert(LogsContract.LogEntry.TABLE_NAME, null, values);
-
-        db.close();
-
-//        MySharedPrefs.putDefaultBool(getActivity(), "newlogs", true);
     }
 
     public void updatePreferences() {

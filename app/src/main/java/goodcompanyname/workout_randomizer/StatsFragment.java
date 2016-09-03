@@ -1,4 +1,4 @@
-package goodcompanyname.myapplication;
+package goodcompanyname.workout_randomizer;
 
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,6 @@ import sqlite.LogsDbHelper;
  */
 public class StatsFragment extends Fragment {
     // todo: more graphs of relevant information (8)
-    // todo: add "favorite muscle", "favorite exercise", "streak" information in a new text-only tab
 
     private final static String TAG = "StatsFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
@@ -36,12 +36,14 @@ public class StatsFragment extends Fragment {
 
     RadarFragment radarFragment;
     LogsFragment logsFragment;
+    SummaryFragment summaryFragment;
 
     DialogInterface.OnClickListener dialogClickListener;
 
     private int[] tabIcons = {
             R.drawable.ic_track_changes_white_selector,
-            R.drawable.ic_format_list_bulleted_white_selector
+            R.drawable.ic_format_list_bulleted_white_selector,
+            R.drawable.ic_done_white_selector
     };
 
     public static StatsFragment newInstance(int pageNo) {
@@ -67,7 +69,7 @@ public class StatsFragment extends Fragment {
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.view_pager_stats);
         PagerAdapter pagerAdapter = new PagerAdapter(getChildFragmentManager());
         if (viewPager != null) {
-            viewPager.setOffscreenPageLimit(1);
+            viewPager.setOffscreenPageLimit(2);
             viewPager.setAdapter(pagerAdapter);
         }
 
@@ -94,7 +96,7 @@ public class StatsFragment extends Fragment {
                         //Yes button clicked
                         MySharedPrefs.clearAll(getActivity());
                         clearTable();
-                        refreshAllViews();
+                        refreshCurrentView();
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -127,22 +129,16 @@ public class StatsFragment extends Fragment {
 
         // Make sure that we are currently visible
         if (this.isVisible()) {
-            refreshAllViews();
+            refreshCurrentView();
         }
     }
 
-    private void refreshAllViews() {
-        radarFragment.refreshChart();
-        logsFragment.refreshLogs();
-
-//        if (MySharedPrefs.getDefaultBool(getContext(), "newexercises")) {
-//            radarFragment.refreshChart();
-//            MySharedPrefs.putDefaultBool(getContext(), "newexercises", false);
-//        }
-//        if (MySharedPrefs.getDefaultBool(getContext(), "newlogs")) {
-//            logsFragment.refreshLogs();
-//            MySharedPrefs.putDefaultBool(getContext(), "newlogs", false);
-//        }
+    private void refreshCurrentView() {
+        switch (tabLayout.getSelectedTabPosition()) {
+            case 0: radarFragment.refreshChart(); return;
+            case 1: logsFragment.refreshLogs(); return;
+            case 2: summaryFragment.refreshSummary(); return;
+        }
     }
 
     private void clearTable() {
@@ -154,9 +150,9 @@ public class StatsFragment extends Fragment {
 
     private class PagerAdapter extends FragmentPagerAdapter {
 
-        public final int PAGE_COUNT = 2;
+        public final int PAGE_COUNT = 3;
 
-        private final String[] mTabsTitle = {"Groups", "Logs"};
+        private final String[] mTabsTitle = {"Groups", "Logs", "Summary"};
 
         public PagerAdapter(FragmentManager fm) {
             super(fm);
@@ -180,6 +176,9 @@ public class StatsFragment extends Fragment {
                 case 1:
                     logsFragment = LogsFragment.newInstance(2);
                     return logsFragment;
+                case 2:
+                    summaryFragment = SummaryFragment.newInstance(2);
+                    return summaryFragment;
 
             }
             return null;

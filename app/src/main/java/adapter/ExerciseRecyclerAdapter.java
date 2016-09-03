@@ -3,47 +3,22 @@ package adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.TextView;
-import android.widget.VideoView;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import constant.PreferenceTags;
-import constant.Setting;
-import constant.SettingsCategory;
-import goodcompanyname.myapplication.ExerciseDetailsActivity;
-import goodcompanyname.myapplication.R;
+import goodcompanyname.workout_randomizer.ExerciseDetailsActivity;
+import goodcompanyname.workout_randomizer.R;
 import sqlite.ExerciseContract;
-import sqlite.ExerciseDb;
 
 /**
  * Created by josephchoi on 8/20/16.
@@ -51,14 +26,10 @@ import sqlite.ExerciseDb;
 public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecyclerAdapter.ViewHolder> {
     private ArrayList<HashMap<String, String>> exerciseList;
 
-//    int lastPosition = -1;
-
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-//    public static class ViewHolder extends RecyclerView.ViewHolder {
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        // each data item is just a string in this case
         CardView cardView;
         HashMap<String, String> exercise;
 
@@ -126,7 +97,8 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                     exercise.get(ExerciseContract.ExerciseEntry.COLUMN_SPORT));
             intent.putExtra(ExerciseContract.ExerciseEntry.COLUMN_RATING,
                     exercise.get(ExerciseContract.ExerciseEntry.COLUMN_RATING));
-            if (isMale(view.getContext())) {
+            if (isMale(view.getContext()) ||
+                    exercise.get(ExerciseContract.ExerciseEntry.COLUMN_FEMALE_VIDEO) == null) {
                 intent.putExtra("EXTRA_IMAGES",
                         exercise.get(ExerciseContract.ExerciseEntry.COLUMN_MALE_IMAGES));
                 intent.putExtra("EXTRA_VIDEO",
@@ -170,17 +142,4 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
     public int getItemCount() {
         return exerciseList.size();
     }
-
-//    /**
-//     * Here is the key method to apply the animation
-//     */
-//    private void setAnimation(View viewToAnimate, int position) {
-//        // If the bound view wasn't previously displayed on screen, it's animated
-////        if (position > lastPosition) {
-//            Animation animation = AnimationUtils.loadAnimation(viewToAnimate.getContext(),
-//                    android.R.anim.slide_in_left);
-//            viewToAnimate.startAnimation(animation);
-////            lastPosition = position;
-////        }
-//    }
 }

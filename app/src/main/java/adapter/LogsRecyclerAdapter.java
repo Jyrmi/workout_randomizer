@@ -1,20 +1,15 @@
 package adapter;
 
-import android.app.Activity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import goodcompanyname.myapplication.R;
-import sqlite.ExerciseContract;
+import goodcompanyname.workout_randomizer.R;
 import sqlite.LogsContract;
 
 /**
@@ -27,7 +22,6 @@ public class LogsRecyclerAdapter extends RecyclerView.Adapter<LogsRecyclerAdapte
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
         LinearLayout logRow;
         HashMap<String, String> exercise;
         TextView date, name, group, status;

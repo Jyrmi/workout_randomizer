@@ -1,4 +1,4 @@
-package goodcompanyname.myapplication;
+package goodcompanyname.workout_randomizer;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,6 +24,7 @@ import constant.SettingsCategory;
 public class SettingsFragment extends Fragment {
     // todo: make gender checkbox less sexist to appease American users (6)
     // todo: options for other database columns (rating slider) (7)
+    // todo: "save" button to for psychological assurance for the user
 
     private static final String TAG = "SettingsFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
@@ -257,22 +258,6 @@ public class SettingsFragment extends Fragment {
         return view;
     }
 
-    public HashMap<SettingsCategory, ArrayList<Setting>> getSettings() {
-        HashMap<SettingsCategory, ArrayList<Setting>> settings = new HashMap<>();
-
-        for (Map.Entry<CheckBox, Setting> entry : checkBoxToSetting.entrySet()) {
-            if (entry.getKey().isChecked()) {
-                Setting setting = entry.getValue();
-                if (!settings.containsKey(setting.getCategory())) {
-                    settings.put(setting.getCategory(), new ArrayList<Setting>());
-                }
-                settings.get(setting.getCategory()).add(setting);
-            }
-        }
-
-        return settings;
-    }
-
     private void recallSettings() {
         SharedPreferences sharedPreferences =
                 getActivity().getSharedPreferences(PreferenceTags.PREFERENCES_SETTINGS,
@@ -310,24 +295,5 @@ public class SettingsFragment extends Fragment {
                 writeSetting(checkBoxToSetting.get(checkBox), b);
             }
         });
-    }
-
-    public void updatePreferences() {
-        SharedPreferences sharedPreferences =
-                getActivity().getSharedPreferences(PreferenceTags.PREFERENCES_SETTINGS,
-                        Context.MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        for (Map.Entry<CheckBox, Setting> entry : checkBoxToSetting.entrySet()) {
-            Setting s = entry.getValue();
-            if (entry.getKey().isChecked()) {
-                editor.putString(s.toString(), s.getCategory().toString());
-            } else {
-                editor.remove(s.toString());
-            }
-        }
-
-        editor.apply();
     }
 }

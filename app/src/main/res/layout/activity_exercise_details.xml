@@ -52,6 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
+					android:layout_alignParentRight="true"
                     android:textSize="@dimen/details_header"
                     android:text="10.0" />
 
@@ -59,7 +60,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_below="@id/details_rating">
+                    android:layout_below="@id/details_rating"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true">
 
                     <ImageView
                         android:layout_width="15dp"
@@ -90,20 +93,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <RelativeLayout style="@style/DetailsItemLeft"
-                    android:layout_marginRight="@dimen/details_item_margin">
+                <RelativeLayout style="@style/DetailsItemLeft">
 
                     <TextView style="@style/DetailsTextLeft"
                         android:text="@string/othergroups" />
 
                 </RelativeLayout>
 
-                <RelativeLayout style="@style/DetailsItemRight"
-                    android:layout_marginLeft="@dimen/details_item_margin">
+                <RelativeLayout style="@style/DetailsItemRight">
 
                     <TextView style="@style/DetailsTextRight"
                         android:id="@+id/details_other_groups"
-                        android:text="value"/>
+                        android:text="@string/default_value"/>
 
                 </RelativeLayout>
 
@@ -127,7 +128,7 @@
 
                     <TextView style="@style/DetailsTextRight"
                         android:id="@+id/details_difficulty"
-                        android:text="value"/>
+                        android:text="@string/default_value"/>
 
                 </RelativeLayout>
 
@@ -151,7 +152,7 @@
 
                     <TextView style="@style/DetailsTextRight"
                         android:id="@+id/details_type"
-                        android:text="value"/>
+                        android:text="@string/default_value"/>
 
                 </RelativeLayout>
 
@@ -175,7 +176,7 @@
 
                     <TextView style="@style/DetailsTextRight"
                         android:id="@+id/details_mechanics"
-                        android:text="value"/>
+                        android:text="@string/default_value"/>
 
                 </RelativeLayout>
 
@@ -199,7 +200,7 @@
 
                     <TextView style="@style/DetailsTextRight"
                         android:id="@+id/details_equipment"
-                        android:text="value"/>
+                        android:text="@string/default_value"/>
 
                 </RelativeLayout>
 
@@ -223,7 +224,7 @@
 
                     <TextView style="@style/DetailsTextRight"
                         android:id="@+id/details_force"
-                        android:text="value"/>
+                        android:text="@string/default_value"/>
 
                 </RelativeLayout>
 
@@ -247,7 +248,7 @@
 
                     <TextView style="@style/DetailsTextRight"
                         android:id="@+id/details_sport"
-                        android:text="value"/>
+                        android:text="@string/default_value"/>
 
                 </RelativeLayout>
 
@@ -255,7 +256,7 @@
 
         </LinearLayout>
 
-        <Space style="@style/EmptySpace"
+        <View style="@style/EmptySpace"
             android:id="@+id/header_space"
             android:layout_below="@id/details_info_container"/>
 
@@ -304,7 +305,7 @@
 
         </HorizontalScrollView>
 
-        <Space style="@style/EmptySpace"
+        <View style="@style/EmptySpace"
             android:layout_below="@id/image_container"/>
 
     </RelativeLayout>

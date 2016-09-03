@@ -1,4 +1,4 @@
-package goodcompanyname.myapplication;
+package goodcompanyname.workout_randomizer;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -68,6 +68,20 @@ public class RadarFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Update all charts/logs when the user switches to this tab.
+     * @param isVisibleToUser whether the tab has come into view. I think.
+     */
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        // Make sure that we are currently visible
+        if (this.isVisible()) {
+            refreshChart();
+        }
+    }
+
     private ArrayList<TwoTuple<String, Integer>> getPreferences(String sharedPreferencesTag) {
         ArrayList<TwoTuple<String, Integer>> entries = new ArrayList<>();
 
@@ -76,7 +90,7 @@ public class RadarFragment extends Fragment {
 
         int count;
         for (String muscleGroup : MuscleGroup.getGroupsAsStrings()) {
-            count = sharedPreferences.getInt(muscleGroup.toString(), 0);
+            count = sharedPreferences.getInt(muscleGroup, 0);
             if (count > 0) {
                 entries.add(new TwoTuple(muscleGroup, count));
             }
@@ -122,11 +136,11 @@ public class RadarFragment extends Fragment {
         radarDataSet.setLineWidth(2f);
         radarDataSet.setDrawHighlightCircleEnabled(true);
         radarDataSet.setDrawHighlightIndicators(false);
-//
+
         radarData = new RadarData(radarDataSet);
-//        radarData.setValueTextSize(8f);
+        radarData.setValueTextSize(8f);
 //        radarData.setDrawValues(false);
-//        radarData.setValueTextColor(Color.BLACK);
+        radarData.setValueTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark));
 
         muscleGroupsChart.setData(radarData);
         muscleGroupsChart.invalidate();

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/app_margin"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/summary_title"
+        android:textSize="@dimen/header_text"
+        android:layout_gravity="center" />
+
+    <View style="@style/LargeSpace" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RelativeLayout style="@style/DetailsItemLeft">
+
+            <TextView style="@style/DetailsTextLeft"
+                android:text="@string/favorite_group" />
+
+        </RelativeLayout>
+
+        <RelativeLayout style="@style/DetailsItemRight">
+
+            <TextView style="@style/DetailsTextRight"
+                android:id="@+id/summary_group"
+                android:text="@string/default_value"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RelativeLayout style="@style/DetailsItemLeft">
+
+            <TextView style="@style/DetailsTextLeft"
+                android:text="@string/favorite_exercise" />
+
+        </RelativeLayout>
+
+        <RelativeLayout style="@style/DetailsItemRight">
+
+            <TextView style="@style/DetailsTextRight"
+                android:id="@+id/summary_favorite_exercise"
+                android:text="@string/default_value"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RelativeLayout style="@style/DetailsItemLeft">
+
+            <TextView style="@style/DetailsTextLeft"
+                android:text="@string/least_favorite_exercise" />
+
+        </RelativeLayout>
+
+        <RelativeLayout style="@style/DetailsItemRight">
+
+            <TextView style="@style/DetailsTextRight"
+                android:id="@+id/summary_least_favorite_exercise"
+                android:text="@string/default_value"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RelativeLayout style="@style/DetailsItemLeft">
+
+            <TextView style="@style/DetailsTextLeft"
+                android:text="@string/completed" />
+
+        </RelativeLayout>
+
+        <RelativeLayout style="@style/DetailsItemRight">
+
+            <TextView style="@style/DetailsTextRight"
+                android:id="@+id/summary_completed"
+                android:text="@string/default_value"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RelativeLayout style="@style/DetailsItemLeft">
+
+            <TextView style="@style/DetailsTextLeft"
+                android:text="@string/skipped" />
+
+        </RelativeLayout>
+
+        <RelativeLayout style="@style/DetailsItemRight">
+
+            <TextView style="@style/DetailsTextRight"
+                android:id="@+id/summary_skipped"
+                android:text="@string/default_value"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RelativeLayout style="@style/DetailsItemLeft">
+
+            <TextView style="@style/DetailsTextLeft"
+                android:text="@string/current_streak" />
+
+        </RelativeLayout>
+
+        <RelativeLayout style="@style/DetailsItemRight">
+
+            <TextView style="@style/DetailsTextRight"
+                android:id="@+id/summary_current_streak"
+                android:text="@string/default_value"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RelativeLayout style="@style/DetailsItemLeft">
+
+            <TextView style="@style/DetailsTextLeft"
+                android:text="@string/longest_streak" />
+
+        </RelativeLayout>
+
+        <RelativeLayout style="@style/DetailsItemRight">
+
+            <TextView style="@style/DetailsTextRight"
+                android:id="@+id/summary_longest_streak"
+                android:text="@string/default_value"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

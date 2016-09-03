@@ -7,6 +7,8 @@ import android.provider.BaseColumns;
  */
 public class LogsContract {
     public LogsContract() {}
+    public static String STATUS_COMPLETE = "completed";
+    public static String STATUS_SKIPPED = "skipped";
 
     public static abstract class LogEntry implements BaseColumns {
         public static final String TABLE_NAME = "logs";

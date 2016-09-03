@@ -1,4 +1,4 @@
-package goodcompanyname.myapplication;
+package goodcompanyname.workout_randomizer;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,7 +21,7 @@ import constant.PreferenceTags;
 public class SelectionFragment extends Fragment {
     // todo: repartition the images to include abductors/adductors muscle groups (5)
     // todo: allow user to pick how many exercises per muscle group they want to do
-    // todo: have a fixed tooltip at the top saying "Pick the muscle groups you with to target in your workout."
+    // todo: have a fixed tooltip at the top saying "Pick the muscle groups you wish to target in your workout."
 
     private static final String TAG = "SelectionFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
@@ -197,7 +197,7 @@ public class SelectionFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (selectedMuscleGroups.isEmpty()) {
-                    Snackbar.make(view, "Select at least one", Snackbar.LENGTH_SHORT)
+                    Snackbar.make(view, "Select at least one muscle group.", Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();
                 } else {
                     callback.onFinishSelection(selectedMuscleGroups);

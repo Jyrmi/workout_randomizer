@@ -4,7 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import constant.MuscleGroup;
 import constant.PreferenceTags;
+import constant.TwoTuple;
 
 /**
  * Created by jeremy on 8/27/16.
@@ -48,5 +54,29 @@ public class MySharedPrefs {
     public static void finishFirstRun(Context context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("firstrun", false)
                 .apply();
+    }
+
+    public static ArrayList<String> getFavoriteGroups(Context context) {
+        ArrayList<String> mostSelected = new ArrayList<>();
+        int maxPicked = 0;
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                PreferenceTags.PREFERENCES_SELECTED_MUSCLE_GROUPS, Context.MODE_PRIVATE);
+
+        int count;
+        for (String muscleGroup : MuscleGroup.getGroupsAsStrings()) {
+            count = sharedPreferences.getInt(muscleGroup, 0);
+            if (count > 0) {
+                if (count > maxPicked) {
+                    maxPicked = count;
+                    mostSelected.clear();
+                    mostSelected.add(muscleGroup);
+                } else if (count == maxPicked) {
+                    mostSelected.add(muscleGroup);
+                }
+            }
+        }
+
+        return mostSelected;
     }
 }
